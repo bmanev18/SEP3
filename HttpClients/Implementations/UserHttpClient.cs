@@ -4,7 +4,6 @@ using Shared.DTOs;
 using Shared.Model;
 using HttpClients.ClientInterfaces;
 
-
 namespace HttpClients.Implementations;
 
 public class UserHttpClient : IUserService
@@ -18,7 +17,7 @@ public class UserHttpClient : IUserService
 
     public async Task<User> Create(UserCreationDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/users", dto);
+        HttpResponseMessage response = await client.PostAsJsonAsync("/user", dto);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
