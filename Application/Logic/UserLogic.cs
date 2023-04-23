@@ -15,9 +15,9 @@ public class UserLogic : IUserLogic
     }
     
     
-    public async Task<User> CreateAsync(UserCreationDto dto)
+    public async Task CreateAsync(UserCreationDto dto)
     {
-        return await _userDao.CreateAsync(dto);
+        await _userDao.CreateAsync(dto);
     }
 
     public Task<User>? GetByUsernameAsync(string username)

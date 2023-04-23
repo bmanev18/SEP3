@@ -21,21 +21,18 @@ public class UserDAO : IUserDao
     }
 
 
-    public async Task<User> CreateAsync(Shared.DTOs.UserCreationDto dto)
+    public async Task CreateAsync(Shared.DTOs.UserCreationDto dto)
     {
         UserCreationDto request = new UserCreationDto
         {
             Password = dto.Password,
-            Username = dto.Username
+            Username = dto.Username,
+            Role = dto.Role,
+            FirstName = dto.FirstName,
+            LastName = dto.Lastname
         };
         var call = client.CreateUser(request);
-        User created = new User
-        {
-            Password = call.CreatedUser.Password,
-            Username = call.CreatedUser.Username
-        };
-        Console.WriteLine("qwert");
-        return created;
+        
     }
     
 
