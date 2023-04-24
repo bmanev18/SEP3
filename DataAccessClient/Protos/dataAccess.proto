@@ -4,15 +4,17 @@ option java_package = "com.protobuf";
 option csharp_namespace = "DataAccessClient";
 
 service UserAccess {
-  rpc CreateUser(UserCreationDto) returns (UserCreationResponse);
+  rpc CreateUser(UserCreationDto) returns (Response);
 }
 
 message UserCreationDto{
   string username = 1;
-  string password = 2;
+  string firstName = 2;
+  string lastName = 3;
+  string password = 4;
+  string role = 5;
 }
 
-message UserCreationResponse{
-  UserCreationDto createdUser = 1;
-  int32 code = 2;
+message Response{
+  int32 code = 1;
 }
