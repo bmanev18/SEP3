@@ -1,56 +1,45 @@
 ﻿@page "/CreateUser"
 @using global::Shared.DTOs
 @using HttpClients.ClientInterfaces
-@inject IUserService userService;
-
-
-<div class="card">
-    <h3>Create User</h3>
-    <div class="form-group field">
-        <label>User name:</label>
-        <input type="text" @bind="username" @bind:event="oninput"/>
-    </div>
-    
-    <div class="form-group field">
-        <label>First Name:</label>
-        <input type="text" @bind="firstname" @bind:event="oninput"/>
-    </div>
-    
-    <div class="form-group field">
-        <label>Last Name:</label>
-        <input type="text" @bind="lastname" @bind:event="oninput"/>
-
-    </div>
-    
-        <div class="form-group field">
-             <label>Role for the project:</label> 
-
-            <input type="text" @bind="role" @bind:event="oninput" list='listid'/>
-             <datalist id='listid'>
-                 <option label='scrum master' value='scrum master'></option>
-                 <option label='developer' value='developer'></option>
-                 <option label='project manager' value='project manager'></option>
-             </datalist>
-            
+@using BlazorrWASM.Services
+@inject NavigationManager navManager
+@inject IUserService userService
+@inject IAuthService authService
+<div class="wrapper">
+    <h2>Registration</h2>
+    <form action="#">
+        <div class="input-box">
+            <input type="text" placeholder="Enter Your Username" @bind="username" @bind:event="oninput">
         </div>
-    <div class="form-group field">
-        <label>Password:</label>
-        <input type="text" @bind="password" @bind:event="oninput"/>
-
-    </div>
-    
-        <div class="form-group field">
-            <label>Confirm Password:</label>
-            <input type="text" @bind="confirmPassword" @bind:event="oninput"/>
+        <div class="input-box">
+            <input type="text" placeholder="Enter Your Firstname" @bind="firstname" @bind:event="oninput">
         </div>
-<div class="button-row">
-    <button @onclick="Create" class="acceptbtn">Create a profile</button>
-    <label style="color: @color">@finalResultMsg</label>
+        <div class="input-box">
+            <input type="text" placeholder="Enter Your Last Name" @bind="lastname" @bind:event="oninput">
+        </div>
+        <div class="input-box">
+            <input type="text" @bind="role" @bind:event="oninput" list='listid' placeholder="Role"/>
+            <datalist id='listid'>
+                <option label='scrum master' value='scrum master'></option>
+                <option label='developer' value='developer'></option>
+                <option label='project manager' value='project manager'></option>
+            </datalist>
+        </div>
+        <div class="input-box">
+            <input type="password" placeholder="Create Password" @bind="password" @bind:event="oninput">
+        </div>
+        <div class="input-box">
+            <input type="password" placeholder="Confirm Password" @bind="confirmPassword" @bind:event="oninput">
+        </div>
+        <label style="color: @color">@finalResultMsg</label>
+        <div class="input-box button">
+                <input value="Register Now" @onclick="Create">
+              </div>
+        <div class="text">
+            <h3>Already have an account? <a @onclick="@(() => navManager.NavigateTo("/Login"))">Login now</a></h3>
+        </div>
+    </form>
 </div>
-
-</div>
-
-
 @code {
     private string username = "";
     private string firstname = "";
@@ -60,7 +49,7 @@
     private string role = "";
     private string finalResultMsg = "";
     private string color = "";
-    
+
     private async Task Create()
     {
 
@@ -74,7 +63,7 @@
                 {
                     if (password.Length >= 8)
                     {
-                        await userService.Create(new UserCreationDto(username, password, role, firstname, lastname));
+                        await authService.RegisterAsync(username, firstname, lastname, password, role);
                         username = "";
                         password = "";
                         confirmPassword = "";
@@ -98,4 +87,4 @@
             color = "red";
         }
     }
-}
+    } 

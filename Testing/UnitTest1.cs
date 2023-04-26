@@ -15,9 +15,17 @@ public class Tests
     [Test]
     public void Test1()
     {
-        UserCreationDto user = new UserCreationDto("Andreea", "password","developer","Andreea", "Asimine");
+        //"Andreea", "password","developer","Andreea", "Asimine"
+        UserCreationDto user = new UserCreationDto
+        {
+            FirstName = "Andreea",
+            Lastname = "Asimine",
+            Password = "password",
+            Role = "developer",
+            Username = "Andreea1"
+        };
         String actual = user.Username;
-        String expected = "Andreea";
+        String expected = "Andreea1";
         Assert.AreEqual(expected, actual);
     }
     

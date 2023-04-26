@@ -32,7 +32,6 @@ public class UserDAO : IUserDao
             LastName = dto.Lastname
         };
         var call = client.CreateUser(request);
-        
     }
     
 
