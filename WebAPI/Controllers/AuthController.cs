@@ -72,4 +72,18 @@ public class AuthController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    [HttpPost, Route("register")]
+    public async Task<ActionResult> Register([FromBody] User user)
+    {
+        try
+        {
+            await authService.RegisterUser(user);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return BadRequest(e.Message);
+        }
+    }
 }

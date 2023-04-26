@@ -34,8 +34,8 @@ public class AuthService: IAuthService
     {
         Shared.DTOs.UserCreationDto dto = new Shared.DTOs.UserCreationDto
         {
-            FirstName = user.firstname,
-            Lastname = user.lastname,
+            FirstName = user.Firstname,
+            Lastname = user.Lastname,
             Password = user.Password,
             Role = user.Role,
             Username = user.Username

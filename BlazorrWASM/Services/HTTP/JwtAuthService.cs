@@ -41,12 +41,33 @@ public class JwtAuthService : IAuthService
 
     public Task LogoutAsync()
     {
-        throw new NotImplementedException();
+        Jwt = null;
+        ClaimsPrincipal principal = new();
+        OnAuthStateChanged.Invoke(principal);
+        return Task.CompletedTask;
     }
 
-    public Task RegisterAsync(User user)
+    public async Task RegisterAsync(String username, String firstname,String lastname,String password, String role)
     {
-        throw new NotImplementedException();
+        User user = new()
+        {
+            Username = username,
+            Password = password,
+            Firstname = firstname,
+            Lastname = lastname,
+            Role = role
+            
+        };
+        
+        string userAsJson = JsonSerializer.Serialize(user);
+        StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
+        HttpResponseMessage response = await client.PostAsync("https://localhost:7203/auth/register", content);
+        string responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(responseContent);
+        }
     }
 
     public Task<ClaimsPrincipal> GetAuthAsync()
