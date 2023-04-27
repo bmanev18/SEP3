@@ -1,20 +1,77 @@
-﻿syntax = "proto3";
+syntax = "proto3";
 
 option java_package = "com.protobuf";
 option csharp_namespace = "DataAccessClient";
 
 service UserAccess {
-  rpc CreateUser(UserCreationDto) returns (Response);
+  rpc CreateUser(UserDto) returns (Response);
+  rpc Login(UserLoginDto) returns (LoginResponse);
+  rpc UsersByRole(Role) returns (FilteredUsersResponse);
+  rpc UserByName(UserSearchDto) returns (FilteredUsersResponse);
+  rpc UpdateUser(UserDto) returns (UpdatedUserResponse);
+  rpc DeleteUser(Username) returns (Response);
 }
 
-message UserCreationDto{
+service ProjectAccess {
+  rpc CreateProject(ProjectDto) returns (Response);
+  rpc AddOwner(AddToProjectDto) returns (Response);
+  rpc AddScrumMaster(AddToProjectDto) returns (Response);
+  rpc AddDeveloper(AddToProjectDto) returns (Response);
+}
+
+message UserDto{
   string username = 1;
   string firstName = 2;
   string lastName = 3;
   string password = 4;
-  string role = 5;
+  string roleId = 5;
 }
 
 message Response{
   int32 code = 1;
 }
+
+message UserLoginDto{
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse{
+  UserDto user = 1;
+  int32 code = 2;
+}
+
+message Role{
+  string roleName = 1;
+}
+
+message UserSearchDto{
+  string firstName = 1;
+  string lastName = 2;
+  string username = 3;
+}
+
+message FilteredUsersResponse{
+  repeated UserSearchDto username = 1;
+  int32 code = 2;
+}
+
+message UpdatedUserResponse{
+  UserDto user = 1;
+  int32 code = 2;
+}
+
+message Username{
+  string username = 1;
+}
+
+message AddToProjectDto{
+  UserSearchDto user = 1;
+  int32 projectId =2;
+}
+//ProjectService
+message ProjectDto{
+  string ownerUsername = 1;
+  string title = 2;
+}
+

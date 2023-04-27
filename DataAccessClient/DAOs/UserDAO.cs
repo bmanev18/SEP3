@@ -5,7 +5,8 @@ using Grpc.Net.Client;
 using Microsoft.VisualBasic.CompilerServices;
 using Shared.DTOs;
 using Shared.Model;
-using UserCreationDto = DataAccessClient.UserCreationDto;
+using UserCreationDto = DataAccessClient.UserDto;
+using LoginDto = Shared.DTOs.LoginDto;
 
 namespace DataAccess.DAOs;
 
@@ -27,7 +28,7 @@ public class UserDAO : IUserDao
         {
             Password = dto.Password,
             Username = dto.Username,
-            Role = dto.Role,
+            RoleId = dto.Role,
             FirstName = dto.FirstName,
             LastName = dto.Lastname
         };
@@ -35,8 +36,24 @@ public class UserDAO : IUserDao
     }
     
 
-    public async Task<User?> GetByUsernameAsync(string username)
+    public async Task<User?> GetByUsernameAsync(LoginDto loginDto)
     {
-        throw new NotImplementedException();
+        UserLoginDto userLoginDto = new UserLoginDto
+        {
+            Username = loginDto.Username,
+            Password = loginDto.Password
+        };
+
+        var call = client.Login(userLoginDto);
+        User user = new User
+        {
+            Username = call.User.Username,
+            Password = call.User.Password,
+            Firstname = call.User.FirstName,
+            Lastname = call.User.LastName,
+            Role = call.User.RoleId
+        };
+
+        return user;
     }
 }

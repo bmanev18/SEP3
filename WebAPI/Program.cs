@@ -19,6 +19,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 builder.Services.AddScoped<IUserDao, UserDAO>();
+builder.Services.AddScoped<IProjectLogic, ProjectLogic>();
+builder.Services.AddScoped<IProjectDao, ProjectDAO>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

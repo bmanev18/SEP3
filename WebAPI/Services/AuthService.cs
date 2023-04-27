@@ -1,6 +1,7 @@
 ﻿using Application.DAOInterfaces;
 using DataAccessClient;
 using Microsoft.AspNetCore.Identity;
+using Shared.DTOs;
 using Shared.Model;
 
 namespace WebAPI.Services;
@@ -16,7 +17,16 @@ public class AuthService: IAuthService
 
     public async Task<User> ValidateUser(string username, string password)
     {
-        User? existingUser = await _userDao.GetByUsernameAsync(username);
+        
+        LoginDto loginDto = new LoginDto
+        {
+            Username = username,
+            Password = password
+        };
+        
+        User? existingUser = await _userDao.GetByUsernameAsync(loginDto);
+
+
         if (existingUser == null)
         {
             throw new Exception("User doesn't exist");
