@@ -1,14 +1,64 @@
 ﻿@page "/CreateProject"
+@using HttpClients.ClientInterfaces
+@using System.Security.Claims
+@inject NavigationManager navManager
+@inject IProjectService ProjectService
 <h3>CreateProject</h3>
-<div class="container">
+
+<input type="text" placeholder="Project Title" @bind="title">
+<button class="createbtn" @onclick="Create"> Create Project</button>
+<label style="color: @color">@message</label>
+
+
+
+
+
+@* GENERATING USER CARDS, DONT DELETE *@
+@*<div class="container">
   <div class="card">
     <img src="https://lh3.googleusercontent.com/ytP9VP86DItizVX2YNA-xTYzV09IS7rh4WexVp7eilIcfHmm74B7odbcwD5DTXmL0PF42i2wnRKSFPBHlmSjCblWHDCD2oD1oaM1CGFcSd48VBKJfsCi4bS170PKxGwji8CPmehwPw=w200-h247-no" alt="Person" class="card__image">
     <p class="card__name">Lily-Grace Colley</p>
     <button class="btn draw-border">Select</button>
   </div>
-</div>
+</div>*@
 
 @code {
     private string title = "";
+    private string owner = "";
+    private ClaimsPrincipal user;
+    private string message = "";
+    private string color = "";
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null;
+
+
+    protected override async void OnInitialized()
+    {
+        AuthenticationState authState = await this.AuthState;
+        user = authState.User;
+    }
     
-}
+    private async Task Create()
+    {
+        message = "";
+        if (string.IsNullOrEmpty(title))
+        {
+            message = "Cannot create a title-less project!";
+            color = "red";
+            return;
+        }
+        try
+        {
+            //todo un-comment
+            //await ProjectService.CreateAsync(new ProjectCreation dto(user.Identity.Name, title));
+            message = "Project create successfully!";
+            color = "green";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            message = e.Message;
+        }
+    }
+    }
