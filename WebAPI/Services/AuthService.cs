@@ -57,7 +57,7 @@ public class AuthService: IAuthService
     
     public Task RegisterUser(User user)
     {
-        UserCreationDto dto = new UserCreationDto
+        Shared.DTOs.UserCreationDto dto = new Shared.DTOs.UserCreationDto
         {
             FirstName = user.Firstname,
             Lastname = user.Lastname,

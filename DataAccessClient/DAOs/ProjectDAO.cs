@@ -3,7 +3,9 @@ using DataAccessClient;
 using Grpc.Net.Client;
 using Shared.DTOs;
 using Shared.Model;
-using ProjectCreationDto = DataAccessClient.ProjectDto;
+using ProjectCreationDto = DataAccessClient.ProjectCreationDto;
+using UserStory = Shared.Model.UserStory;
+
 namespace DataAccess.DAOs;
 
 public class ProjectDAO : IProjectDao
@@ -20,69 +22,57 @@ public class ProjectDAO : IProjectDao
 
     public async Task CreateAsync(Shared.DTOs.ProjectCreationDto dto)
     {
-        ProjectDto request = new ProjectDto
+        ProjectCreationDto request = new ProjectCreationDto
         {
             OwnerUsername = dto.ownerUsername,
             Title = dto.Name
         };
         var call = client.CreateProject(request);
     }
-    
 
-    public async Task<Project?> GetByNameAsync(Shared.DTOs.ProjectCreationDto dto)
+    public async Task AddCollaborator(AddUserToProjectDto collaborator)
     {
-        ProjectDto request = new ProjectDto
+        AddToProjectDto dto = new AddToProjectDto
         {
-            OwnerUsername = dto.ownerUsername,
-            Title = dto.Name
+            Username = collaborator.User.Username,
+            ProjectId = collaborator.ProjectID
         };
-    
-        var call = client;
-        
-        Project project = new Project
-        {
-            
-        };
-    
-        return project;
+        client.AddCollaborator(dto);
     }
 
-    public async Task AddScrumMasterAsync(Shared.DTOs.AddUserToProjectDto dto)
+    public  Task<int> AddUserStory(UserStoryDto dto)
     {
-        UserSearchDto userSearchDto = new UserSearchDto
+        UserStoryMessage userStory = new UserStoryMessage
         {
-            FirstName = dto.user.Firstname,
-            LastName = dto.user.Lastname,
-            Username = dto.user.Username
+            ProjectId = dto.Project_id,
+            Priority = dto.Priority,
+            TaskBody = dto.Priority
         };
-
-        AddToProjectDto request = new AddToProjectDto
-        {
-            User = userSearchDto,
-            ProjectId = dto.ProjectID
-        };
-
-        client.AddScrumMasterAsync(request);
-
+        ResponseWithID responseWithId = client.AddUserStory(userStory);
+        return Task.FromResult(responseWithId.Id);
     }
-    
-    public async Task AddDeveloperAsync(Shared.DTOs.AddUserToProjectDto dto)
+
+    public Task<List<ProjectDto>> GetAllProjects(string username)
     {
-        UserSearchDto userSearchDto = new UserSearchDto
+        var projectsResponse = client.GetAllProjects(new Username { Username_ = username });
+        List<ProjectDto> list = new List<ProjectDto>();
+        foreach (var project in projectsResponse.Projects)
         {
-            FirstName = dto.user.Firstname,
-            LastName = dto.user.Lastname,
-            Username = dto.user.Username
-        };
+            list.Add(new ProjectDto(){Id = project.Id, Title = project.Title});
+        }
 
-        AddToProjectDto request = new AddToProjectDto
-        {
-            User = userSearchDto,
-            ProjectId = dto.ProjectID
-        };
-
-        client.AddDeveloperAsync(request);
-
+        return Task.FromResult(list);
     }
-    
+
+    public Task<List<UserStory>> GetProductBacklog(int id)
+    {
+        var productBacklog = client.GetProductBacklog(new Id(){Id_ = id});
+        List<UserStory> list = new List<UserStory>();
+        foreach (var story in productBacklog.UserStories)
+        {
+            list.Add(new UserStory{ID = story.Id, Body = story.UserStory_, Priority = story.Priority, Project_id = story.ProjectId});
+        }
+
+        return Task.FromResult(list);
+    }
 }
