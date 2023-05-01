@@ -4,9 +4,11 @@
 @inject IAuthService AuthService
 <AuthorizeView>
     <Authorized>
+    <label> @context.User.Identity.Name </label>
         <img class="icon" src="img/Logout.png" @onclick="Logout"/>
     </Authorized>
     <NotAuthorized>
+        <label> Not Logged In </label>
         <img class="icon" src="img/Login.png" @onclick="Login"/>
     </NotAuthorized>
 </AuthorizeView>

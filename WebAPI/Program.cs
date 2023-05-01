@@ -19,7 +19,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 builder.Services.AddScoped<IUserDao, UserDAO>();
-
+builder.Services.AddScoped<IProjectLogic, ProjectLogic>();
+builder.Services.AddScoped<IProjectDao, ProjectDAO>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -37,6 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 AuthorizationPolicies.AddPolicies(builder.Services);
 var app = builder.Build();
+app.UseAuthentication();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -53,7 +55,6 @@ app.UseCors(x => x
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
 
 app.UseAuthorization();
 

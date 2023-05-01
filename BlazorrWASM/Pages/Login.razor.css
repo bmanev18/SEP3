@@ -89,12 +89,24 @@ form .row input::placeholder{
     color: #fff;
     font-size: 20px;
     font-weight: 500;
-    padding-left: 0px;
+    padding-left: 0;
     background: #16a085;
     border: 1px solid #16a085;
     cursor: pointer;
 }
 form .button input:hover{
+    background: #12876f;
+}
+#loginbtn{
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    padding-left: 50px;
+    background: #16a085;
+    border: 1px solid #16a085;
+    cursor: pointer;
+}
+.loginbtn:hover{
     background: #12876f;
 }
 .wrapper form .signup-link{

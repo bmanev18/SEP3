@@ -1,14 +1,62 @@
 ﻿@page "/CreateProject"
+@using HttpClients.ClientInterfaces
+@using global::Shared.DTOs
+@inject IProjectService ProjectService
+
+
+
+
 <h3>CreateProject</h3>
-<div class="container">
-  <div class="card">
-    <img src="https://lh3.googleusercontent.com/ytP9VP86DItizVX2YNA-xTYzV09IS7rh4WexVp7eilIcfHmm74B7odbcwD5DTXmL0PF42i2wnRKSFPBHlmSjCblWHDCD2oD1oaM1CGFcSd48VBKJfsCi4bS170PKxGwji8CPmehwPw=w200-h247-no" alt="Person" class="card__image">
-    <p class="card__name">Lily-Grace Colley</p>
-    <button class="btn draw-border">Select</button>
-  </div>
+<div class="wrapper">
+<div class="input-box">
+    <input type="text" placeholder="Project Title" @bind="title" @bind:event="oninput">
 </div>
+    <div class="input-box button">
+         @if (!string.IsNullOrEmpty(message))
+                        {
+                            <label style="color :red"> @message </label>
+                        }
+        <button @onclick="Create" class="acceptbtn"> Create </button>
+    </div>
+</div>
+
+
+
+
+
+
+@* <div class="container"> *@
+@*   <div class="card"> *@
+@*     <img src="https://lh3.googleusercontent.com/ytP9VP86DItizVX2YNA-xTYzV09IS7rh4WexVp7eilIcfHmm74B7odbcwD5DTXmL0PF42i2wnRKSFPBHlmSjCblWHDCD2oD1oaM1CGFcSd48VBKJfsCi4bS170PKxGwji8CPmehwPw=w200-h247-no" alt="Person" class="card__image"> *@
+@*     <p class="card__name">Lily-Grace Colley</p> *@
+@*     <button class="btn draw-border">Select</button> *@
+@*   </div> *@
+@* </div> *@
 
 @code {
     private string title = "";
-    
+    private string message= "";
+
+    private async Task Create()
+    {
+        message = "";
+        if (string.IsNullOrEmpty(title))
+        {
+            message = "Cannot create a title-less post!";
+            return;
+        }
+        try
+        {
+            await ProjectService.Create(new ProjectCreationDto
+            {
+                ownerUsername = "test",
+                Name = title
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            message = e.Message;
+        }
+    }
 }

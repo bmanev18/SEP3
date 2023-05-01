@@ -1,6 +1,7 @@
 ﻿using Application.DAOInterfaces;
 using DataAccessClient;
 using Microsoft.AspNetCore.Identity;
+using Shared.DTOs;
 using Shared.Model;
 
 namespace WebAPI.Services;
@@ -9,6 +10,18 @@ public class AuthService: IAuthService
 {
     private readonly IUserDao _userDao;
 
+    private readonly IList<User> users = new List<User>
+    {
+        new User
+        {
+            Username = "test",
+            Password = "testtest",
+            Role = "1",
+            Lastname = "test",
+            Firstname = "test"
+        }
+    };
+
     public AuthService(IUserDao dao)
     {
         _userDao = dao;
@@ -16,7 +29,19 @@ public class AuthService: IAuthService
 
     public async Task<User> ValidateUser(string username, string password)
     {
-        User? existingUser = await _userDao.GetByUsernameAsync(username);
+        
+        LoginDto loginDto = new LoginDto
+        {
+            Username = username,
+            Password = password
+        };
+
+        User? existingUser =  await _userDao.GetUserByUsername(loginDto);
+        /*User? existingUser = users.FirstOrDefault(u => 
+            u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));*/
+        // string realPassword = await _userDao.GetUserPassword(loginDto);
+
+
         if (existingUser == null)
         {
             throw new Exception("User doesn't exist");
@@ -32,7 +57,7 @@ public class AuthService: IAuthService
     
     public Task RegisterUser(User user)
     {
-        Shared.DTOs.UserCreationDto dto = new Shared.DTOs.UserCreationDto
+        UserCreationDto dto = new UserCreationDto
         {
             FirstName = user.Firstname,
             Lastname = user.Lastname,

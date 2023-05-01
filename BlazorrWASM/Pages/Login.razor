@@ -1,4 +1,5 @@
-﻿@page "/Login"
+﻿
+@page "/Login"
 @using BlazorrWASM.Services
 @inject IAuthService AuthService
 @inject NavigationManager navManager
@@ -29,34 +30,12 @@
                                     </div> 
                                 } 
                     <div class="row button">
-                    <input type="submit" value="Login" @onclick="LoginAsync">
+                    <input value=" Login" @onclick="LoginAsync" class="loginbtn">
                   </div>
                   <div class="signup-link">Not a member? <a @onclick="@(() => navManager.NavigateTo("/CreateUser"))">Sign-up Here</a> </div>
                 </form>
               </div>
             </div>
-        @* <div class="card"> *@
-        @*     <h3>Please login</h3> *@
-        @*     <div class="field"> *@
-        @*         <label>User name:</label> *@
-        @*         <input type="text" @bind="userName"/> *@
-        @*     </div> *@
-        @*     <div class="field"> *@
-        @*         <label style="text-align: center">Password:</label> *@
-        @*         <input type="password" @bind="password"/> *@
-        @*     </div> *@
-        @*     @if (!string.IsNullOrEmpty(errorLabel)) *@
-        @*     { *@
-        @*         <div class="field"> *@
-        @*             <label style="color: red"> *@
-        @*                 @errorLabel *@
-        @*             </label> *@
-        @*         </div> *@
-        @*     } *@
-        @*     <div class="field"> *@
-        @*         <button class="loginbtn" @onclick="LoginAsync">Log in</button> *@
-        @*     </div> *@
-        @* </div> *@
     </NotAuthorized>
     <Authorized>
         <div class="card">
@@ -72,12 +51,10 @@
 
     private async Task LoginAsync()
     {
-        Console.WriteLine("HELOOOOOOOOOOOO");
         errorLabel = "";
         try
         {
             await AuthService.LoginAsync(userName, password);
-            navManager.NavigateTo("/");
         }
         catch (Exception e)
         {
