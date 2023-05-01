@@ -5,16 +5,17 @@ option csharp_namespace = "DataAccessClient";
 
 service UserAccess {
   rpc CreateUser(UserDto) returns (Response);
-  rpc Login(UserLoginDto) returns (LoginResponse);
+//  rpc Login(UserLoginDto) returns (LoginResponse);
   rpc UsersByRole(Role) returns (FilteredUsersResponse);
-  rpc UserByName(UserSearchDto) returns (FilteredUsersResponse);
+  rpc UserByUsername(Username) returns (UserDto);
   rpc UpdateUser(UserDto) returns (UpdatedUserResponse);
   rpc DeleteUser(Username) returns (Response);
+  rpc GetPassword(Username) returns (Password);
 }
 
 service ProjectAccess {
   rpc CreateProject(ProjectDto) returns (Response);
-  rpc AddOwner(AddToProjectDto) returns (Response);
+//  rpc AddOwner(AddToProjectDto) returns (Response);
   rpc AddScrumMaster(AddToProjectDto) returns (Response);
   rpc AddDeveloper(AddToProjectDto) returns (Response);
 }
@@ -30,16 +31,17 @@ message UserDto{
 message Response{
   int32 code = 1;
 }
+//
+//message UserLoginDto{
+//  string username = 1;
+//  string password = 2;
+//}
 
-message UserLoginDto{
-  string username = 1;
-  string password = 2;
-}
-
-message LoginResponse{
-  UserDto user = 1;
-  int32 code = 2;
-}
+//
+//message LoginResponse{
+//  UserDto user = 1;
+//  int32 code = 2;
+//}
 
 message Role{
   string roleName = 1;
@@ -52,7 +54,7 @@ message UserSearchDto{
 }
 
 message FilteredUsersResponse{
-  repeated UserSearchDto username = 1;
+  repeated UserSearchDto users = 1;
   int32 code = 2;
 }
 
@@ -66,6 +68,7 @@ message Username{
 }
 
 message AddToProjectDto{
+//  string username = 1;
   UserSearchDto user = 1;
   int32 projectId =2;
 }
@@ -74,4 +77,6 @@ message ProjectDto{
   string ownerUsername = 1;
   string title = 2;
 }
-
+message Password{
+  string password = 1;
+}

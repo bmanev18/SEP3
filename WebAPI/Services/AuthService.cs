@@ -10,6 +10,18 @@ public class AuthService: IAuthService
 {
     private readonly IUserDao _userDao;
 
+    private readonly IList<User> users = new List<User>
+    {
+        new User
+        {
+            Username = "test",
+            Password = "testtest",
+            Role = "1",
+            Lastname = "test",
+            Firstname = "test"
+        }
+    };
+
     public AuthService(IUserDao dao)
     {
         _userDao = dao;
@@ -23,8 +35,11 @@ public class AuthService: IAuthService
             Username = username,
             Password = password
         };
-        
-        User? existingUser = await _userDao.GetByUsernameAsync(loginDto);
+
+        User? existingUser =  await _userDao.GetUserByUsername(loginDto);
+        /*User? existingUser = users.FirstOrDefault(u => 
+            u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));*/
+        // string realPassword = await _userDao.GetUserPassword(loginDto);
 
 
         if (existingUser == null)
@@ -42,7 +57,7 @@ public class AuthService: IAuthService
     
     public Task RegisterUser(User user)
     {
-        Shared.DTOs.UserCreationDto dto = new Shared.DTOs.UserCreationDto
+        UserCreationDto dto = new UserCreationDto
         {
             FirstName = user.Firstname,
             Lastname = user.Lastname,

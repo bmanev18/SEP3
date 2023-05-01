@@ -33,27 +33,32 @@ public class UserDAO : IUserDao
             LastName = dto.Lastname
         };
         var call = client.CreateUser(request);
+    } public Task<string> GetUserPassword(LoginDto loginDto)
+    {
+        Username username = new Username
+        {
+            Username_ = loginDto.Username
+        };
+        var call = client.GetPassword(username);
+        return Task.FromResult(call.Password_);
+    }
+
+    public Task<User> GetUserByUsername(LoginDto loginDto)
+    {
+        Username username = new Username
+        {
+            Username_ = loginDto.Username
+        };
+        var call = client.UserByUsername(username);
+        User result = new User
+        {
+            Username = call.Username,
+            Firstname = call.Username,
+            Lastname = call.LastName,
+            Password = call.Password,
+            Role = call.RoleId
+        };
+        return Task.FromResult(result);
     }
     
-
-    public async Task<User?> GetByUsernameAsync(LoginDto loginDto)
-    {
-        UserLoginDto userLoginDto = new UserLoginDto
-        {
-            Username = loginDto.Username,
-            Password = loginDto.Password
-        };
-
-        var call = client.Login(userLoginDto);
-        User user = new User
-        {
-            Username = call.User.Username,
-            Password = call.User.Password,
-            Firstname = call.User.FirstName,
-            Lastname = call.User.LastName,
-            Role = call.User.RoleId
-        };
-
-        return user;
-    }
 }

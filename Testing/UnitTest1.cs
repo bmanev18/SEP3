@@ -30,8 +30,8 @@ public class Tests
             Role = "developer",
             Username = "Andreea1"
         };
-        String actual = user.Username;
-        String expected = "Andreea1";
+        string actual = user.Username;
+        string expected = "Andreea1";
         Assert.AreEqual(expected, actual);
     }
     

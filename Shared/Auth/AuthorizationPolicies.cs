@@ -9,11 +9,11 @@ public static class AuthorizationPolicies
         services.AddAuthorizationCore(options =>
         {
             options.AddPolicy("MustBeProductOwner",
-                a => a.RequireAuthenticatedUser().RequireClaim("Role", "ProductOwner"));
+                a => a.RequireAuthenticatedUser().RequireClaim("Role", "1"));
             options.AddPolicy("MustBeScrumMaster",
-                a => a.RequireAuthenticatedUser().RequireClaim("Role", "ScrumMaster"));
+                a => a.RequireAuthenticatedUser().RequireClaim("Role", "2"));
             options.AddPolicy("MustBeDeveloper",
-                a => a.RequireAuthenticatedUser().RequireClaim("Role", "Developer"));
+                a => a.RequireAuthenticatedUser().RequireClaim("Role", "3"));
             //todo Might be redundant, if not used can be deleted.
 
         });

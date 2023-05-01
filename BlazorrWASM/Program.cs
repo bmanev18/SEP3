@@ -11,11 +11,12 @@ using Shared.Auth;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-AuthorizationPolicies.AddPolicies(builder.Services);
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<IAuthService, JwtAuthService>();
+builder.Services.AddScoped<IUserService, UserHttpClient>();
+builder.Services.AddScoped<IProjectService,ProjectHttpClient>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 builder.Services.AddScoped(
     sp => 
@@ -23,7 +24,6 @@ builder.Services.AddScoped(
             BaseAddress = new Uri("https://localhost:7203") 
         }
 );
-
-builder.Services.AddScoped<IUserService, UserHttpClient>();
+AuthorizationPolicies.AddPolicies(builder.Services);
 
 await builder.Build().RunAsync();

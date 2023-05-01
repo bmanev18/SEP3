@@ -6,11 +6,15 @@ using Shared.DTOs;
 using Shared.Model;
 
 namespace BlazorrWASM.Services.HTTP;
-
 public class JwtAuthService : IAuthService
 {
-    private readonly HttpClient client = new();
+    private readonly HttpClient client = new ();
+
+    // this private variable for simple caching
     public static string? Jwt { get; private set; } = "";
+
+    public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; } = null!;
+
 
     public async Task LoginAsync(string username, string password)
     {
@@ -25,18 +29,21 @@ public class JwtAuthService : IAuthService
 
         HttpResponseMessage response = await client.PostAsync("https://localhost:7203/auth/login", content);
         string responseContent = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(response.StatusCode);
 
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(responseContent);
         }
 
+
         string token = responseContent;
         Jwt = token;
 
         ClaimsPrincipal principal = CreateClaimsPrincipal();
+        
+        OnAuthStateChanged.Invoke(principal);   
 
-        OnAuthStateChanged.Invoke(principal);
     }
 
     public Task LogoutAsync()
@@ -47,7 +54,7 @@ public class JwtAuthService : IAuthService
         return Task.CompletedTask;
     }
 
-    public async Task RegisterAsync(String username, String firstname,String lastname,String password, String role)
+    public async Task RegisterAsync(string username, string firstname,string lastname,string password, string role)
     {
         User user = new()
         {
@@ -55,7 +62,7 @@ public class JwtAuthService : IAuthService
             Password = password,
             Firstname = firstname,
             Lastname = lastname,
-            Role = role
+            Role = ValidateRole(role)
             
         };
         
@@ -75,6 +82,9 @@ public class JwtAuthService : IAuthService
         ClaimsPrincipal principal = CreateClaimsPrincipal();
         return Task.FromResult(principal);
     }
+
+    // Below methods stolen from https://github.com/SteveSandersonMS/presentation-2019-06-NDCOslo/blob/master/demos/MissionControl/MissionControl.Client/Util/ServiceExtensions.cs
+
     private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
     {
         string payload = jwt.Split('.')[1];
@@ -94,10 +104,10 @@ public class JwtAuthService : IAuthService
                 base64 += "=";
                 break;
         }
-
+    
         return Convert.FromBase64String(base64);
     }
-    
+
     private static ClaimsPrincipal CreateClaimsPrincipal()
     {
         if (string.IsNullOrEmpty(Jwt))
@@ -113,5 +123,21 @@ public class JwtAuthService : IAuthService
         return principal;
     }
 
-    public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; } = null!;
+    public string ValidateRole(string role)
+    {
+        string output;
+        if (role.Equals("project manager"))
+        {
+            output = "1";
+        } else if (role.Equals("scrum master"))
+        {
+            output = "2";
+        }
+        else
+        {
+            output = "3";
+        }
+
+        return output;
+    }
 }
