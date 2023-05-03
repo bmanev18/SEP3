@@ -48,7 +48,7 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost("userStory")]
     public async Task<ActionResult<int>> AddUserStory(UserStoryDto dto)
     {
         try
@@ -63,8 +63,8 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("username")]
-    public async Task<ActionResult<List<ProjectDto>>> GetAllProjects([FromBody]string username)
+    [HttpGet("{username}")]
+    public async Task<ActionResult<List<ProjectDto>>> GetAllProjects([FromRoute]string username)
     {
         try
         {
@@ -78,8 +78,8 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("id")]
-    public async Task<ActionResult<List<UserStory>>> GetProductBacklog([FromBody] int id)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<List<UserStory>>> GetProductBacklog([FromRoute] int id)
     {
         try
         {
@@ -92,9 +92,4 @@ public class ProjectController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-
-        /* 
-    
-        Task<List<UserStory>> GetProductBacklog(int id);*/
-
 }

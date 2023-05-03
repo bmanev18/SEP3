@@ -5,5 +5,5 @@ namespace Shared.DTOs;
 public class AddUserToProjectDto
 {
     public int ProjectID {get; set;}
-    public User User { get; set; }
+    public string Username { get; set; }
 }

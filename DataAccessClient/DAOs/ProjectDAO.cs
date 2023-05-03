@@ -34,7 +34,7 @@ public class ProjectDAO : IProjectDao
     {
         AddToProjectDto dto = new AddToProjectDto
         {
-            Username = collaborator.User.Username,
+            Username = collaborator.Username,
             ProjectId = collaborator.ProjectID
         };
         client.AddCollaborator(dto);
@@ -46,7 +46,7 @@ public class ProjectDAO : IProjectDao
         {
             ProjectId = dto.Project_id,
             Priority = dto.Priority,
-            TaskBody = dto.Priority
+            TaskBody = dto.Body
         };
         ResponseWithID responseWithId = client.AddUserStory(userStory);
         return Task.FromResult(responseWithId.Id);
