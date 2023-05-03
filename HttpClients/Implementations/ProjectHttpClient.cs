@@ -51,4 +51,20 @@ public class ProjectHttpClient : IProjectService
         })!;
         return projects;
     }
+
+    public async Task addCollaborator(int projectId, string username)
+    {
+        AddUserToProjectDto dto = new AddUserToProjectDto
+        {
+            ProjectID = projectId,
+            Username = username
+        };
+        HttpResponseMessage response = await client.PutAsJsonAsync("/project", dto);
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+        
+    }
 }

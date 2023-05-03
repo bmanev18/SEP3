@@ -9,4 +9,6 @@ public interface IProjectService
     
     Task<IEnumerable<Project>> GetProjects(string? nameContains = null);
 
+    Task addCollaborator(int projectId, string username);
+
 }
