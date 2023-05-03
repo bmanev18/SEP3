@@ -27,7 +27,11 @@
     private async Task addToProject()
     {
         message = "";
-
+        if (string.IsNullOrEmpty(username))
+        {
+            message = "Field cannot be empty";
+            return;
+        }
         try
         {
             await ProjectService.addCollaborator(id, username);
@@ -36,7 +40,7 @@
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw;
+            message = e.Message;
         }
     }
     
