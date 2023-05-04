@@ -1,4 +1,5 @@
 ﻿@page "/CreateUser"
+@layout LoginLayout
 @using HttpClients.ClientInterfaces
 @using BlazorrWASM.Services
 @inject NavigationManager navManager
@@ -35,7 +36,7 @@
                 <input value="Register Now" @onclick="Create">
               </div>
         <div class="text">
-            <h3>Already have an account? <a @onclick="@(() => navManager.NavigateTo("/Login"))">Login now</a></h3>
+            <h3>Already have an account? <a @onclick="@(() => navManager.NavigateTo("/"))">Login now</a></h3>
         </div>
     </form>
 </div>

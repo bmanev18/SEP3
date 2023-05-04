@@ -1,5 +1,5 @@
-﻿
-@page "/Login"
+﻿@layout LoginLayout
+@page "/"
 @using BlazorrWASM.Services
 @inject IAuthService AuthService
 @inject NavigationManager navManager
@@ -30,7 +30,7 @@
                                     </div> 
                                 } 
                     <div class="row button">
-                    <input value=" Login" @onclick="LoginAsync" class="loginbtn">
+                    <input value=" Login" @onclick="LoginAsync" class="loginbtn" readonly>
                   </div>
                   <div class="signup-link">Not a member? <a @onclick="@(() => navManager.NavigateTo("/CreateUser"))">Sign-up Here</a> </div>
                 </form>
@@ -62,5 +62,4 @@
             errorLabel = $"Error: {e.Message}";
         }
     }
-}
 }
