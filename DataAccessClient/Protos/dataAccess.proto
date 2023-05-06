@@ -15,7 +15,11 @@ service UserAccess {
 
 service ProjectAccess {
     rpc CreateProject (ProjectCreationDto) returns (ResponseWithID);
+
+    rpc GetAllCollaborators(Id) returns (FilteredUsersResponse);
     rpc AddCollaborator (AddToProjectDto) returns (Response);
+    rpc RemoveCollaborator(AddToProjectDto) returns (ResponseWithID);
+
     rpc AddUserStory (UserStoryMessage) returns (ResponseWithID);
     rpc GetAllProjects (Username) returns (ProjectsResponse);
     rpc GetProductBacklog (Id) returns (ProductBacklogResponse);
@@ -49,6 +53,7 @@ message UserSearchDto {
     string firstName = 1;
     string lastName = 2;
     string username = 3;
+    string role = 4;
 }
 
 message FilteredUsersResponse {
@@ -69,11 +74,9 @@ message AddToProjectDto {
     string username = 1;
     int32 projectId = 2;
 }
-
-
-
-
-
+message CollaboratorsResponse{
+    repeated UserCreationDto collaborators = 1;
+}
 
 //ProjectService
 message ProjectCreationDto {

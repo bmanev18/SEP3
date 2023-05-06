@@ -40,7 +40,7 @@ public class ProjectDAO : IProjectDao
         client.AddCollaborator(dto);
     }
 
-    public  Task<int> AddUserStory(UserStoryDto dto)
+    public Task<int> AddUserStory(UserStoryDto dto)
     {
         UserStoryMessage userStory = new UserStoryMessage
         {
