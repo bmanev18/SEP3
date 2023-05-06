@@ -30,14 +30,39 @@ public class ProjectDAO : IProjectDao
         var call = client.CreateProject(request);
     }
 
-    public async Task AddCollaborator(AddUserToProjectDto collaborator)
+    public Task<int> AddCollaborator(AddUserToProjectDto collaborator)
     {
         AddToProjectDto dto = new AddToProjectDto
         {
             Username = collaborator.Username,
             ProjectId = collaborator.ProjectID
         };
-        client.AddCollaborator(dto);
+        var response = client.AddCollaborator(dto);
+        return Task.FromResult(response.Code);
+    }
+    
+    public Task<int> RemoveCollaborator(AddUserToProjectDto collaborator)
+    {
+        AddToProjectDto dto = new AddToProjectDto
+        {
+            Username = collaborator.Username,
+            ProjectId = collaborator.ProjectID
+        };
+        var response = client.RemoveCollaborator(dto);
+        return Task.FromResult(response.Code);
+
+    }
+    
+    public Task<List<UserFinderDto>> GetAllCollaborators(int id)
+    {   
+        var collaboratorsResponse = client.GetAllCollaborators(new Id { Id_ = id });
+        List<UserFinderDto> list = new List<UserFinderDto>();
+        foreach (var user in collaboratorsResponse.Users)
+        {
+            list.Add(new UserFinderDto{FirstName = user.FirstName, LastName =user.LastName, Username = user.Username, Role = user.Role});
+        }
+
+        return Task.FromResult(list);
     }
 
     public Task<int> AddUserStory(UserStoryDto dto)

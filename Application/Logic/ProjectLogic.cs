@@ -24,6 +24,18 @@ public class ProjectLogic : IProjectLogic
     {
         await _projectDao.AddCollaborator(collaborator);
     }
+    
+    public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
+    {
+        return await _projectDao.GetAllCollaborators(id);
+    }
+
+    public async Task<int> RemoveCollaborator(AddUserToProjectDto collaborator)
+    {
+       return await _projectDao.RemoveCollaborator(collaborator);
+       
+    }
+
 
     public async Task<int> AddUserStoryAsync(UserStoryDto dto)
     {

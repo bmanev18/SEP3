@@ -18,7 +18,7 @@ service ProjectAccess {
 
     rpc GetAllCollaborators(Id) returns (FilteredUsersResponse);
     rpc AddCollaborator (AddToProjectDto) returns (Response);
-    rpc RemoveCollaborator(AddToProjectDto) returns (ResponseWithID);
+    rpc RemoveCollaborator(AddToProjectDto) returns (Response);
 
     rpc AddUserStory (UserStoryMessage) returns (ResponseWithID);
     rpc GetAllProjects (Username) returns (ProjectsResponse);

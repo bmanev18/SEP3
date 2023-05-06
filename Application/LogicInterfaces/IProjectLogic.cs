@@ -10,4 +10,7 @@ public interface IProjectLogic
     Task<int> AddUserStoryAsync(UserStoryDto dto);
     Task<List<ProjectDto>> GetAllProjects(string username);
     Task<List<UserStory>> GetProductBacklog(int id);
+    
+    Task<List<UserFinderDto>> GetAllCollaborators(int id);
+    Task<int> RemoveCollaborator(AddUserToProjectDto collaborator);
 }
