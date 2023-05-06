@@ -31,20 +31,21 @@ public class ProjectHttpClient : IProjectService
         return project;
     }
     
-    public async Task<IEnumerable<Project>> GetProjects(string? nameContains = null)
+    public async Task<IEnumerable<Project>> GetProjectsByUsername(string? username)
     {
-        string uri = "/projects";
-        if (!string.IsNullOrEmpty(nameContains))
+        string uri = "/Project";
+        if (!string.IsNullOrEmpty(username))
         {
-            uri += $"?name={nameContains}";
+            uri += $"/{username}";
         }
+        Console.WriteLine(uri);
+
         HttpResponseMessage response = await client.GetAsync(uri);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(result);
         }
-
         IEnumerable<Project> projects = JsonSerializer.Deserialize<IEnumerable<Project>>(result, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true

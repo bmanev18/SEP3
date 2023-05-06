@@ -55,6 +55,8 @@
         try
         {
             await AuthService.LoginAsync(userName, password);
+            navManager.NavigateTo($"/ViewProjects");
+
         }
         catch (Exception e)
         {
@@ -62,4 +64,7 @@
             errorLabel = $"Error: {e.Message}";
         }
     }
+    
 }
+
+

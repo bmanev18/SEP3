@@ -17,6 +17,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<IAuthService, JwtAuthService>();
 builder.Services.AddScoped<IUserService, UserHttpClient>();
 builder.Services.AddScoped<IProjectService,ProjectHttpClient>();
+builder.Services.AddScoped<IUserStoryService,UserStoryHttpClient>();
+
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 builder.Services.AddScoped(
     sp => 
