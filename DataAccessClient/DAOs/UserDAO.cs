@@ -51,4 +51,26 @@ public class UserDAO : IUserDao
         };
         return Task.FromResult(result);
     }
+
+    public Task<List<UserFinderDto>> LookForUsers(string username)
+    {
+        Username request = new Username
+        {
+            Username_ = username
+        };
+        var call = client.LookForUsers(request);
+        List<UserFinderDto> list = new();
+        foreach (var user in call.Users)
+        {
+            list.Add(new UserFinderDto
+            {
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = user.Role
+            });
+        }
+
+        return Task.FromResult(list);
+    }
 }

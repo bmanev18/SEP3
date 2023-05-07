@@ -10,6 +10,7 @@ service UserAccess {
     rpc UpdateUser (UserCreationDto) returns (UpdatedUserResponse);
     rpc DeleteUser (Username) returns (Response);
     rpc GetPassword (Username) returns (Password);
+    rpc LookForUsers(Username) returns (FilteredUsersResponse);
 }
 
 
@@ -18,7 +19,7 @@ service ProjectAccess {
 
     rpc GetAllCollaborators(Id) returns (FilteredUsersResponse);
     rpc AddCollaborator (AddToProjectDto) returns (Response);
-    rpc RemoveCollaborator(AddToProjectDto) returns (Response);
+    rpc RemoveCollaborator(AddToProjectDto) returns (ResponseWithID);
 
     rpc AddUserStory (UserStoryMessage) returns (ResponseWithID);
     rpc GetAllProjects (Username) returns (ProjectsResponse);

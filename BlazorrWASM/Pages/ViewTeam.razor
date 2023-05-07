@@ -1,6 +1,179 @@
-﻿@page "/ViewTeam"
+﻿@page "/ViewTeam/{id:int}"
+@using HttpClients.ClientInterfaces
+@using global::Shared.DTOs
+@inject NavigationManager navManager
+@inject IProjectService projectService
+@inject IUserService UserService
 <h3>ViewTeam</h3>
 
+<div class="wrapper">
+  
+  <div class="collaboratorsTable">
+    <table>
+      <thead>
+      <tr>
+        <th>Username</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Role</th>
+        <th> </th>
+      </tr>
+      </thead>
+      <tbody>
+      @foreach (var user in users)
+      {
+        <tr>
+          <td class="text-center">@user.Username</td>
+          <td class="text-center">@user.FirstName</td>
+          <td class="text-center">@user.LastName</td>
+          <td class="text-center">@roleTranslator(user.Role)</td>
+          <td class="text"> <button class="removebtn" @onclick="() => RemoveCollaborator(user.Username)"> <img src="img/personRemove.png" class="search"> </button> </td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+  <div class="search-box" @onfocusin="@(() => { showTable = true;})">
+    <label class="lforuser"> Look For User</label>
+    <button class="btn-search"><img src="img/search_FILL0_wght400_GRAD0_opsz48.png" class="search" @onclick="@(() => Search(usernameContains) )">
+    </button>
+    <input type="text" class="input-search" placeholder="Type to Search..." @bind="usernameContains">
+  </div>
+  <label> @message </label>
+  @if (showTable)
+  {
+    <div class="collaboratorsTable">
+      <table>
+        <thead>
+        <tr>
+          <th>Username</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Role</th>
+          <th> </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in searchResulsts)
+        {
+          <tr>
+            <td class="text-center">@user.Username</td>
+            <td class="text-center">@user.FirstName</td>
+            <td class="text-center">@user.LastName</td>
+            <td class="text-center">@roleTranslator(user.Role)</td>
+            <td class="text">  <button class="removebtn" @onclick="@(() => addCollaborator(user.Username, user.Role))"> <img src="img/personAdd.png" class="search"> </button> </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+      </div>
+  }
+</div>
+
 @code {
-    
+
+  [Parameter]
+  public int id { get; set; }
+
+  private string message = "";
+  private string usernameContains = "";
+
+  private List<UserFinderDto>? users = new();
+  private List<UserFinderDto>? searchResulsts = new();
+
+  private bool showTable = false;
+
+
+  protected override async Task OnInitializedAsync()
+  {
+    message = "";
+    try
+    {
+      users = await projectService.GetAllCollaborators(id);
+    }
+    catch (Exception e)
+    {
+      message = e.Message;
+    }
+  }
+
+  private String roleTranslator(string role)
+  {
+    string translated;
+    if (role.Equals("2"))
+    {
+      translated = "Scrum Master";
+    }
+    else
+    {
+      translated = "Developer";
+    }
+    return translated;
+  }
+
+  private async Task RemoveCollaborator(string username)
+  {
+    message = "";
+    try
+    {
+      await projectService.RemoveCollaborator(username, id);
+
+      var list = new List<UserFinderDto>(users!);
+      list.RemoveAll(user => user.Username.Equals(username));
+      users = list;
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine(e);
+      message = e.Message;
+    }
+  }
+
+  private async Task Search(string contains)
+  {
+    message = "";
+    if (string.IsNullOrEmpty(contains))
+    {
+      message = "Field Cannot Be Emtpy";
+      return;
+    }
+
+    var list = await UserService.LookForUsers(contains);
+    searchResulsts = UserComparer(users, list);
+
+  }
+
+  private async Task addCollaborator(string username, string role)
+  {
+    message = "";
+    if (role.Equals("2"))
+    {
+      users.Exists(u => u.Role.Equals("2"));
+      message = "You can have only one Scrum Master per project";
+      return;
+    }
+
+    try
+    {
+      await projectService.AddCollaborator(id, username);
+      await OnInitializedAsync();
+      var added = searchResulsts.FirstOrDefault(u => u.Username.Equals(username));
+      searchResulsts.Remove(added);
+      showTable = false;
+
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine(e);
+      message = e.Message;
+    }
+  }
+
+  private List<UserFinderDto> UserComparer(List<UserFinderDto> users, List<UserFinderDto> results)
+  {
+    var usernames = users.Select(u => u.Username);
+    var filtered = results.Where(u => !usernames.Contains(u.Username));
+    return filtered.ToList();
+  }
+
 }

@@ -20,8 +20,8 @@ public class UserLogic : IUserLogic
         await _userDao.CreateAsync(dto);
     }
 
-    public Task<User>? GetByUsernameAsync(string username)
+    public async Task<List<UserFinderDto>> LookForUsers(string username)
     {
-        throw new NotImplementedException();
+        return await _userDao.LookForUsers(username);
     }
 }

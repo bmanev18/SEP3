@@ -7,4 +7,6 @@ public interface IUserDao
 {
     Task CreateAsync(UserCreationDto dto);
     Task<User> GetUserByUsername(LoginDto loginDto);
+    Task<List<UserFinderDto>> LookForUsers(string username);
+
 }

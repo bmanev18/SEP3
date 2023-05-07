@@ -62,23 +62,29 @@ public class ProjectController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    
+
     [HttpDelete]
-    public async Task<ActionResult<AddUserToProjectDto>> RemoveCollaborator(AddUserToProjectDto user)
+    public async Task<ActionResult> DeleteCollaborator(string username, int id)
     {
+        AddUserToProjectDto dto = new AddUserToProjectDto
+        {
+            Username = username,
+            ProjectID = id
+        };
         try
         {
-            int code = await projectLogic.RemoveCollaborator(user);
-            return Ok(code);
+            await projectLogic.RemoveCollaborator(dto);
+            return Ok();
+
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return StatusCode(500, e.Message);
+            throw;
         }
     }
     
-    [HttpGet("getCollaborators/{id}")]
+    [HttpGet("getCollaborators/{id:int}")]
     public async Task<ActionResult<List<UserFinderDto>>> GetAllCollaborators([FromRoute]int id)
     {
         try

@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using HttpClients.ClientInterfaces;
 using Shared.DTOs;
@@ -53,7 +54,7 @@ public class ProjectHttpClient : IProjectService
         return projects;
     }
 
-    public async Task addCollaborator(int projectId, string username)
+    public async Task AddCollaborator(int projectId, string username)
     {
         AddUserToProjectDto dto = new AddUserToProjectDto
         {
@@ -68,4 +69,31 @@ public class ProjectHttpClient : IProjectService
         }
         
     }
+
+    public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
+    {
+        HttpResponseMessage response = await client.GetAsync("project/getCollaborators/" + id);
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(response);
+        }
+        List<UserFinderDto> collaborators = JsonSerializer.Deserialize<List<UserFinderDto>>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return collaborators;
+    }
+
+    public async Task RemoveCollaborator(string username, int projectid)
+    {
+        HttpResponseMessage response = await client.DeleteAsync($"/project/?username={username}&id={projectid}");
+        if (!response.IsSuccessStatusCode)
+        {
+            string content = await response.Content.ReadAsStringAsync();
+            throw new Exception(content);
+        }
+    }
+
+    
 }

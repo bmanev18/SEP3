@@ -1,7 +1,9 @@
 ﻿using Application.LogicInterfaces;
+using DataAccessClient;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
 using Shared.Model;
+using UserCreationDto = Shared.DTOs.UserCreationDto;
 
 namespace WebAPI.Controllers;
 [ApiController]
@@ -22,6 +24,22 @@ public class UserController : ControllerBase
         {
            await _userLogic.CreateAsync(dto);
             return Created($"/user/{dto.Username}", dto);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<UserFinderDto>>> LookForUsers([FromQuery]string username)
+    {
+        try
+        {
+            var list = await _userLogic.LookForUsers(username);
+            return Ok(list);
+
         }
         catch (Exception e)
         {
