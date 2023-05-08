@@ -1,30 +1,50 @@
+
 syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
 
 option java_package = "com.protobuf";
 option csharp_namespace = "DataAccessClient";
 
 service UserAccess {
     rpc CreateUser (UserCreationDto) returns (Response);
-    rpc UsersByRole (Role) returns (FilteredUsersResponse);
     rpc UserByUsername (Username) returns (UserCreationDto);
     rpc UpdateUser (UserCreationDto) returns (UpdatedUserResponse);
     rpc DeleteUser (Username) returns (Response);
-    rpc GetPassword (Username) returns (Password);
     rpc LookForUsers(Username) returns (FilteredUsersResponse);
 }
 
 
 service ProjectAccess {
+    //Project
     rpc CreateProject (ProjectCreationDto) returns (ResponseWithID);
+    rpc GetAllProjects (Username) returns (ProjectsResponse);
 
+    //Collaborators
     rpc GetAllCollaborators(Id) returns (FilteredUsersResponse);
     rpc AddCollaborator (AddToProjectDto) returns (Response);
-    rpc RemoveCollaborator(AddToProjectDto) returns (ResponseWithID);
+    rpc RemoveCollaborator(AddToProjectDto) returns (Response);
 
+    //UserStories
     rpc AddUserStory (UserStoryMessage) returns (ResponseWithID);
-    rpc GetAllProjects (Username) returns (ProjectsResponse);
-    rpc GetProductBacklog (Id) returns (ProductBacklogResponse);
-}
+    rpc GetProductBacklog (Id) returns (UserStoriesResponse);
+
+    //Sprints
+    rpc CreateSprint(SprintCreationRequest) returns (Response);
+    rpc GetSprintByID(Id) returns (SprintMessage);
+    rpc GetSprintByProjectId(Id) returns (AllSprintsMessage);
+    rpc RemoveSprint(Id) returns (Response);
+
+    //SprintBacklog
+    rpc AddTask(TaskRequest) returns (Response);
+    rpc GetTasks(Id) returns (AllTasksMessage);
+    rpc AssignTaskTo(Username) returns (Response);
+    rpc ChangeTask(ChangeTaskRequest) returns (Response);
+
+    rpc AddUserStoryToSprint(UserStoryToSprintRequest) returns (Response);
+    rpc RemoveUserStoryFromSprint(UserStoryToSprintRequest) returns (Response);
+    rpc GetAllUserStoriesFromSprint(Id) returns (UserStoriesResponse);
+    }
 
 
 message UserCreationDto {
@@ -46,10 +66,6 @@ message ResponseWithID {
     int32 code = 1;
     int32 id = 2;
 }
-message Role {
-    string roleName = 1;
-}
-
 message UserSearchDto {
     string firstName = 1;
     string lastName = 2;
@@ -84,9 +100,7 @@ message ProjectCreationDto {
     string ownerUsername = 1;
     string title = 2;
 }
-message Password {
-    string password = 1;
-}
+
 message UserStoryMessage {
     string taskBody = 1;
     string priority = 2;
@@ -106,7 +120,42 @@ message UserStory {
     string userStory = 3;
     string priority = 4;
 }
-message ProductBacklogResponse {
+message UserStoriesResponse {
     repeated UserStory userStories = 1;
     int32 code = 2;
+}
+message SprintCreationRequest{
+    int32 project_id = 1;
+    string name = 2;
+    google.protobuf.Timestamp starDate = 3;
+    google.protobuf.Timestamp endDate = 4;
+}
+message SprintMessage{
+    int32 id = 1;
+    string name = 2;
+    google.protobuf.Timestamp starDate = 3;
+    google.protobuf.Timestamp endDate = 4;
+}
+message AllSprintsMessage{
+    repeated SprintMessage sprints = 1;
+}
+message TaskRequest{
+    int32 sprint_id = 1;
+    string assignee = 2;
+    string body = 3;
+    int32 storyPoint = 4;
+}
+message ChangeTaskRequest{
+    int32 task_id = 1;
+    string body = 2;
+    int32 storyPoint = 3;
+    bool status = 4;
+}
+message UserStoryToSprintRequest{
+    int32 userStory_id = 1;
+    int32 sprint_id = 2;
+}
+message AllTasksMessage{
+    repeated ChangeTaskRequest tasks = 1;
+    int32 project_id = 2;
 }
