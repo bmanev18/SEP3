@@ -1,0 +1,108 @@
+﻿*, *:before, *:after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background: #105469;
+    font-family: 'Open Sans', sans-serif;;
+}
+table {
+    height: 100px;
+    width: 480px;
+    background-color: rgba(26, 188, 156, 0.6);
+    border-radius: 0.25em;
+    border-collapse: collapse;
+    margin: 1em;
+    
+}
+th {
+    border-bottom: 1px solid #364043;
+    color: #2C175C;
+    font-size: 0.85em;
+    font-weight: 600;
+    padding: 0.5em 1em;
+    text-align: center;
+}
+td {
+    color: black;
+    font-weight: 400;
+    padding: 0.65em 1em;
+}
+.disabled td {
+    color: #4F5F64;
+}
+tbody tr {
+    transition: background 0.25s ease;
+}
+tbody tr:hover {
+    background: #014055;
+}
+.search-box{
+    width: fit-content;
+    height: fit-content;
+    position: relative;
+}
+.input-search{
+    height: 50px;
+    width: 50px;
+    border-style: none;
+    padding: 10px;
+    font-size: 18px;
+    letter-spacing: 2px;
+    outline: none;
+    border-radius: 25px;
+    transition: all .5s ease-in-out;
+    background-color: rgba(26, 188, 156, 0.6);
+    padding-right: 40px;
+    color:#fff;
+}
+.input-search::placeholder{
+    color:rgba(255,255,255,.5);
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-weight: 100;
+}
+.btn-search{
+    width: 50px;
+    height: 50px;
+    border-style: none;
+    font-size: 20px;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    border-radius: 50%;
+    position: absolute;
+    right: 0px;
+    color:#ffffff ;
+    background-color:transparent;
+    pointer-events: painted;
+}
+.search{
+    width: 30px;
+    height: 30px;
+}
+.btn-search:focus ~ .input-search{
+    width: 370px;
+    border-radius: 0px;
+    background: rgba(76, 175, 80);
+    border-bottom:1px solid rgba(255,255,255,.5);
+    transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+}
+.input-search:focus{
+    width: 370px;
+    border-radius: 0px;
+    background: rgba(76, 175, 80);
+    border-bottom:1px solid rgba(255,255,255,.5);
+    transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+}
+.removebtn{
+    border-style: none;
+    outline: none;
+    cursor: pointer;
+    background-color:transparent;
+}
+.lforuser{
+    margin-left: 20px;
+    
+}

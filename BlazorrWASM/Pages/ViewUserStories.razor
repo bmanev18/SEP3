@@ -1,0 +1,123 @@
+@page "/ViewUserStories/{id:int}"
+@using HttpClients.ClientInterfaces
+@inject IUserStoryService UserStoryService
+@inject NavigationManager navMgr
+@using global::Shared.Model
+@using global::Shared.DTOs
+@using System.Security.Claims
+<h3>View User Stories</h3>
+
+<AuthorizeView>
+<div class="wrapper">
+    <div class="input-box">
+        <input type="text" placeholder="User Story" @bind="name" @bind:event="oninput">
+    </div>
+     <div class="input-box">
+                <input type="text" placeholder="Priority" @bind="status" @bind:event="oninput">
+            </div>
+    
+       <div class="input-box button">
+               @if (!string.IsNullOrEmpty(msg))
+                              {
+                                  <label style="color :red"> @msg </label>
+                              }
+              <button @onclick="Save" class="acceptbtn"> Create </button>
+          </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(msg))@* display any msg in case it has ny value in case of error*@
+{
+    <div>
+        <span>@msg</span>
+    </div>
+}
+
+@if (userStories == null)
+{
+    <span>Loading..</span>
+}
+else if (!userStories.Any())
+{
+    <span>No user stories to be found</span>
+}
+else
+{
+    <table class="table justify-content-center">
+        <thead>
+        <tr>
+            <th class="text-center">Title</th>
+            <th class="text-center">Priority</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (UserStory userStory1 in userStories)
+        {
+            <tr>
+                <td class="text-center">@userStory1.Body</td>
+                <td class="text-center">@userStory1.Priority</td>
+            </tr>
+        }
+        
+
+        </tbody>
+    </table>
+}
+    </AuthorizeView>
+
+
+@code {
+    
+    private string msg = "";
+    private IEnumerable<UserStory>? userStories;
+    private UserStory userStory1;
+    private string name;
+    private string status;
+    private int statusid;
+    
+    [Parameter]
+    public int id { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        msg = "";
+        Console.WriteLine(msg);
+        try
+        {
+            userStories = await UserStoryService.getUserStory(id);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    private async Task Save()
+    {
+        msg = "";
+        if (string.IsNullOrEmpty(name))
+        {
+            msg = "Cannot create an empty user story!";
+            return;
+        }
+        
+        try
+        {
+            await UserStoryService.createUserStory(new UserStory
+            {
+                Project_id = id,
+            Body = name,
+                Priority = status
+            });
+            userStories = await UserStoryService.getUserStory(id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+        
+    }
+    
+
+
+}

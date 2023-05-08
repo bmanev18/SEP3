@@ -4,79 +4,109 @@ option java_package = "com.protobuf";
 option csharp_namespace = "DataAccessClient";
 
 service UserAccess {
-  rpc CreateUser(UserDto) returns (Response);
-//  rpc Login(UserLoginDto) returns (LoginResponse);
-  rpc UsersByRole(Role) returns (FilteredUsersResponse);
-  rpc UserByUsername(Username) returns (UserDto);
-  rpc UpdateUser(UserDto) returns (UpdatedUserResponse);
-  rpc DeleteUser(Username) returns (Response);
-  rpc GetPassword(Username) returns (Password);
+    rpc CreateUser (UserCreationDto) returns (Response);
+    rpc UsersByRole (Role) returns (FilteredUsersResponse);
+    rpc UserByUsername (Username) returns (UserCreationDto);
+    rpc UpdateUser (UserCreationDto) returns (UpdatedUserResponse);
+    rpc DeleteUser (Username) returns (Response);
+    rpc GetPassword (Username) returns (Password);
+    rpc LookForUsers(Username) returns (FilteredUsersResponse);
 }
+
 
 service ProjectAccess {
-  rpc CreateProject(ProjectDto) returns (Response);
-//  rpc AddOwner(AddToProjectDto) returns (Response);
-  rpc AddScrumMaster(AddToProjectDto) returns (Response);
-  rpc AddDeveloper(AddToProjectDto) returns (Response);
+    rpc CreateProject (ProjectCreationDto) returns (ResponseWithID);
+
+    rpc GetAllCollaborators(Id) returns (FilteredUsersResponse);
+    rpc AddCollaborator (AddToProjectDto) returns (Response);
+    rpc RemoveCollaborator(AddToProjectDto) returns (ResponseWithID);
+
+    rpc AddUserStory (UserStoryMessage) returns (ResponseWithID);
+    rpc GetAllProjects (Username) returns (ProjectsResponse);
+    rpc GetProductBacklog (Id) returns (ProductBacklogResponse);
 }
 
-message UserDto{
-  string username = 1;
-  string firstName = 2;
-  string lastName = 3;
-  string password = 4;
-  string roleId = 5;
+
+message UserCreationDto {
+    string username = 1;
+    string firstName = 2;
+    string lastName = 3;
+    string password = 4;
+    string role = 5;
+}
+message Id {
+    int32 id = 1;
 }
 
-message Response{
-  int32 code = 1;
-}
-//
-//message UserLoginDto{
-//  string username = 1;
-//  string password = 2;
-//}
-
-//
-//message LoginResponse{
-//  UserDto user = 1;
-//  int32 code = 2;
-//}
-
-message Role{
-  string roleName = 1;
+message Response {
+    int32 code = 1;
 }
 
-message UserSearchDto{
-  string firstName = 1;
-  string lastName = 2;
-  string username = 3;
+message ResponseWithID {
+    int32 code = 1;
+    int32 id = 2;
+}
+message Role {
+    string roleName = 1;
 }
 
-message FilteredUsersResponse{
-  repeated UserSearchDto users = 1;
-  int32 code = 2;
+message UserSearchDto {
+    string firstName = 1;
+    string lastName = 2;
+    string username = 3;
+    string role = 4;
 }
 
-message UpdatedUserResponse{
-  UserDto user = 1;
-  int32 code = 2;
+message FilteredUsersResponse {
+    repeated UserSearchDto users = 1;
+    int32 code = 2;
 }
 
-message Username{
-  string username = 1;
+message UpdatedUserResponse {
+    UserCreationDto user = 1;
+    int32 code = 2;
 }
 
-message AddToProjectDto{
-//  string username = 1;
-  UserSearchDto user = 1;
-  int32 projectId =2;
+message Username {
+    string username = 1;
 }
+
+message AddToProjectDto {
+    string username = 1;
+    int32 projectId = 2;
+}
+message CollaboratorsResponse{
+    repeated UserCreationDto collaborators = 1;
+}
+
 //ProjectService
-message ProjectDto{
-  string ownerUsername = 1;
-  string title = 2;
+message ProjectCreationDto {
+    string ownerUsername = 1;
+    string title = 2;
 }
-message Password{
-  string password = 1;
+message Password {
+    string password = 1;
+}
+message UserStoryMessage {
+    string taskBody = 1;
+    string priority = 2;
+    int32 project_id = 3;
+}
+message ProjectMessage {
+    int32 id = 1;
+    string title = 2;
+}
+message ProjectsResponse {
+    repeated ProjectMessage projects = 1;
+    int32 code = 2;
+}
+message UserStory {
+    int32 id = 1;
+    int32 project_id = 2;
+    string userStory = 3;
+    string priority = 4;
+}
+message ProductBacklogResponse {
+    repeated UserStory userStories = 1;
+    int32 code = 2;
 }

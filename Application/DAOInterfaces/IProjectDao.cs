@@ -6,8 +6,17 @@ namespace Application.DAOInterfaces;
 public interface IProjectDao
 {
     Task CreateAsync(ProjectCreationDto dto);
-    Task<Project?> GetByNameAsync(ProjectCreationDto dto);
-    Task AddScrumMasterAsync(AddUserToProjectDto dto);
-    Task AddDeveloperAsync(AddUserToProjectDto dto);
+    Task<int> AddCollaborator(AddUserToProjectDto collaborator);
+    Task<int> AddUserStory(UserStoryDto dto);
+    Task<List<ProjectDto>> GetAllProjects(string username);
+    Task<List<UserStory>> GetProductBacklog(int id);
+    Task<int> RemoveCollaborator(AddUserToProjectDto collaborator);
+    Task<List<UserFinderDto>> GetAllCollaborators(int id);
+
+
+    /*AddUserStory (UserStoryMessage) returns (ResponseWithID);
+    rpc GetAllProjects (Username) returns (ProjectsResponse);
+    rpc GetProductBacklog (Id) returns (ProductBacklogResponse);*/
+
 
 }

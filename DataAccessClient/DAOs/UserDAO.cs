@@ -1,11 +1,10 @@
-﻿
-using Application.DAOInterfaces;
+﻿using Application.DAOInterfaces;
 using DataAccessClient;
 using Grpc.Net.Client;
 using Microsoft.VisualBasic.CompilerServices;
 using Shared.DTOs;
 using Shared.Model;
-using UserCreationDto = DataAccessClient.UserDto;
+using UserCreationDto = DataAccessClient.UserCreationDto;
 using LoginDto = Shared.DTOs.LoginDto;
 
 namespace DataAccess.DAOs;
@@ -28,21 +27,13 @@ public class UserDAO : IUserDao
         {
             Password = dto.Password,
             Username = dto.Username,
-            RoleId = dto.Role,
+            Role = dto.Role,
             FirstName = dto.FirstName,
             LastName = dto.Lastname
         };
         var call = client.CreateUser(request);
-    } public Task<string> GetUserPassword(LoginDto loginDto)
-    {
-        Username username = new Username
-        {
-            Username_ = loginDto.Username
-        };
-        var call = client.GetPassword(username);
-        return Task.FromResult(call.Password_);
     }
-
+    
     public Task<User> GetUserByUsername(LoginDto loginDto)
     {
         Username username = new Username
@@ -56,9 +47,30 @@ public class UserDAO : IUserDao
             Firstname = call.Username,
             Lastname = call.LastName,
             Password = call.Password,
-            Role = call.RoleId
+            Role = call.Role
         };
         return Task.FromResult(result);
     }
-    
+
+    public Task<List<UserFinderDto>> LookForUsers(string username)
+    {
+        Username request = new Username
+        {
+            Username_ = username
+        };
+        var call = client.LookForUsers(request);
+        List<UserFinderDto> list = new();
+        foreach (var user in call.Users)
+        {
+            list.Add(new UserFinderDto
+            {
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = user.Role
+            });
+        }
+
+        return Task.FromResult(list);
+    }
 }

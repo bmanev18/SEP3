@@ -7,6 +7,13 @@ public interface IProjectService
 {
     Task<Project> Create(ProjectCreationDto dto);
     
-    Task<IEnumerable<Project>> GetProjects(string? nameContains = null);
+    Task<IEnumerable<Project>> GetProjectsByUsername(string? nameContains = null);
+
+    Task AddCollaborator(int projectId, string username);
+
+    Task<List<UserFinderDto>> GetAllCollaborators(int id);
+
+    Task RemoveCollaborator(string username, int projectid);
+    
 
 }
