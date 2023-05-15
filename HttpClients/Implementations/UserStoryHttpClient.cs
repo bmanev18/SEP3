@@ -31,15 +31,15 @@ public class UserStoryHttpClient : IUserStoryService
         return userStory;
     }
 
-    public async Task<IEnumerable<UserStory>> getUserStory(int id)
+    public async Task<IEnumerable<UserStory>> getUserStory(int? id)
     {
         string uri = "/Project";
-        if (id!=null)
+        if (id != null)
         {
             uri += $"/{id}";
         }
 
-        HttpResponseMessage response = await client.GetAsync(uri);
+        HttpResponseMessage response = await client.GetAsync($"Project/UserStories/{id}");
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -50,7 +50,6 @@ public class UserStoryHttpClient : IUserStoryService
         {
             PropertyNameCaseInsensitive = true
         })!;
-        Console.WriteLine(userStories.Count());
         return userStories;
     }
 }

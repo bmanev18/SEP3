@@ -7,5 +7,5 @@ public interface IUserStoryService
 {
     Task<int> createUserStory(UserStory dto);
 
-    Task<IEnumerable<UserStory>> getUserStory(int id);
+    Task<IEnumerable<UserStory>> getUserStory(int? id);
 }

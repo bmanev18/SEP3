@@ -114,13 +114,27 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("UserStories/{id:int}")]
     public async Task<ActionResult<List<UserStory>>> GetProductBacklog([FromRoute] int id)
     {
         try
         {
             List<UserStory> list = await projectLogic.GetProductBacklog(id);
             return Ok(list);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+    [HttpDelete("UserStory/{id:int}")]
+    public async Task<ActionResult> DeleteUserStory([FromRoute] int id)
+    {
+        try
+        {
+            await projectLogic.DeleteUserStory(id);
+            return Ok();
         }
         catch (Exception e)
         {

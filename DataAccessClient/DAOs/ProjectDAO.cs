@@ -1,5 +1,6 @@
 ﻿using Application.DAOInterfaces;
 using DataAccessClient;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 using Shared.DTOs;
 using Shared.Model;
@@ -27,7 +28,7 @@ public class ProjectDAO : IProjectDao
             OwnerUsername = dto.ownerUsername,
             Title = dto.Name
         };
-        var call = client.CreateProject(request);
+       client.CreateProject(request);
     }
 
     public Task<int> AddCollaborator(AddUserToProjectDto collaborator)
@@ -65,6 +66,13 @@ public class ProjectDAO : IProjectDao
         return Task.FromResult(list);
     }
 
+    public async Task DeleteUserStory(int id)
+    {
+        var request = new Id();
+        request.Id_ = id;
+        client.DeleteUserStory(request);
+    }
+
     public Task<int> AddUserStory(UserStoryDto dto)
     {
         UserStoryMessage userStory = new UserStoryMessage
@@ -91,7 +99,7 @@ public class ProjectDAO : IProjectDao
 
     public Task<List<UserStory>> GetProductBacklog(int id)
     {
-        var productBacklog = client.GetProductBacklog(new Id(){Id_ = id});
+        var productBacklog = client.GetUserStories(new Id{Id_ = id});
         List<UserStory> list = new List<UserStory>();
         foreach (var story in productBacklog.UserStories)
         {

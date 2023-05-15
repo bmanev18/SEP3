@@ -13,4 +13,6 @@ public interface IProjectLogic
     
     Task<List<UserFinderDto>> GetAllCollaborators(int id);
     Task<int> RemoveCollaborator(AddUserToProjectDto collaborator);
+
+    Task DeleteUserStory(int id);
 }

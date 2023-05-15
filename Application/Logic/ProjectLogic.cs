@@ -11,7 +11,7 @@ public class ProjectLogic : IProjectLogic
 
     public ProjectLogic(IProjectDao projectDao)
     {
-        this._projectDao = projectDao;
+        _projectDao = projectDao;
     }
 
 
@@ -36,6 +36,10 @@ public class ProjectLogic : IProjectLogic
        
     }
 
+    public async Task DeleteUserStory(int id)
+    {
+        await _projectDao.DeleteUserStory(id);
+    }
 
     public async Task<int> AddUserStoryAsync(UserStoryDto dto)
     {

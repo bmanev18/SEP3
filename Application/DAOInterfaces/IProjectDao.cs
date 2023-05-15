@@ -13,6 +13,8 @@ public interface IProjectDao
     Task<int> RemoveCollaborator(AddUserToProjectDto collaborator);
     Task<List<UserFinderDto>> GetAllCollaborators(int id);
 
+    Task DeleteUserStory(int id);
+
 
     /*AddUserStory (UserStoryMessage) returns (ResponseWithID);
     rpc GetAllProjects (Username) returns (ProjectsResponse);
