@@ -15,7 +15,7 @@ public interface ISprintDao
 
     Task<List<SprintTask>> GetTasks(int id);
 
-    Task AssignSprintTask(string username, int id);
+    Task EditTask(SprintTask task);
 
     Task AddUserStoryToSprint(UserStoryToSprintDto dto);
     Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto);

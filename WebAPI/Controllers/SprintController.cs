@@ -106,11 +106,11 @@ public class SprintController : ControllerBase
     }
     //PATCH
     [HttpPatch("AssignSprintTask")]
-    public async Task<ActionResult> AssignSprintTask(string username, int id)
+    public async Task<ActionResult> AssignSprintTask(SprintTask task)
     {
         try
         {
-            await _sprintLogic.AssignSprintTask(username, id);
+            await _sprintLogic.EditTask(task);
             return Accepted();
             
         } catch (Exception e)

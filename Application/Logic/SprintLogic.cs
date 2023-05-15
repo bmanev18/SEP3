@@ -45,10 +45,11 @@ public class SprintLogic : ISprintLogic
     {
         return await _sprintDao.GetTasks(id);
     }
+    
 
-    public async Task AssignSprintTask(string username, int id)
+    public async Task EditTask(SprintTask task)
     {
-        await _sprintDao.AssignSprintTask(username, id);
+        await _sprintDao.EditTask(task);
     }
 
     public async Task AddUserStoryToSprint(UserStoryToSprintDto dto)

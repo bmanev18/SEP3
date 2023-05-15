@@ -39,8 +39,7 @@ service ProjectAccess {
     //SprintBacklog
     rpc AddTask(TaskRequest) returns (Response);
     rpc GetTasks(Id) returns (AllTasksMessage);
-    rpc AssignTaskTo(AssignTaskMessage) returns (Response);
-    rpc ChangeTask(ChangeTaskRequest) returns (Response);
+    rpc EditTask(TaskRequest) returns (Response);
 
     rpc AddUserStoryToSprint(UserStoryToSprintRequest) returns (Response);
     rpc RemoveUserStoryFromSprint(UserStoryToSprintRequest) returns (Response);

@@ -111,18 +111,18 @@ public class SprintDAO : ISprintDao
 
         return tasks;
     }
-
-    public Task AssignSprintTask(string username, int id)
+    
+    public Task EditTask(SprintTask task)
     {
-        Username temp = new Username();
-        temp.Username_ = username;
-        
-        var request = new AssignTaskMessage
+        TaskRequest request = new TaskRequest
         {
-            TaskId = id,
-            Username = temp
+            Body = task.Body,
+            Status = task.Status,
+            StoryPoints = task.StoryPoint,
+            Id = task.Id,
+            Asignee = task.Assignee_username
         };
-        client.AssignTaskTo(request);
+        client.EditTask(request);
         return Task.CompletedTask;
     }
 

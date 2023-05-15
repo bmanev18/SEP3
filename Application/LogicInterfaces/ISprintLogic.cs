@@ -15,7 +15,7 @@ public interface ISprintLogic
 
     Task<List<SprintTask>> GetTasks(int id);
 
-    Task AssignSprintTask(string username, int id);
+    Task EditTask(SprintTask task);
     Task RemoveTask(int id);
 
     Task AddUserStoryToSprint(UserStoryToSprintDto dto);
