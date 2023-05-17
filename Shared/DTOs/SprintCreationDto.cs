@@ -2,8 +2,8 @@
 
 public class SprintCreationDto
 {
-    public int Project_id { get; set; }
+    public int ProjectId { get; set; }
     public string Name { get; set; }
     public string StartDate { get; set; }
-    public string EndDate { get; set; }
+    public string? EndDate { get; set; }
 }

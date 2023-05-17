@@ -1,0 +1,26 @@
+﻿@namespace UIComponents
+<div class="input-box">
+    <select @bind="_points">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="8">8</option>
+        <option value="13">13</option>
+        <option value="20">20</option>
+        <option value="40">40</option>
+        <option value="100">100</option>
+    </select>
+</div>
+
+@code {
+    private int _points;
+
+    [Parameter]
+    public int Points { get; set; }
+
+    [Parameter]
+    public EventCallback<int> StoryPointsChanged { get; set; }
+
+}

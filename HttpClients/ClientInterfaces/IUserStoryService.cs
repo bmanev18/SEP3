@@ -5,7 +5,11 @@ namespace HttpClients.ClientInterfaces;
 
 public interface IUserStoryService
 {
-    Task<int> createUserStory(UserStory dto);
+    Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id = null);
+    Task<int> CreateUserStory(UserStoryDto dto);
 
-    Task<IEnumerable<UserStory>> getUserStory(int? id);
+
+    Task UpdateAsync(UserStoryUpdateDto dto);
+
+    Task RemoveAsync(int storyId);
 }

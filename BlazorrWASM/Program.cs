@@ -18,6 +18,7 @@ builder.Services.AddScoped<IAuthService, JwtAuthService>();
 builder.Services.AddScoped<IUserService, UserHttpClient>();
 builder.Services.AddScoped<IProjectService,ProjectHttpClient>();
 builder.Services.AddScoped<IUserStoryService,UserStoryHttpClient>();
+builder.Services.AddScoped<ISprintService,SprintHttpClient>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 builder.Services.AddScoped(

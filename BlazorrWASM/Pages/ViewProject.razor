@@ -1,0 +1,357 @@
+﻿@page "/ViewProject/{Id:int}"
+@using HttpClients.ClientInterfaces
+@inject IUserStoryService UserStoryService
+@inject ISprintService SprintService
+@inject NavigationManager NavMgr
+@using UIComponents;
+@using global::Shared.Model
+@using global::Shared.DTOs
+@using System.Collections
+
+@*<AuthorizeView>*@
+<h3>View User Stories</h3>
+<div class="addUserStory-bar">
+    <div class="fields-container">
+        @* <img src="img/@(_doShowUserStoryFields ? "close" : "add").png" class="funnel" @onclick="@(() => _doShowUserStoryFields = !_doShowUserStoryFields)" alt="Funnel"/> *@
+        <PlusMinus Checked="@_doShowUserStoryFields" OnChange="@(() => _doShowUserStoryFields = !_doShowUserStoryFields)"/>
+        @if (_doShowUserStoryFields)
+        {
+            <div class="input-box">
+                <input type="text" placeholder="User Story" @bind="_storyName" @bind:event="oninput">
+            </div>
+            <div class="input-box">
+                <select @bind="_priority">
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <div class="input-box">
+                <select @bind="_storyPoints">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="8">8</option>
+                    <option value="13">13</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+
+            // <StoryPoints @bind = "_storyPoints"/>
+            //TODO select points and check box
+
+            <div class="button">
+                @if (!string.IsNullOrEmpty(_storyMsg))
+                {
+                    <label style="color :red"> @_storyMsg </label>
+                }
+                <button @onclick="CreateUserStory" class="createbtn"> Create </button>
+            </div>
+        }
+    </div>
+</div>
+
+
+@if (!string.IsNullOrEmpty(_storyMsg)) @* display any msg in case it has ny value in case of error*@
+{
+    <div>
+        <span>@_storyMsg</span>
+    </div>
+}
+
+@if (_userStories == null)
+{
+    <span>Loading..UserStories</span>
+}
+else if (!_userStories.Any())
+{
+    <span>No user stories to be found</span>
+}
+else
+{
+    <table class="table justify-content-center">
+        <thead>
+        <tr>
+            <th class="text-center">Title</th>
+            <th class="text-center">Priority</th>
+            <th class="text-center">Story Points</th>
+            <th class="text-center">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (UserStory userStory in _userStories)
+        {
+            <tr >
+                <td class="text-center">@userStory.Body</td>
+                <td class="text-center">@userStory.Priority</td>
+                <td>
+                    <div class="input-box">
+                        <select @bind="userStory.StoryPoints">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
+                            <option value="8">8</option>
+                            <option value="13">13</option>
+                            <option value="20">20</option>
+                            <option value="40">40</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    @* <StoryPoints StoryPoints="@userStory.StoryPoints" StoryPointsChanged="@(()=>UpdateStory(userStory))"/> *@
+                </td>
+                <td>
+                    <FancyCheckBox IsCompleted="@userStory.Status" OnChange="@(status => UpdateStory(userStory, status))"/>
+                </td>
+            </tr>
+        }
+
+
+        </tbody>
+    </table>
+}
+
+
+
+@* Sprints Section *@
+<h3>View Sprints</h3>
+<div class="addSprint-bar">
+    <div class="fields-container">
+        <PlusMinus Checked="@_doShowSprintFields" OnChange="@(() => _doShowSprintFields = !_doShowSprintFields)"/>
+        @* <img src="img/@(_doShowSprintFields ? "close" : "add").png" class="funnel" @onclick="@(() => _doShowSprintFields = !_doShowSprintFields)" alt="Funnel"/> *@
+        @if (_doShowSprintFields)
+        {
+            <div class="input-box">
+                <input type="text" placeholder="Name" @bind="_sprintName" @bind:event="oninput">
+            </div>
+            <div class="input-box">
+                <input type="date" @bind="_startDate">
+            </div>
+            <div class="input-box">
+                <input type="date" @bind="_endDate">
+            </div>
+
+            <div class="input-box button">
+                @if (!string.IsNullOrEmpty(_sprintMsg))
+                {
+                    <label style="color :red"> @_sprintMsg </label>
+                }
+                <button @onclick="CreateSprint" class="acceptbtn"> Create </button>
+            </div>
+        }
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(_sprintMsg)) @* display any msg in case it has ny value in case of error*@
+{
+    <div>
+        <span>@_sprintMsg</span>
+    </div>
+}
+
+@if (_sprints == null)
+{
+    <span>Loading..UserStories</span>
+}
+else if (!_sprints.Any())
+{
+    <span>No sprints to be found</span>
+}
+else
+{
+    <table class="table justify-content-center">
+        <thead>
+        <tr>
+            <th class="text-center">Name</th>
+            <th class="text-center">Start Date</th>
+            <th class="text-center">End Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (Sprint sprint in _sprints)
+        {
+            <tr>
+                <td class="text-center">@sprint.Name</td>
+                <td class="text-center">@sprint.StartDate</td>
+                <td class="text-center">@sprint.EndDate</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+
+@*</AuthorizeView>*@
+
+@code {
+    // Global 
+    private string _storyMsg = "";
+    private string _sprintMsg = "";
+    private IEnumerable<UserStory>? _userStories;
+    private IEnumerable<Sprint>? _sprints;
+
+    /*User story fields*/
+    //private int _storyId = 0; // Todo when selecting user story and probably showing tasks
+    private string _storyName = "";
+    private string _priority = "";
+    private int _storyPoints = 0;
+    private bool _status = false;
+
+    // Sprint fields
+    //private int _sprintId = 0; // TODO when selecting should probably show user stories and tasks
+    private string _sprintName = "";
+    private DateTime _startDate = DateTime.Today;
+    private DateTime? _endDate = null;
+
+    // Hidden menus
+    private bool _doShowUserStoryFields = false;
+    private bool _doShowSprintFields = false;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await LoadUserStoriesAsync();
+            await LoadSprintsAsync();
+    /*_userStories = await UserStoryService.GetUserStoriesAsync(Id);
+            _sprints = await SprintService.GetSprintsAsync(Id);*/
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+
+    private async Task CreateUserStory()
+    {
+        _storyMsg = "";
+        if (string.IsNullOrEmpty(_storyName))
+        {
+            _storyMsg = "Cannot create an empty user story!";
+            return;
+        }
+
+        try
+        {
+            await UserStoryService.CreateUserStory(new UserStoryDto()
+            {
+                Project_id = Id,
+                Body = _storyName,
+                Priority = _priority,
+                Status = _status,
+                StoryPoints = _storyPoints
+            });
+
+            await LoadUserStoriesAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _storyMsg = e.Message;
+        }
+    }
+
+    private async Task CreateSprint()
+    {
+        _sprintMsg = "";
+        if (string.IsNullOrEmpty(_sprintName))
+        {
+            _sprintMsg = "Cannot create an empty sprint!";
+            return;
+        }
+
+        try
+        {
+            await SprintService.CreateSprint(new SprintCreationDto()
+            {
+                ProjectId = Id,
+                Name = _sprintName,
+                StartDate = _startDate.ToString("yyyy-M-dd"),
+                EndDate = _endDate.ToString()
+            });
+
+            await LoadSprintsAsync();
+    //_sprints = await SprintService.GetSprintsAsync(Id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _sprintMsg = e.Message;
+        }
+    }
+
+    private async Task LoadUserStoriesAsync()
+    {
+        _userStories = await UserStoryService.GetUserStoriesAsync(Id);
+    }
+
+    private async Task LoadSprintsAsync()
+    {
+        _sprints = await SprintService.GetSprintsAsync(Id);
+    }
+
+
+    //TODO create those two pages
+    private void OpenUserStory(int storyId)
+    {
+        NavMgr.NavigateTo($"/ViewUserStory/{storyId}");
+    }
+
+    private void OpenSprint(int storyId)
+    {
+        NavMgr.NavigateTo($"/ViewSprint/{storyId}");
+    }
+
+    private async Task UpdateStory(UserStory userStory, bool status)
+    {
+        UserStoryUpdateDto dto = new()
+        {
+            Id = userStory.ID,
+            Priority = userStory.Priority,
+            StoryPoints = userStory.StoryPoints,
+            Status = status
+        };
+
+        try
+        {
+            await UserStoryService.UpdateAsync(dto);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _storyMsg = e.Message;
+        }
+    }
+
+    private async Task UpdateStory(UserStory userStory)
+    {
+        UserStoryUpdateDto dto = new()
+        {
+            Id = userStory.ID,
+            Priority = userStory.Priority,
+            StoryPoints = userStory.StoryPoints,
+            Status = userStory.Status
+        };
+
+        try
+        {
+            await UserStoryService.UpdateAsync(dto);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _storyMsg = e.Message;
+        }
+    }
+
+}

@@ -12,9 +12,9 @@ public class SprintController : ControllerBase
 {
     private readonly ISprintLogic _sprintLogic;
 
-    public SprintController(ISprintLogic _sprintLogic)
+    public SprintController(ISprintLogic sprintLogic)
     {
-        this._sprintLogic = _sprintLogic;
+        this._sprintLogic = sprintLogic;
         /*
         Task CreateSprint(SprintCreationDto dto); // todo done
         Task<Sprint> GetSprintById(int id); //todo done
@@ -44,13 +44,13 @@ public class SprintController : ControllerBase
         }
     }
     //GET
-    [HttpGet("GetSprintById")]
-    public async Task<ActionResult<Sprint>> GetSprintById([FromQuery]int id)
+    [HttpGet("GetSprintById/{id:int}")]
+    public async Task<ActionResult<Sprint>> GetSprintById(int id)
     {
         try
         {
-            var reslt = await _sprintLogic.GetSprintById(id);
-            return Ok(reslt);
+            var result = await _sprintLogic.GetSprintById(id);
+            return Ok(result);
 
         }
         catch (Exception e)
@@ -80,7 +80,7 @@ public class SprintController : ControllerBase
     {
         try
         {
-            List<Sprint> list = await _sprintLogic.GetSprintsByProjectId(id);
+            var list = await _sprintLogic.GetSprintsByProjectId(id);
             return Ok(list);
         }
         catch (Exception e)

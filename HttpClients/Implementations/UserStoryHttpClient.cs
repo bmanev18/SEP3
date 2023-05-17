@@ -8,16 +8,16 @@ namespace HttpClients.Implementations;
 
 public class UserStoryHttpClient : IUserStoryService
 {
-    private readonly HttpClient client;
+    private readonly HttpClient _client;
 
     public UserStoryHttpClient(HttpClient client)
     {
-        this.client = client;
+        this._client = client;
     }
-    
-    public async Task<int> createUserStory(UserStory dto)
+
+    public async Task<int> CreateUserStory(UserStoryDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/Project/userStory", dto);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/Project/userStory", dto);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -27,29 +27,46 @@ public class UserStoryHttpClient : IUserStoryService
         int userStory = JsonSerializer.Deserialize<int>(result, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
-        })!;
+        });
         return userStory;
     }
 
-    public async Task<IEnumerable<UserStory>> getUserStory(int? id)
+    public async Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id)
     {
-        string uri = "/Project";
-        if (id != null)
-        {
-            uri += $"/{id}";
-        }
-
-        HttpResponseMessage response = await client.GetAsync($"Project/UserStories/{id}");
-        string result = await response.Content.ReadAsStringAsync();
+        var uri = (id == null) ? $"/Project/UserStories" : $"/Project/UserStories/{id}";
+        var response = await _client.GetAsync(uri);
+        var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(result);
         }
 
-        IEnumerable<UserStory> userStories = JsonSerializer.Deserialize<IEnumerable<UserStory>>(result, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
+        var userStories = JsonSerializer.Deserialize<IEnumerable<UserStory>>(result,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            })!;
         return userStories;
+    }
+
+    public async Task UpdateAsync(UserStoryUpdateDto dto)
+    {
+        // TODO!!!!
+        var response = await _client.PatchAsJsonAsync("/Project/UpdateStory", dto);
+        if (!response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            throw new Exception(result);
+        }
+    }
+
+    public async Task RemoveAsync(int storyId)
+    {
+        var response = await _client.DeleteAsync($"/Project/DeleteStory/{storyId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            throw new Exception(result);
+        }
     }
 }

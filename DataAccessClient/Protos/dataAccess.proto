@@ -28,13 +28,13 @@ service ProjectAccess {
     rpc GetUserStories (Id) returns (UserStoriesResponse);
     rpc DeleteUserStory (Id) returns (Response);
 
-
     //Sprints
     rpc CreateSprint(SprintCreationRequest) returns (Response);
     rpc GetSprintByID(Id) returns (SprintMessage);
     rpc GetSprintByProjectId(Id) returns (AllSprintsMessage);
     rpc RemoveSprint(RemoveSprintMessage) returns (Response);
     rpc RemoveTask(Id) returns (Response);
+
 
     //SprintBacklog
     rpc AddTask(TaskRequest) returns (Response);
@@ -136,10 +136,11 @@ message SprintCreationRequest{
 }
 message SprintMessage{
     int32 id = 1;
-    string name = 2;
-    string starDate = 3;
-    string endDate = 4;
-    int32 code = 5;
+    int32 project_id=2;
+    string name = 3;
+    string starDate = 4;
+    string endDate = 5;
+    int32 code = 6;
 }
 message AllSprintsMessage{
     repeated SprintMessage sprints = 1;

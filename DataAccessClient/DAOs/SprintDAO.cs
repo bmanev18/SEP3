@@ -5,61 +5,77 @@ using Grpc.Net.Client;
 using Shared.DTOs;
 using Shared.Model;
 using UserStory = Shared.Model.UserStory;
+using System.Globalization;
 
 namespace DataAccess.DAOs;
 
-public class SprintDAO : ISprintDao
+public class SprintDao : ISprintDao
 {
-    
-    private ProjectAccess.ProjectAccessClient client;
-    
-    
-    public SprintDAO()
+    private ProjectAccess.ProjectAccessClient _client;
+
+
+    public SprintDao()
     {
         var channel = GrpcChannel.ForAddress("http://localhost:9111");
         Console.WriteLine(channel.State);
-        client = new ProjectAccess.ProjectAccessClient(channel);
+        _client = new ProjectAccess.ProjectAccessClient(channel);
     }
-   public Task CreateSprint(SprintCreationDto dto)
+
+    public Task CreateSprint(SprintCreationDto dto)
     {
-        var request = new SprintCreationRequest();
-        request.ProjectId = dto.Project_id;
-        request.Name = dto.Name;
-        request.StarDate = dto.StartDate;
-        request.EndDate = dto.EndDate;
-        client.CreateSprint(request);
+        var request = new SprintCreationRequest
+        {
+            ProjectId = dto.ProjectId,
+            Name = dto.Name,
+            StarDate = dto.StartDate,
+            EndDate = dto.EndDate.ToString()
+        };
+        _client.CreateSprint(request);
         return Task.CompletedTask;
     }
 
     public async Task<Sprint> GetSprintById(int id)
     {
-        var request = new Id();
-        request.Id_ = id;
-        var call =  client.GetSprintByID(request);
-        Sprint sprint = new Sprint
+        var request = new Id
         {
-            Name = call.Name,
+            Id_ = id
+        };
+        var call = _client.GetSprintByID(request);
+        var sprint = new Sprint
+        {
             Id = call.Id,
+            ProjectId = call.ProjectId,
+            Name = call.Name,
             StartDate = call.StarDate,
             EndDate = call.EndDate
+            /*StartDate = DateTime.ParseExact(call.StarDate, "yyyy-M -dd", CultureInfo.InvariantCulture),
+            EndDate = DateTime.ParseExact(call.EndDate, "yyyy-M -dd", CultureInfo.InvariantCulture)
+        */
         };
         return sprint;
     }
 
     public async Task<List<Sprint>> GetSprintsByProjectId(int id)
     {
-        var request = new Id();
-        request.Id_ = id;
-        var call = client.GetSprintByProjectId(request);
-        List<Sprint> sprints = new List<Sprint>();
-        foreach (var sprint in call.Sprints)
+        var request = new Id
+        {
+            Id_ = id
+        };
+        var call = _client.GetSprintByProjectId(request);
+        var sprints = new List<Sprint>();
+        var callSprints = call.Sprints;
+        foreach (var sprint in callSprints)
         {
             sprints.Add(new Sprint
             {
-               Id = sprint.Id,
-               Name = sprint.Name,
-               StartDate = sprint.StarDate,
-               EndDate = sprint.EndDate
+                Id = sprint.Id,
+                ProjectId = sprint.ProjectId,
+                Name = sprint.Name,
+                StartDate = sprint.StarDate,
+                EndDate = sprint.EndDate
+                /*StartDate = DateTime.ParseExact(sprint.StarDate, "yyyy-M -dd", CultureInfo.InvariantCulture),
+                EndDate = DateTime.ParseExact(sprint.EndDate, "yyyy-M -dd", CultureInfo.InvariantCulture)
+            */
             });
         }
 
@@ -68,10 +84,12 @@ public class SprintDAO : ISprintDao
 
     public Task RemoveSprint(SprintRemovalDto dto)
     {
-        var request = new RemoveSprintMessage();
-        request.ProjectId = dto.projectId;
-        request.SprintId = dto.sprintId;
-        client.RemoveSprint(request);
+        var request = new RemoveSprintMessage
+        {
+            ProjectId = dto.projectId,
+            SprintId = dto.sprintId
+        };
+        _client.RemoveSprint(request);
         return Task.CompletedTask;
     }
 
@@ -85,7 +103,7 @@ public class SprintDAO : ISprintDao
             StoryPoints = task.StoryPoint,
             StoryId = task.UserStoryId,
         };
-        client.AddTask(request);
+        _client.AddTask(request);
         return Task.CompletedTask;
     }
 
@@ -95,13 +113,13 @@ public class SprintDAO : ISprintDao
         {
             Id_ = id
         };
-        var call = client.GetTasks(request);
-        List<SprintTask> tasks = new List<SprintTask>();
+        var call =  _client.GetTasks(request);
+        var tasks = new List<SprintTask>();
         foreach (var task in call.Tasks)
         {
             tasks.Add(new SprintTask
             {
-                Assignee_username = task.Asignee,
+                Assignee = task.Asignee,
                 Body = task.Body,
                 Id = task.Id,
                 StoryPoint = task.StoryPoints,
@@ -111,7 +129,7 @@ public class SprintDAO : ISprintDao
 
         return tasks;
     }
-    
+
     public Task EditTask(SprintTask task)
     {
         TaskRequest request = new TaskRequest
@@ -120,9 +138,9 @@ public class SprintDAO : ISprintDao
             Status = task.Status,
             StoryPoints = task.StoryPoint,
             Id = task.Id,
-            Asignee = task.Assignee_username
+            Asignee = task.Assignee
         };
-        client.EditTask(request);
+        _client.EditTask(request);
         return Task.CompletedTask;
     }
 
@@ -133,7 +151,7 @@ public class SprintDAO : ISprintDao
             SprintId = dto.SprintId,
             UserStoryId = dto.UserStoryId
         };
-        client.AddUserStoryToSprint(request);
+        _client.AddUserStoryToSprint(request);
         return Task.CompletedTask;
     }
 
@@ -144,16 +162,18 @@ public class SprintDAO : ISprintDao
             SprintId = dto.SprintId,
             UserStoryId = dto.UserStoryId
         };
-        client.RemoveUserStoryFromSprint(request);
+        _client.RemoveUserStoryFromSprint(request);
         return Task.CompletedTask;
     }
 
     public async Task<List<UserStory>> GetAllUserStoriesFromSprint(int id)
     {
-        var request = new Id();
-        request.Id_ = id;
-        var call = client.GetAllUserStoriesFromSprint(request);
-        List<UserStory> userStories = new List<UserStory>();
+        var request = new Id
+        {
+            Id_ = id
+        };
+        var call = _client.GetAllUserStoriesFromSprint(request);
+        var userStories = new List<UserStory>();
         foreach (var us in call.UserStories)
         {
             userStories.Add(new UserStory
@@ -181,9 +201,10 @@ public class SprintDAO : ISprintDao
     }*/
     public async Task RemoveTask(int id)
     {
-        var request = new Id();
-        request.Id_ = id;
-        client.RemoveTask(request);
+        var request = new Id
+        {
+            Id_ = id
+        };
+        _client.RemoveTask(request);
     }
-
 }

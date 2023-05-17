@@ -1,0 +1,146 @@
+﻿@page "/ViewProject/{ProjectId:int}/ViewUserStory/{StoryId:int}"
+@using UIComponents
+@inject IProjectService ProjectService
+@inject ISprintService SprintService
+@using global::Shared.Model
+@using global::Shared.DTOs
+@using global::UIComponents
+@using HttpClients.ClientInterfaces
+@inject NavigationManager NavigationManager
+
+<h3>ViewUserStory</h3>
+<div id="addTask">
+    <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
+    @if (_showFields)
+    {
+        <input type="text" placeholder="Task Name" @bind="_name" @bind:event="oninput">
+
+        <select @bind="_assignee">
+            @foreach (var collaborator in _collaborators)
+            {
+                <option value=@collaborator.Username> @($"{collaborator.FirstName} {collaborator.LastName}")</option>
+            }
+        </select>
+
+        <StoryPoints Points="@_points"/>
+
+        <div class="input-box button">
+            @if (!string.IsNullOrEmpty(_msg))
+            {
+                <label style="color :red"> @_msg </label>
+            }
+            <button @onclick="Create" class="createbtn"> Create </button>
+        </div>
+    }
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Status</th>
+        <th>Task</th>
+        <th>Assigned</th>
+        <th>Story Points</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var task in _tasks)
+    {
+        <tr>
+            <td>
+                <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/>
+            </td>
+            <td>
+                <label for="@task.Id" onclick="@(() => EditTask(task))">@task.Body</label>
+            </td>
+            <td>
+                @task.Assignee
+            </td>
+            <td>
+                @task.StoryPoint
+            </td>
+            <td>
+                <DeleteButton/>
+                <button class="btn">
+                    Edit
+                </button>
+            </td>
+
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    private int _id = 0;
+    private string _name = "";
+    private string _assignee = "";
+    private int _points = 0;
+
+    private bool _showFields = false;
+    private string _msg = "";
+
+    [Parameter]
+    public int ProjectId { get; set; }
+
+    [Parameter]
+    public int StoryId { get; set; }
+
+    //TODO Temporary values 
+    private IEnumerable<UserFinderDto> _collaborators = new List<UserFinderDto>()
+    {
+        new() { FirstName = "Jane", LastName = "Doe", Username = "janedoe", Role = "scrum master" },
+        new() { FirstName = "Bob", LastName = "Smith", Username = "bobsmith", Role = "developer" },
+        new() { FirstName = "Alice", LastName = "Johnson", Username = "alicejohnson", Role = "developer" }
+    };
+
+    private IEnumerable<SprintTask> _tasks = new List<SprintTask>()
+    {
+        new() { Id = 1, Body = "Task 1", Assignee = "John", Status = false },
+        new() { Id = 2, Body = "Task 2", Assignee = "Jane", Status = true },
+        new() { Id = 3, Body = "Task 3", Assignee = "Bob", Status = false },
+        new() { Id = 4, Body = "Task 4", Assignee = "Alice", Status = true }
+    };
+
+
+    /*protected override async Task OnInitializedAsync()
+    {
+        LoadCollaborators();
+    }*/
+
+    private async Task LoadCollaborators()
+    {
+        _collaborators = (await ProjectService.GetAllCollaborators(ProjectId)).Where(dto => dto.Role.Equals("developer"));
+    }
+
+    private async Task Create()
+    {
+        var dto = new TaskCreationDto(_name, _assignee, _points);
+        await SprintService.CreateTask(dto);
+    }
+
+    private async Task UpdateStatus(int taskId, bool status)
+    {
+        Console.WriteLine("Update");
+    /*var toUpdate = _tasks.FirstOrDefault(task => task.Id == taskId)!;
+        await SprintService.UpdateTask(toUpdate);*/
+    }
+
+    private async Task LoadTasks()
+    {
+        _tasks = await SprintService.GetTasks(StoryId);
+    }
+
+    private async Task RemoveTask(SprintTask SprintTask)
+    {
+        Console.WriteLine("Remove");
+    /*var SprintTask = _tasks.FirstOrDefault(model => model.Id == taskId);
+        _tasks.ToList().Remove(SprintTask);*/
+    }
+
+    private void EditTask(SprintTask task)
+    {
+        //NavigationManager.NavigateTo($"/EditTask/{ProjectId}/{StoryId}/task?taskId={task.Id}&name={task.Name}&assignee={task.Assignee}&points={task.Points}");
+    }
+}

@@ -2,7 +2,7 @@
 @using HttpClients.ClientInterfaces
 @inject IProjectService ProjectService
 @inject IUserStoryService UserStoryService
-@inject NavigationManager navMgr
+@inject NavigationManager NavMgr
 @using global::Shared.Model
 @using System.Security.Claims
 @using global::Shared.DTOs
@@ -36,8 +36,8 @@ else
         <tbody>
         @foreach (Project project in projects)
         {
-            <tr>
-                <td class="text-center" @onclick="() => Open(project.id)">@project.Title</td>
+            <tr @onclick="() => Open(project.id)">
+                <td class="text-center" >@project.Title</td>
             </tr>
         }
 
@@ -48,7 +48,7 @@ else
 
 @code {
     [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; } = null;
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
     private string msg = "";
     private IEnumerable<Project>? projects;
     private static ProjectDto project;
@@ -74,7 +74,6 @@ else
     
     private void Open(int id)
     {
-        navMgr.NavigateTo($"/ViewUserStories/{id}");
+        NavMgr.NavigateTo($"/ViewProject/{id}");
     }
 }
-

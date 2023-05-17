@@ -13,7 +13,7 @@ public class Tests
     [SetUp]
     public void Setup()
     {
-        _projectDao = new ProjectDAO(); // Initialize your implementation of IProjectDao here
+        _projectDao = new ProjectDao(); // Initialize your implementation of IProjectDao here
     }
 
     
