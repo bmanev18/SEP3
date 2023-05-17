@@ -6,7 +6,6 @@
 @using UIComponents;
 @using global::Shared.Model
 @using global::Shared.DTOs
-@using System.Collections
 
 @*<AuthorizeView>*@
 <h3>View User Stories</h3>
@@ -28,9 +27,8 @@
             </div>
             <div class="input-box">
                 <select @bind="_storyPoints">
-                    <option value="0">0</option>
+                    <option value="0" selected>0</option>
                     <option value="1">1</option>
-                    <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="5">5</option>
                     <option value="8">8</option>
@@ -83,17 +81,16 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (UserStory userStory in _userStories)
+        @foreach (var userStory in _userStories)
         {
             <tr >
                 <td class="text-center">@userStory.Body</td>
                 <td class="text-center">@userStory.Priority</td>
                 <td>
                     <div class="input-box">
-                        <select @bind="userStory.StoryPoints">
+                        <select @bind="userStory.StoryPoints" @oninput="@(e => UpdateStoryPointsAsync(userStory, e.Value.ToString()))">
                             <option value="0">0</option>
                             <option value="1">1</option>
-                            <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="5">5</option>
                             <option value="8">8</option>
@@ -200,18 +197,18 @@ else
     //private int _storyId = 0; // Todo when selecting user story and probably showing tasks
     private string _storyName = "";
     private string _priority = "";
-    private int _storyPoints = 0;
+    private int _storyPoints; // By default is 0
     private bool _status = false;
 
     // Sprint fields
     //private int _sprintId = 0; // TODO when selecting should probably show user stories and tasks
     private string _sprintName = "";
     private DateTime _startDate = DateTime.Today;
-    private DateTime? _endDate = null;
+    private DateTime _endDate = DateTime.Today.AddDays(1);
 
-    // Hidden menus
-    private bool _doShowUserStoryFields = false;
-    private bool _doShowSprintFields = false;
+    // Hidden menus (by default are false)
+    private bool _doShowUserStoryFields;
+    private bool _doShowSprintFields;
 
     [Parameter]
     public int Id { get; set; }
@@ -238,26 +235,27 @@ else
         if (string.IsNullOrEmpty(_storyName))
         {
             _storyMsg = "Cannot create an empty user story!";
-            return;
         }
-
-        try
+        else
         {
-            await UserStoryService.CreateUserStory(new UserStoryDto()
+            try
             {
-                Project_id = Id,
-                Body = _storyName,
-                Priority = _priority,
-                Status = _status,
-                StoryPoints = _storyPoints
-            });
+                await UserStoryService.CreateUserStory(new UserStoryDto()
+                {
+                    Project_id = Id,
+                    Body = _storyName,
+                    Priority = _priority,
+                    Status = _status,
+                    StoryPoints = _storyPoints
+                });
 
-            await LoadUserStoriesAsync();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            _storyMsg = e.Message;
+                await LoadUserStoriesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                _storyMsg = e.Message;
+            }
         }
     }
 
@@ -267,26 +265,26 @@ else
         if (string.IsNullOrEmpty(_sprintName))
         {
             _sprintMsg = "Cannot create an empty sprint!";
-            return;
         }
-
-        try
+        else
         {
-            await SprintService.CreateSprint(new SprintCreationDto()
+            try
             {
-                ProjectId = Id,
-                Name = _sprintName,
-                StartDate = _startDate.ToString("yyyy-M-dd"),
-                EndDate = _endDate.ToString()
-            });
+                await SprintService.CreateSprint(new SprintCreationDto()
+                {
+                    ProjectId = Id,
+                    Name = _sprintName,
+                    StartDate = _startDate.ToString("dd/MM/yyyy"),
+                    EndDate = _endDate.ToString("dd/MM/yyyy")
+                });
 
-            await LoadSprintsAsync();
-    //_sprints = await SprintService.GetSprintsAsync(Id);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            _sprintMsg = e.Message;
+                await LoadSprintsAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                _sprintMsg = e.Message;
+            }
         }
     }
 
@@ -352,6 +350,12 @@ else
             Console.WriteLine(e);
             _storyMsg = e.Message;
         }
+    }
+
+    private async Task UpdateStoryPointsAsync(UserStory story, string? eValue)
+    {
+        var points = Convert.ToInt32(eValue);
+        await UserStoryService.UpdateStoryPointsAsync(story.ID,points );
     }
 
 }

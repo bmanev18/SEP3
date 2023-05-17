@@ -12,4 +12,5 @@ public interface IUserStoryService
     Task UpdateAsync(UserStoryUpdateDto dto);
 
     Task RemoveAsync(int storyId);
+    Task UpdateStoryPointsAsync(int userStoryId, int points);
 }

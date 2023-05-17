@@ -6,13 +6,14 @@ namespace Application.LogicInterfaces;
 public interface IProjectLogic
 {
     Task CreateAsync(ProjectCreationDto dto);
-    Task AddCollaboratorAsync(AddUserToProjectDto collaborator);
-    Task<int> AddUserStoryAsync(UserStoryDto dto);
     Task<List<ProjectDto>> GetAllProjects(string username);
-    Task<List<UserStory>> GetProductBacklog(int id);
     
+    Task AddCollaboratorAsync(AddUserToProjectDto collaborator);
     Task<List<UserFinderDto>> GetAllCollaborators(int id);
     Task<int> RemoveCollaborator(AddUserToProjectDto collaborator);
-
+    
+    Task<int> AddUserStoryAsync(UserStoryDto dto);
+    Task<List<UserStory>> GetUserStoriesAsync(int id);
+    Task UpdateUserStoryPointsAsync(int userStoryId, int points);
     Task DeleteUserStory(int id);
 }

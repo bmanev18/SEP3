@@ -9,16 +9,16 @@ namespace HttpClients.Implementations;
 
 public class ProjectHttpClient : IProjectService
 {
-    private readonly HttpClient client;
+    private readonly HttpClient _client;
 
     public ProjectHttpClient(HttpClient client)
     {
-        this.client = client;
+        this._client = client;
     }
 
     public async Task<Project> Create(ProjectCreationDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/project", dto);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/project", dto);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -41,7 +41,7 @@ public class ProjectHttpClient : IProjectService
         }
         Console.WriteLine(uri);
 
-        HttpResponseMessage response = await client.GetAsync(uri);
+        HttpResponseMessage response = await _client.GetAsync(uri);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -61,7 +61,7 @@ public class ProjectHttpClient : IProjectService
             ProjectID = projectId,
             Username = username
         };
-        HttpResponseMessage response = await client.PutAsJsonAsync("/project", dto);
+        HttpResponseMessage response = await _client.PutAsJsonAsync("/project", dto);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -72,7 +72,7 @@ public class ProjectHttpClient : IProjectService
 
     public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
     {
-        HttpResponseMessage response = await client.GetAsync("project/getCollaborators/" + id);
+        HttpResponseMessage response = await _client.GetAsync("project/getCollaborators/" + id);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -87,7 +87,7 @@ public class ProjectHttpClient : IProjectService
 
     public async Task RemoveCollaborator(string username, int projectid)
     {
-        HttpResponseMessage response = await client.DeleteAsync($"/project/?username={username}&id={projectid}");
+        HttpResponseMessage response = await _client.DeleteAsync($"/project/?username={username}&id={projectid}");
         if (!response.IsSuccessStatusCode)
         {
             string content = await response.Content.ReadAsStringAsync();

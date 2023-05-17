@@ -26,6 +26,7 @@ service ProjectAccess {
     //UserStories
     rpc AddUserStory (UserStoryMessage) returns (ResponseWithID);
     rpc GetUserStories (Id) returns (UserStoriesResponse);
+    rpc UpdateUserStoryPoints(PointsUpdate) returns(Response);
     rpc DeleteUserStory (Id) returns (Response);
 
     //Sprints
@@ -127,6 +128,10 @@ message UserStory {
 message UserStoriesResponse {
     repeated UserStory userStories = 1;
     int32 code = 2;
+}
+message PointsUpdate{
+    int32 id = 1;
+    int32 points = 2;
 }
 message SprintCreationRequest{
     int32 project_id = 1;

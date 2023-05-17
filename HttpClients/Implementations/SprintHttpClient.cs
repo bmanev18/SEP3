@@ -30,7 +30,6 @@ public class SprintHttpClient : ISprintService
         var uri = projectId == null ? "/Sprint/getAllSprints" : $"/Sprint/getAllSprints/{projectId}";
         var response = await _client.GetAsync(uri);
         var result = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(result);
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(result);

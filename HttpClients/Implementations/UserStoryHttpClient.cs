@@ -69,4 +69,15 @@ public class UserStoryHttpClient : IUserStoryService
             throw new Exception(result);
         }
     }
+
+    public async Task UpdateStoryPointsAsync(int userStoryId, int points)
+    {
+        var uri = $"/Project/UpdateUserStoryPoints/{userStoryId}";
+        var response = await _client.PatchAsJsonAsync(uri, points);
+        if (!response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            throw new Exception(result);
+        }
+    }
 }

@@ -20,9 +20,13 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 builder.Services.AddScoped<IUserDao, UserDAO>();
 builder.Services.AddScoped<IProjectLogic, ProjectLogic>();
+builder.Services.AddScoped<IProjectDao, ProjectDao>();
 builder.Services.AddScoped<ISprintLogic, SprintLogic>();
 builder.Services.AddScoped<ISprintDao, SprintDao>();
-builder.Services.AddScoped<IProjectDao, ProjectDao>();
+
+/*
+builder.Services.AddScoped<IUserStoryLogic, UserStoryLogic>();
+builder.Services.AddScoped<IUserStoryDao, UserStoryDao>();*/
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {

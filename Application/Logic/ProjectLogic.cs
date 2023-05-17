@@ -24,16 +24,20 @@ public class ProjectLogic : IProjectLogic
     {
         await _projectDao.AddCollaborator(collaborator);
     }
-    
+
     public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
     {
         return await _projectDao.GetAllCollaborators(id);
     }
 
+    public async Task UpdateUserStoryPointsAsync(int userStoryId, int points)
+    {
+        await _projectDao.UpdateUserStoryPointsAsync(userStoryId, points);
+    }
+
     public async Task<int> RemoveCollaborator(AddUserToProjectDto collaborator)
     {
-       return await _projectDao.RemoveCollaborator(collaborator);
-       
+        return await _projectDao.RemoveCollaborator(collaborator);
     }
 
     public async Task DeleteUserStory(int id)
@@ -51,8 +55,8 @@ public class ProjectLogic : IProjectLogic
         return await _projectDao.GetAllProjects(username);
     }
 
-    public async Task<List<UserStory>> GetProductBacklog(int id)
+    public async Task<List<UserStory>> GetUserStoriesAsync(int id)
     {
-        return await _projectDao.GetProductBacklog(id);
+        return await _projectDao.GetUserStoriesAsync(id);
     }
 }
