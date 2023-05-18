@@ -1,4 +1,5 @@
-﻿using Application.DAOInterfaces;
+﻿using System.ComponentModel.DataAnnotations;
+using Application.DAOInterfaces;
 using DataAccessClient;
 using Microsoft.AspNetCore.Identity;
 using Shared.DTOs;
@@ -6,22 +7,9 @@ using Shared.Model;
 
 namespace WebAPI.Services;
 
-public class AuthService: IAuthService
+public class AuthService : IAuthService
 {
     private readonly IUserDao _userDao;
-
-    private readonly IList<User> users = new List<User>
-    {
-        new User
-        {
-            Username = "test",
-            Password = "testtest",
-            Role = "1",
-            Lastname = "test",
-            Firstname = "test"
-        }
-    };
-
     public AuthService(IUserDao dao)
     {
         _userDao = dao;
@@ -29,17 +17,18 @@ public class AuthService: IAuthService
 
     public async Task<User> ValidateUser(string username, string password)
     {
-        
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        {
+            throw new Exception("Empty Fields");
+        }
+
         LoginDto loginDto = new LoginDto
         {
             Username = username,
             Password = password
         };
 
-        User? existingUser =  await _userDao.GetUserByUsername(loginDto);
-        /*User? existingUser = users.FirstOrDefault(u => 
-            u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));*/
-        // string realPassword = await _userDao.GetUserPassword(loginDto);
+        User? existingUser = await _userDao.GetUserByUsername(loginDto);
 
 
         if (existingUser == null)
@@ -54,9 +43,10 @@ public class AuthService: IAuthService
 
         return await Task.FromResult(existingUser);
     }
-    
+
     public Task RegisterUser(User user)
     {
+        ValidateRegistration(user);
         Shared.DTOs.UserCreationDto dto = new Shared.DTOs.UserCreationDto
         {
             FirstName = user.Firstname,
@@ -65,7 +55,21 @@ public class AuthService: IAuthService
             Role = user.Role,
             Username = user.Username
         };
+
         _userDao.CreateAsync(dto);
         return Task.CompletedTask;
+    }
+
+    private void ValidateRegistration(User user)
+    {
+        if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.Firstname) || string.IsNullOrEmpty(user.Lastname))
+        {
+            throw new ValidationException("All Fields Are Mandatory!");
+        }
+
+        if (user.Password.Length <= 8)
+        {
+            throw new ValidationException("Password must be at least 8 characters!");
+        }
     }
 }

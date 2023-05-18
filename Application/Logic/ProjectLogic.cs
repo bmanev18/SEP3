@@ -22,6 +22,10 @@ public class ProjectLogic : IProjectLogic
 
     public async Task AddCollaboratorAsync(AddUserToProjectDto collaborator)
     {
+        if (collaborator.Role.Equals("2"))
+        {
+            CollaboratorValidator(collaborator.Users);
+        }
         await _projectDao.AddCollaborator(collaborator);
     }
 
@@ -59,4 +63,16 @@ public class ProjectLogic : IProjectLogic
     {
         return await _projectDao.GetUserStoriesAsync(id);
     }
+
+    private void CollaboratorValidator(List<UserFinderDto?> users)
+    {
+        UserFinderDto? check = users.FirstOrDefault(u => u.Role.Equals("2"));
+        {
+            if (check != null)
+            {
+                throw new Exception("Max 1 Scrum Master per project!");
+            }
+        }
+    }
+
 }

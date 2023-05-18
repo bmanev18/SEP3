@@ -134,10 +134,9 @@
     message = "";
     if (string.IsNullOrEmpty(contains))
     {
-      message = "Field Cannot Be Emtpy";
+      message = "Search field is empty!";
       return;
     }
-
     var list = await UserService.LookForUsers(contains);
     searchResulsts = UserComparer(users, list);
 
@@ -145,17 +144,10 @@
 
   private async Task addCollaborator(string username, string role)
   {
-    message = "";
-    if (role.Equals("2"))
-    {
-      users.Exists(u => u.Role.Equals("2"));
-      message = "You can have only one Scrum Master per project";
-      return;
-    }
-
+  // }
     try
     {
-      await projectService.AddCollaborator(id, username);
+      await projectService.AddCollaborator(id, username, users, role);
       await OnInitializedAsync();
       var added = searchResulsts.FirstOrDefault(u => u.Username.Equals(username));
       searchResulsts.Remove(added);

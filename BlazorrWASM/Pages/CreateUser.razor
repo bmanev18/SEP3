@@ -33,7 +33,7 @@
         </div>
         <label style="color: @color">@finalResultMsg</label>
         <div class="input-box button">
-                <input value="Register Now" @onclick="Create">
+                <input value="Register Now" @onclick="Create" readonly>
               </div>
         <div class="text">
             <h3>Already have an account? <a @onclick="@(() => navManager.NavigateTo("/"))">Login now</a></h3>
@@ -55,36 +55,32 @@
 
         finalResultMsg = "";
 
-        try
+        if (password.Equals(confirmPassword))
         {
-            if (username != "" && firstname != "" && password != "" && confirmPassword != "" && role != "")
+            try
             {
-                if (password == confirmPassword)
-                {
-                    if (password.Length >= 8)
-                    {
-                        await authService.RegisterAsync(username, firstname, lastname, password, role);
-                        username = "";
-                        password = "";
-                        confirmPassword = "";
-                        role = "";
-                        firstname = "";
-                        lastname = "";
-                        finalResultMsg = "User successfully created";
-                        color = "green";
-                    }
-                    else finalResultMsg = "The password should have more than 8 characters !";
-                }
-
-                else finalResultMsg = "The passwords don't match!";
+                await authService.RegisterAsync(username, firstname, lastname, password, role);
+                username = "";
+                password = "";
+                confirmPassword = "";
+                role = "";
+                firstname = "";
+                lastname = "";
+                color = "green";
+                finalResultMsg = "User successfully created";
             }
-            else finalResultMsg = "The fields can not be empty!";
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                finalResultMsg = e.Message;
+                color = "red";
+            }
         }
-        catch (Exception e)
+        else
         {
-            Console.WriteLine(e);
-            finalResultMsg = e.Message;
-            color = "red";
+            finalResultMsg = "Passwords do not match!";
         }
     }
-    } 
+    
+
+}
