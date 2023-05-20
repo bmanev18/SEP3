@@ -5,7 +5,7 @@ namespace Shared.DTOs;
 public class ProjectCreationDto
 {
     public string Name { get; set; }
-    public string ownerUsername { get; set; }
+    public string OwnerUsername { get; set; }
     
     
     

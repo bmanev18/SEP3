@@ -9,7 +9,7 @@ public interface IProjectService
     
     Task<IEnumerable<Project>> GetProjectsByUsername(string? nameContains = null);
 
-    Task AddCollaborator(int projectId, string username, List<UserFinderDto> users, string role);
+    Task AddCollaborator(int projectId, string username);
 
     Task<List<UserFinderDto>> GetAllCollaborators(int id);
 

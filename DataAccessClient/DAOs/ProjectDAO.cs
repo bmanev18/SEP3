@@ -25,7 +25,7 @@ public class ProjectDao : IProjectDao
     {
         ProjectCreationDto request = new ProjectCreationDto
         {
-            OwnerUsername = dto.ownerUsername,
+            OwnerUsername = dto.OwnerUsername,
             Title = dto.Name
         };
         await _client.CreateProjectAsync(request);
@@ -111,9 +111,9 @@ public class ProjectDao : IProjectDao
         return Task.FromResult(list);
     }
 
-    public Task<List<UserStory>> GetUserStoriesAsync(int id)
+    public Task<List<UserStory>> GetUserStoriesAsync(int projectId)
     {
-        var productBacklog = _client.GetUserStories(new Id { Id_ = id });
+        var productBacklog = _client.GetUserStories(new Id { Id_ = projectId });
         var list = new List<UserStory>();
         foreach (var story in productBacklog.UserStories)
         {

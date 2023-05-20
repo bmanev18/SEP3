@@ -1,6 +1,7 @@
 using Application.DAOInterfaces;
 using DataAccess.DAOs;
 using HttpClients.Implementations;
+using NUnit.Framework;
 using Shared.DTOs;
 using Shared.Model;
 
@@ -57,10 +58,10 @@ public class Tests
         ProjectCreationDto project = new ProjectCreationDto
         {
          Name = "Project1",
-         ownerUsername = "Andreea"
+         OwnerUsername = "Andreea"
     
         };
-        String actual = project.ownerUsername;
+        String actual = project.OwnerUsername;
         String expected = "Andreea";
         Assert.AreEqual(expected, actual);
     }
