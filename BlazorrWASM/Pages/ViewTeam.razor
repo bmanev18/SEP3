@@ -6,69 +6,101 @@
 @inject IUserService UserService
 <h3>ViewTeam</h3>
 
-<div class="wrapper">
-  
-  <div class="collaboratorsTable">
-    <table>
-      <thead>
-      <tr>
-        <th>Username</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Role</th>
-        <th> </th>
-      </tr>
-      </thead>
-      <tbody>
-      @foreach (var user in users)
-      {
-        <tr>
-          <td class="text-center">@user.Username</td>
-          <td class="text-center">@user.FirstName</td>
-          <td class="text-center">@user.LastName</td>
-          <td class="text-center">@roleTranslator(user.Role)</td>
-          <td class="text"> <button class="removebtn" @onclick="() => RemoveCollaborator(user.Username)"> <img src="img/personRemove.png" class="search"> </button> </td>
-        </tr>
-      }
-      </tbody>
-    </table>
-  </div>
-  <div class="search-box" @onfocusin="@(() => { showTable = true;})">
-    <label class="lforuser"> Look For User</label>
-    <button class="btn-search"><img src="img/search_FILL0_wght400_GRAD0_opsz48.png" class="search" @onclick="@(() => Search(usernameContains) )">
-    </button>
-    <input type="text" class="input-search" placeholder="Type to Search..." @bind="usernameContains">
-  </div>
-  <label> @message </label>
-  @if (showTable)
-  {
-    <div class="collaboratorsTable">
-      <table>
-        <thead>
-        <tr>
-          <th>Username</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Role</th>
-          <th> </th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var user in searchResulsts)
-        {
+
+<AuthorizeView Roles="project manager">
+  <Authorized>
+    <div class="wrapper">
+      <div class="collaboratorsTable">
+        <table>
+          <thead>
           <tr>
-            <td class="text-center">@user.Username</td>
-            <td class="text-center">@user.FirstName</td>
-            <td class="text-center">@user.LastName</td>
-            <td class="text-center">@roleTranslator(user.Role)</td>
-            <td class="text">  <button class="removebtn" @onclick="@(() => addCollaborator(user.Username, user.Role))"> <img src="img/personAdd.png" class="search"> </button> </td>
+            <th>Username</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Role</th>
+            <th> </th>
           </tr>
-        }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+          @foreach (var user in users)
+          {
+            <tr>
+              <td class="text-center">@user.Username</td>
+              <td class="text-center">@user.FirstName</td>
+              <td class="text-center">@user.LastName</td>
+              <td class="text-center">@roleTranslator(user.Role)</td>
+              <td class="text"> <button class="removebtn" @onclick="() => RemoveCollaborator(user.Username)"> <img src="img/personRemove.png" class="search"> </button> </td>
+            </tr>
+          }
+          </tbody>
+        </table>
       </div>
-  }
-</div>
+      <div class="search-box" @onfocusin="@(() => { showTable = true; })">
+        <label class="lforuser"> Look For User</label>
+        <button class="btn-search"><img src="img/search_FILL0_wght400_GRAD0_opsz48.png" class="search" @onclick="@(() => Search(usernameContains))">
+        </button>
+        <input type="text" class="input-search" placeholder="Type to Search..." @bind="usernameContains">
+      </div>
+      <label> @message </label>
+      
+      @if (showTable)
+      {
+        <div class="collaboratorsTable">
+          <table>
+            <thead>
+            <tr>
+              <th>Username</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Role</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in searchResulsts)
+            {
+              <tr>
+                <td class="text-center">@user.Username</td>
+                <td class="text-center">@user.FirstName</td>
+                <td class="text-center">@user.LastName</td>
+                <td class="text-center">@roleTranslator(user.Role)</td>
+                <td class="text"> <button class="removebtn" @onclick="@(() => addCollaborator(user.Username, user.Role))"> <img src="img/personAdd.png" class="search"> </button> </td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </Authorized>
+  <NotAuthorized>
+     <div class="wrapper">
+     <div class="collaboratorsTable">
+       <table>
+         <thead>
+         <tr>
+           <th>Username</th>
+           <th>First Name</th>
+           <th>Last Name</th>
+           <th>Role</th>
+           <th> </th>
+         </tr>
+         </thead>
+         <tbody>
+         @foreach (var user in users)
+         {
+           <tr>
+             <td class="text-center">@user.Username</td>
+             <td class="text-center">@user.FirstName</td>
+             <td class="text-center">@user.LastName</td>
+             <td class="text-center">@roleTranslator(user.Role)</td>
+           </tr>
+         }
+         </tbody>
+       </table>
+     </div>
+     </div>
+  </NotAuthorized>
+</AuthorizeView>
 
 @code {
 

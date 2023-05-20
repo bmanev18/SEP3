@@ -9,68 +9,105 @@
 @inject NavigationManager NavigationManager
 
 <h3>ViewUserStory</h3>
-<div id="addTask">
-    <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
-    @if (_showFields)
-    {
-        <input type="text" placeholder="Task Name" @bind="_name" @bind:event="oninput">
-
-        <select @bind="_assignee">
-            @foreach (var collaborator in _collaborators)
+<AuthorizeView Roles="scrum master">
+    <Authorized>
+        <div id="addTask">
+            <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
+            @if (_showFields)
             {
-                <option value=@collaborator.Username> @($"{collaborator.FirstName} {collaborator.LastName}")</option>
-            }
-        </select>
+                <input type="text" placeholder="Task Name" @bind="_name" @bind:event="oninput">
 
-        <StoryPoints Points="@_points"/>
+                <select @bind="_assignee">
+                    @foreach (var collaborator in _collaborators)
+                    {
+                        <option value=@collaborator.Username> @($"{collaborator.FirstName} {collaborator.LastName}")</option>
+                    }
+                </select>
 
-        <div class="input-box button">
-            @if (!string.IsNullOrEmpty(_msg))
-            {
-                <label style="color :red"> @_msg </label>
+                <StoryPoints Points="@_points"/>
+
+                <div class="input-box button">
+                    @if (!string.IsNullOrEmpty(_msg))
+                    {
+                        <label style="color :red"> @_msg </label>
+                    }
+                    <button @onclick="Create" class="createbtn"> Create </button>
+                </div>
             }
-            <button @onclick="Create" class="createbtn"> Create </button>
         </div>
-    }
-</div>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Status</th>
-        <th>Task</th>
-        <th>Assigned</th>
-        <th>Story Points</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var task in _tasks)
-    {
-        <tr>
-            <td>
-                <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/>
-            </td>
-            <td>
-                <label for="@task.Id" onclick="@(() => EditTask(task))">@task.Body</label>
-            </td>
-            <td>
-                @task.Assignee
-            </td>
-            <td>
-                @task.StoryPoint
-            </td>
-            <td>
-                <DeleteButton/>
-                <button class="btn">
-                    Edit
-                </button>
-            </td>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Status</th>
+                <th>Task</th>
+                <th>Assigned</th>
+                <th>Story Points</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var task in _tasks)
+            {
+                <tr>
+                    <td>
+                        <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/>
+                    </td>
+                    <td>
+                        <label for="@task.Id" onclick="@(() => EditTask(task))">@task.Body</label>
+                    </td>
+                    <td>
+                        @task.Assignee
+                    </td>
+                    <td>
+                        @task.StoryPoint
+                    </td>
+                    <td>
+                        <DeleteButton/>
+                        <button class="btn">
+                            Edit
+                        </button>
+                    </td>
 
-        </tr>
-    }
-    </tbody>
-</table>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </Authorized>
+    <NotAuthorized>
+         <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Task</th>
+                        <th>Assigned</th>
+                        <th>Story Points</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var task in _tasks)
+                    {
+                        <tr>
+                            <td>
+                                <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/>
+                            </td>
+                            <td>
+                                <label for="@task.Id" onclick="@(() => EditTask(task))">@task.Body</label>
+                            </td>
+                            <td>
+                                @task.Assignee
+                            </td>
+                            <td>
+                                @task.StoryPoint
+                            </td>
+
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private int _id = 0;
