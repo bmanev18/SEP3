@@ -75,6 +75,15 @@ public class ProjectDao : IProjectDao
         };
         await _client.UpdateUserStoryPointsAsync(request);
     }
+    public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
+    {
+        var request = new StatusUpdate()
+        {
+            Id = userStoryId,
+            Status = status
+        };
+        await _client.UpdateStatusAsync(request);
+    }
 
     public async Task DeleteUserStory(int id)
     {
@@ -120,7 +129,7 @@ public class ProjectDao : IProjectDao
             list.Add(new UserStory
             {
                 ID = story.Id, Project_id = story.ProjectId, Body = story.UserStory_, Priority = story.Priority,
-                StoryPoints = story.StoryPoint
+                StoryPoints = story.StoryPoint, Status = story.Status
             });
         }
 

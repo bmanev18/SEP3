@@ -45,6 +45,11 @@ public class ProjectLogic : IProjectLogic
         await _projectDao.DeleteUserStory(id);
     }
 
+    public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
+    {
+        await _projectDao.UpdateUserStoryStatusAsync(userStoryId, status);
+    }
+
     public async Task<int> AddUserStoryAsync(UserStoryDto dto)
     {
         return await _projectDao.AddUserStory(dto);

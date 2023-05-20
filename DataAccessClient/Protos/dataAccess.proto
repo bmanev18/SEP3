@@ -27,6 +27,7 @@ service ProjectAccess {
     rpc AddUserStory (UserStoryMessage) returns (ResponseWithID);
     rpc GetUserStories (Id) returns (UserStoriesResponse);
     rpc UpdateUserStoryPoints(PointsUpdate) returns(Response);
+    rpc UpdateStatus(StatusUpdate) returns (Response);
     rpc DeleteUserStory (Id) returns (Response);
 
     //Sprints
@@ -67,6 +68,7 @@ message ResponseWithID {
     int32 code = 1;
     int32 id = 2;
 }
+
 message UserSearchDto {
     string firstName = 1;
     string lastName = 2;
@@ -106,7 +108,7 @@ message UserStoryMessage {
     int32 project_id = 1;
     string taskBody = 2;
     string priority = 3;
-    bool status= 4;
+    string status= 4;
     int32 storyPoint=5;
 }
 message ProjectMessage {
@@ -122,7 +124,7 @@ message UserStory {
     int32 project_id = 2;
     string userStory = 3;
     string priority = 4;
-    bool status= 5;
+    string status= 5;
     int32 storyPoint=6;
 }
 message UserStoriesResponse {
@@ -132,6 +134,10 @@ message UserStoriesResponse {
 message PointsUpdate{
     int32 id = 1;
     int32 points = 2;
+}
+message StatusUpdate{
+    int32 id =1 ;
+    string status=2;
 }
 message SprintCreationRequest{
     int32 project_id = 1;
@@ -156,15 +162,15 @@ message TaskRequest{
     string asignee = 2;
     string body = 3;
     int32 storyPoints = 4;
-    bool status = 5;
+    string status = 5;
     int32 story_id = 6;
 }
 message ChangeTaskRequest{
     int32 task_id = 1;
     string body = 2;
     int32 storyPoint = 3;
-    int32 userStory_id=4;
-    bool status = 5;
+    int32 userStory_id = 4;
+    string status = 5;
 }
 message UserStoryToSprintRequest{
     int32 userStory_id = 1;
@@ -174,10 +180,12 @@ message AllTasksMessage{
     repeated TaskRequest tasks = 1;
     int32 code = 2;
 }
+
 message AssignTaskMessage{
     Username username = 1;
     int32 task_id = 2;
 }
+
 message RemoveSprintMessage{
     int32 projectId = 1;
     int32 sprintId = 2;

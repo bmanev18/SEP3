@@ -8,42 +8,45 @@
 @using global::Shared.DTOs
 <h3>View My Projects</h3>
 
+     
+            @if (!string.IsNullOrEmpty(msg))@* display any msg in case it has ny value in case of error*@
+            {
+                <div>
+                    <span>@msg</span>
+                </div>
+            }
+            
+            @if (projects == null)
+            {
+                <span>Loading..</span>
+            }
+            else if (!projects.Any())
+            {
+                <span>No projects to be found</span>
+            }
+            else 
+            {
+                <table class="table justify-content-center">
+                    
+                    <thead>
+                    <tr>
+                        <th class="text-center">Title</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (Project project in projects)
+                    {
+                        <tr @onclick="() => Open(project.id)">
+                            <td class="text-center" >@project.Title</td>
+                        </tr>
+                    }
+            
+                    </tbody>
+                </table>
+            }
 
-@if (!string.IsNullOrEmpty(msg))@* display any msg in case it has ny value in case of error*@
-{
-    <div>
-        <span>@msg</span>
-    </div>
-}
+         
 
-@if (projects == null)
-{
-    <span>Loading..</span>
-}
-else if (!projects.Any())
-{
-    <span>No projects to be found</span>
-}
-else 
-{
-    <table class="table justify-content-center">
-        
-        <thead>
-        <tr>
-            <th class="text-center">Title</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (Project project in projects)
-        {
-            <tr @onclick="() => Open(project.id)">
-                <td class="text-center" >@project.Title</td>
-            </tr>
-        }
-
-        </tbody>
-    </table>
-}
 
 
 @code {

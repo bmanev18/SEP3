@@ -30,7 +30,7 @@ public class UserStoryHttpClient : IUserStoryService
         });
         return userStory;
     }
-
+    
     public async Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id)
     {
         var uri = (id == null) ? $"/Project/UserStories" : $"/Project/UserStories/{id}";
@@ -46,19 +46,46 @@ public class UserStoryHttpClient : IUserStoryService
             {
                 PropertyNameCaseInsensitive = true
             })!;
+        Console.WriteLine(userStories.ToList().Count);
         return userStories;
     }
 
-    public async Task UpdateAsync(UserStoryUpdateDto dto)
+    // public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
+    // {
+    //     var uri = $"/Project/UpdateUserStoryStatus/{userStoryId}";
+    //     var response = await _client.PatchAsJsonAsync(uri, status);
+    //     if (!response.IsSuccessStatusCode)
+    //     {
+    //         var result = await response.Content.ReadAsStringAsync();
+    //         throw new Exception(result);
+    //     }
+    //     
+    //     
+    // }
+    public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
     {
-        // TODO!!!!
-        var response = await _client.PatchAsJsonAsync("/Project/UpdateStory", dto);
-        if (!response.IsSuccessStatusCode)
+        var uri = $"/Project/UpdateUserStoryStatus/{userStoryId}";
+        try
         {
-            var result = await response.Content.ReadAsStringAsync();
-            throw new Exception(result);
+            using (var response = await _client.PatchAsJsonAsync(uri, status))
+            {
+                if (!response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    throw new Exception(result);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle or log the exception appropriately
+            // ...
         }
     }
+
+
+
+
 
     public async Task RemoveAsync(int storyId)
     {

@@ -103,8 +103,14 @@ else
                     @* <StoryPoints StoryPoints="@userStory.StoryPoints" StoryPointsChanged="@(()=>UpdateStory(userStory))"/> *@
                 </td>
                 <td>
-                    <FancyCheckBox IsCompleted="@userStory.Status" OnChange="@(status => UpdateStory(userStory, status))"/>
-                </td>
+<div class="input-box">
+                        <select @bind="userStory.Status" @oninput="@(e =>UpdateStory(userStory, e.Value.ToString()))">
+                            <option value="to-do">to-do</option>
+                            <option value="in progress">in progress</option>
+                            <option value="done">done</option>
+                        </select>
+</div>                
+                    </td>
             </tr>
         }
 
@@ -198,7 +204,7 @@ else
     private string _storyName = "";
     private string _priority = "";
     private int _storyPoints; // By default is 0
-    private bool _status = false;
+    private string _status = "to-do";
 
     // Sprint fields
     //private int _sprintId = 0; // TODO when selecting should probably show user stories and tasks
@@ -310,47 +316,33 @@ else
         NavMgr.NavigateTo($"/ViewSprint/{storyId}");
     }
 
-    private async Task UpdateStory(UserStory userStory, bool status)
+    // private async Task UpdateStory(UserStory userStory, string status)
+    // {
+    //     UserStoryUpdateDto dto = new()
+    //     {
+    //         Id = userStory.ID,
+    //         Priority = userStory.Priority,
+    //         StoryPoints = userStory.StoryPoints,
+    //         Status = status
+    //     };
+    //
+    //     try
+    //     {
+    //         await UserStoryService.UpdateStatusAsync(dto);
+    //     }
+    //     catch (Exception e)  te
+    //     {
+    //         Console.WriteLine(e);
+    //         _storyMsg = e.Message;
+    //     }
+    // }
+
+    private async Task UpdateStory(UserStory userStory, string? eValue)
     {
-        UserStoryUpdateDto dto = new()
-        {
-            Id = userStory.ID,
-            Priority = userStory.Priority,
-            StoryPoints = userStory.StoryPoints,
-            Status = status
-        };
 
-        try
-        {
-            await UserStoryService.UpdateAsync(dto);
+        Console.WriteLine(eValue);
+        await UserStoryService.UpdateUserStoryStatusAsync(userStory.ID, eValue);
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            _storyMsg = e.Message;
-        }
-    }
-
-    private async Task UpdateStory(UserStory userStory)
-    {
-        UserStoryUpdateDto dto = new()
-        {
-            Id = userStory.ID,
-            Priority = userStory.Priority,
-            StoryPoints = userStory.StoryPoints,
-            Status = userStory.Status
-        };
-
-        try
-        {
-            await UserStoryService.UpdateAsync(dto);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            _storyMsg = e.Message;
-        }
-    }
 
     private async Task UpdateStoryPointsAsync(UserStory story, string? eValue)
     {

@@ -1,18 +1,49 @@
-﻿@inherits LayoutComponentBase
-@using Login
+﻿@* @inherits LayoutComponentBase *@
+@* @using Login *@
+@* <MudThemeProvider/> *@
+@* <MudDialogProvider/> *@
+@* <MudSnackbarProvider/> *@
+@* <div class="page"> *@
+@*     <div class="sidebar"> *@
+@*         <NavMenu/> *@
+@*     </div> *@
+@* *@
+@*     <main> *@
+@*         <div class="top-row px-4"> *@
+@*             <LoginButtons/> *@
+@*         </div> *@
+@* *@
+@*         <article class="content px-4"> *@
+@*             @Body *@
+@*         </article> *@
+@*     </main> *@
+@* </div> *@
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+@inherits LayoutComponentBase
 
-    <main>
-        <div class="top-row px-4">
-            <LoginButtons/>
-        </div>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        My Application
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <MyNavMenu/>
+    </MudDrawer>
+   <MudMainContent>
+       <MudContainer MaxWidth="MaxWidth.Medium">
+           @Body
+       </MudContainer>
+   </MudMainContent>
+</MudLayout>
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

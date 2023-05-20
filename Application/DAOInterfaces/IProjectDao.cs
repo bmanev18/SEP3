@@ -15,5 +15,7 @@ public interface IProjectDao
     Task<int> AddUserStory(UserStoryDto dto);
     Task<List<UserStory>> GetUserStoriesAsync(int id);
     Task UpdateUserStoryPointsAsync(int userStoryId, int points);
+    Task UpdateUserStoryStatusAsync(int userStoryId, string status);
+
     Task DeleteUserStory(int id);
 }

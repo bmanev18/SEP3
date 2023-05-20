@@ -16,4 +16,5 @@ public interface IProjectLogic
     Task<List<UserStory>> GetUserStoriesAsync(int id);
     Task UpdateUserStoryPointsAsync(int userStoryId, int points);
     Task DeleteUserStory(int id);
+    Task UpdateUserStoryStatusAsync(int userStoryId, string status);
 }

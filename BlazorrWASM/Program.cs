@@ -8,10 +8,13 @@ using HttpClients.ClientInterfaces;
 using HttpClients.Implementations;
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Auth;
+using MudBlazor.Services;
+
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 
+builder.Services.AddMudServices();
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<IAuthService, JwtAuthService>();

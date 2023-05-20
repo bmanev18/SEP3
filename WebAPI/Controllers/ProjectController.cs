@@ -144,6 +144,20 @@ public class ProjectController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    [HttpPatch("/Project/UpdateUserStoryStatus/{userStoryId}")]
+    public async Task<ActionResult> UpdateUserStatus(string status,[FromRoute] int userStoryId)
+    {
+        try
+        {
+            await projectLogic.UpdateUserStoryStatusAsync(userStoryId, status);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
 
     [HttpDelete("UserStory/{id:int}")]
     public async Task<ActionResult> DeleteUserStory([FromRoute] int id)
