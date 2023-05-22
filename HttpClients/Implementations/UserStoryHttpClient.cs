@@ -65,26 +65,24 @@ public class UserStoryHttpClient : IUserStoryService
     public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
     {
         var uri = $"/Project/UpdateUserStoryStatus/{userStoryId}";
-        try
+        var response = await _client.PatchAsJsonAsync(uri, status);
+        if (!response.IsSuccessStatusCode)
         {
-            using (var response = await _client.PatchAsJsonAsync(uri, status))
-            {
-                if (!response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadAsStringAsync();
-                    throw new Exception(result);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            // Handle or log the exception appropriately
-            // ...
+            var result = await response.Content.ReadAsStringAsync();
+            throw new Exception(result);
         }
     }
 
-
-
+    public async Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
+    {
+        var uri = $"/Project/UpdateUserStoryPriority/{userStoryId}";
+        var response = await _client.PatchAsJsonAsync(uri, priority);
+        if (!response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            throw new Exception(result);
+        }
+    }
 
 
     public async Task RemoveAsync(int storyId)

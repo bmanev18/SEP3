@@ -85,7 +85,15 @@ else
         {
             <tr >
                 <td class="text-center">@userStory.Body</td>
-                <td class="text-center">@userStory.Priority</td>
+                 <td>
+               <div class="input-box">
+                                       <select @bind="userStory.Priority" @oninput="@(e =>UpdatePriority(userStory, e.Value.ToString()))">
+                                           <option value="critical">critical</option>
+                                           <option value="high">high</option>
+                                           <option value="low">low</option>
+                                       </select>
+               </div>                
+                                   </td>
                 <td>
                     <div class="input-box">
                         <select @bind="userStory.StoryPoints" @oninput="@(e => UpdateStoryPointsAsync(userStory, e.Value.ToString()))">
@@ -342,7 +350,16 @@ else
 
         Console.WriteLine(eValue);
         await UserStoryService.UpdateUserStoryStatusAsync(userStory.ID, eValue);
-        }
+        
+    }
+    
+    private async Task UpdatePriority(UserStory userStory, string? eValue)
+    {
+
+        Console.WriteLine(eValue);
+        await UserStoryService.UpdateUserStoryPriorityAsync(userStory.ID, eValue);
+        
+    }
 
     private async Task UpdateStoryPointsAsync(UserStory story, string? eValue)
     {

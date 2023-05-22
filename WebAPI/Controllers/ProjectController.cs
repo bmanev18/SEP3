@@ -130,8 +130,8 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpPatch("/Project/UpdateUserStoryPoints/{userStoryId}")]
-    public async Task<ActionResult> UpdateUserStoryPoints(int points,[FromRoute] int userStoryId)
+    [HttpPatch("UpdateUserStoryPoints/{userStoryId}")]
+    public async Task<ActionResult> UpdateUserStoryPoints([FromBody]int points,[FromRoute] int userStoryId)
     {
         try
         {
@@ -144,12 +144,27 @@ public class ProjectController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpPatch("/Project/UpdateUserStoryStatus/{userStoryId}")]
-    public async Task<ActionResult> UpdateUserStatus(string status,[FromRoute] int userStoryId)
+    
+    [HttpPatch("UpdateUserStoryStatus/{userStoryId}")]
+    public async Task<ActionResult> UpdateUserStatus([FromBody]string status,[FromRoute] int userStoryId)
     {
         try
         {
             await projectLogic.UpdateUserStoryStatusAsync(userStoryId, status);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+    [HttpPatch("UpdateUserStoryPriority/{userStoryId}")]
+    public async Task<ActionResult> UpdateUserStoryPriority([FromBody]string priority,[FromRoute] int userStoryId)
+    {
+        try
+        {
+            await projectLogic.UpdateUserStoryPriorityAsync(userStoryId, priority);
             return Ok();
         }
         catch (Exception e)

@@ -82,7 +82,17 @@ public class ProjectDao : IProjectDao
             Id = userStoryId,
             Status = status
         };
-        await _client.UpdateStatusAsync(request);
+        await _client.UpdateUserStoryStatusAsync(request);
+    }
+
+    public async Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
+    {
+        var request = new PriorityUpdate()
+        {
+            Id = userStoryId,
+            Priority = priority
+        };
+        await _client.UpdateUserStoryPriorityAsync(request);
     }
 
     public async Task DeleteUserStory(int id)

@@ -9,8 +9,9 @@ public interface IUserStoryService
     Task<int> CreateUserStory(UserStoryDto dto);
 
 
-    // Task UpdateStatusAsync(UserStoryUpdateDto dto);
     Task UpdateUserStoryStatusAsync(int userStoryId, string status);
+
+    Task UpdateUserStoryPriorityAsync(int userStoryId, string status);
 
     Task RemoveAsync(int storyId);
     Task UpdateStoryPointsAsync(int userStoryId, int points);

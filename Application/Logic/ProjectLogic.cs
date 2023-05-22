@@ -50,6 +50,11 @@ public class ProjectLogic : IProjectLogic
         await _projectDao.UpdateUserStoryStatusAsync(userStoryId, status);
     }
 
+    public async Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
+    {
+        await _projectDao.UpdateUserStoryPriorityAsync(userStoryId, priority);
+    }
+
     public async Task<int> AddUserStoryAsync(UserStoryDto dto)
     {
         return await _projectDao.AddUserStory(dto);
