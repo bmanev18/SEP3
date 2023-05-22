@@ -5,12 +5,14 @@ namespace HttpClients.ClientInterfaces;
 
 public interface IUserStoryService
 {
-    Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id = null);
-    Task<int> CreateUserStory(UserStoryDto dto);
-
-
+    Task RemoveTask(int id);
+    
     Task UpdateAsync(UserStoryUpdateDto dto);
 
     Task RemoveAsync(int storyId);
     Task UpdateStoryPointsAsync(int userStoryId, int points);
+    Task<IEnumerable<SprintTask>> GetTasks(int id);
+    
+    Task CreateTask(SprintTaskCreationDto dto);
+    
 }

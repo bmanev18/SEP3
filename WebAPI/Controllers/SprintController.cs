@@ -26,25 +26,9 @@ public class SprintController : ControllerBase
         Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto); //todo done
         Task<List<UserStory>> GetAllUserStoriesFromSprint(int id);*/ //todo done
     }
-
-    //POST
-    [HttpPost("CreateSprint")]
-    public async Task<ActionResult> CreateSprint(SprintCreationDto dto)
-    {
-        try
-        {
-            await _sprintLogic.CreateSprint(dto);
-            return Created($"/project/{dto.Name}", dto);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(500, e.Message);
-        }
-    }
-
+    
     //GET
-    [HttpGet("GetSprintById/{id:int}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<Sprint>> GetSprintById(int id)
     {
         try
@@ -59,7 +43,7 @@ public class SprintController : ControllerBase
         }
     }
 
-    [HttpGet("GetAllUserStoriesFromSprint/{id:int}")]
+    [HttpGet("{id:int}/userStories")]
     public async Task<ActionResult<List<UserStory>>> GetAllUserStoriesFromSprint(int id)
     {
         try
@@ -73,39 +57,9 @@ public class SprintController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-
-    [HttpGet("getAllSprints/{id:int}")]
-    public async Task<ActionResult<List<Sprint>>> GetSprintsByProjectId([FromRoute] int id)
-    {
-        try
-        {
-            var list = await _sprintLogic.GetSprintsByProjectId(id);
-            return Ok(list);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(500, e.Message);
-        }
-    }
-
-    [HttpGet("getAllTasks/{id:int}")]
-    public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute] int id)
-    {
-        try
-        {
-            List<SprintTask> list = await _sprintLogic.GetTasks(id);
-            return Ok(list);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(500, e.Message);
-        }
-    }
-
+    
     //PATCH
-    [HttpPatch("AssignSprintTask")]
+    [HttpPatch("assignSprintTask")]
     public async Task<ActionResult> AssignSprintTask(SprintTask task)
     {
         try
@@ -120,7 +74,7 @@ public class SprintController : ControllerBase
         }
     }
 
-    [HttpPatch("AddUserStoryToSprint")]
+    [HttpPatch("/userStory")]
     public async Task<ActionResult> AddUserStoryToSprint(UserStoryToSprintDto dto)
     {
         try
@@ -135,12 +89,12 @@ public class SprintController : ControllerBase
         }
     }
 
-    [HttpDelete("RemoveUserStory")]
-    public async Task<ActionResult> RemoveUserStoryFromSprint([FromQuery] int sprintId, int userStoryId)
+    [HttpDelete("{id:int}/userStory/{userStoryId:int}")]
+    public async Task<ActionResult> RemoveUserStoryFromSprint([FromQuery] int id, int userStoryId)
     {
         UserStoryToSprintDto dto = new UserStoryToSprintDto
         {
-            SprintId = sprintId,
+            SprintId = id,
             UserStoryId = userStoryId
         };
         try
@@ -156,7 +110,7 @@ public class SprintController : ControllerBase
     }
 
     //DELETE
-    [HttpDelete("RemoveSprint")]
+    [HttpDelete]
     public async Task<ActionResult> RemoveSprint(SprintRemovalDto dto)
     {
         try
@@ -170,35 +124,6 @@ public class SprintController : ControllerBase
             throw;
         }
     }
-
-    [HttpDelete("RemoveTask")]
-    public async Task<ActionResult> RemoveTask(int id)
-    {
-        try
-        {
-            await _sprintLogic.RemoveTask(id);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    //PUT
-    [HttpPost("AddSprintTask")]
-    public async Task<ActionResult> AddSprintTask([FromBody] SprintTaskCreationDto dto)
-    {
-        try
-        {
-            await _sprintLogic.AddSprintTask(dto);
-            return Accepted();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(500, e.Message);
-        }
-    }
+    
+   
 }

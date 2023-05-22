@@ -48,9 +48,6 @@ public class SprintDao : ISprintDao
             Name = call.Name,
             StartDate = call.StarDate,
             EndDate = call.EndDate
-            /*StartDate = DateTime.ParseExact(call.StarDate, "yyyy-M -dd", CultureInfo.InvariantCulture),
-            EndDate = DateTime.ParseExact(call.EndDate, "yyyy-M -dd", CultureInfo.InvariantCulture)
-        */
         };
         return sprint;
     }
@@ -61,25 +58,21 @@ public class SprintDao : ISprintDao
         {
             Id_ = id
         };
-        var call = _client.GetSprintByProjectId(request);
-        var sprints = new List<Sprint>();
-        var callSprints = call.Sprints;
-        foreach (var sprint in callSprints)
+        var call = await _client.GetSprintByProjectIdAsync(request);
+        var list = new List<Sprint>();
+        foreach (var sprint in call.Sprints) 
         {
-            sprints.Add(new Sprint
+            list.Add(new Sprint
             {
                 Id = sprint.Id,
                 ProjectId = sprint.ProjectId,
                 Name = sprint.Name,
-                StartDate = sprint.StarDate,
-                EndDate = sprint.EndDate
-                /*StartDate = DateTime.ParseExact(sprint.StarDate, "yyyy-M -dd", CultureInfo.InvariantCulture),
-                EndDate = DateTime.ParseExact(sprint.EndDate, "yyyy-M -dd", CultureInfo.InvariantCulture)
-            */
+                EndDate = sprint.EndDate,
+                StartDate = sprint.StarDate
             });
         }
 
-        return sprints;
+        return list;
     }
 
     public Task RemoveSprint(SprintRemovalDto dto)
@@ -99,7 +92,6 @@ public class SprintDao : ISprintDao
         {
             Asignee = task.Assignee,
             Body = task.Body,
-            // Status = task.Status,
             StoryPoints = task.StoryPoint,
             StoryId = task.UserStoryId,
         };

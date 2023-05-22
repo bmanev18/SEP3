@@ -8,40 +8,32 @@ namespace HttpClients.Implementations;
 
 public class UserStoryHttpClient : IUserStoryService
 {
-    private readonly HttpClient _client;
+    private readonly HttpClient client;
 
     public UserStoryHttpClient(HttpClient client)
     {
-        this._client = client;
+        this.client = client;
     }
-
-    public async Task<int> CreateUserStory(UserStoryDto dto)
+    
+    public async Task RemoveTask(int taskId)
     {
-        HttpResponseMessage response = await _client.PostAsJsonAsync("/Project/userStory", dto);
-        string result = await response.Content.ReadAsStringAsync();
+        var response = await client.DeleteAsync($"/Sprint/RemoveTask/{taskId}");
         if (!response.IsSuccessStatusCode)
         {
+            var result = await response.Content.ReadAsStringAsync();
             throw new Exception(result);
         }
-
-        int userStory = JsonSerializer.Deserialize<int>(result, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return userStory;
     }
-
-    public async Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id)
+    public async Task<IEnumerable<SprintTask>> GetTasks(int id)
     {
-        var uri = (id == null) ? $"/Project/UserStories" : $"/Project/UserStories/{id}";
-        var response = await _client.GetAsync(uri);
+        
+        var response = await client.GetAsync($"userStory{id}/tasks");
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(result);
         }
-
-        var userStories = JsonSerializer.Deserialize<IEnumerable<UserStory>>(result,
+        var userStories = JsonSerializer.Deserialize<IEnumerable<SprintTask>>(result,
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -49,10 +41,21 @@ public class UserStoryHttpClient : IUserStoryService
         return userStories;
     }
 
+    public async Task CreateTask(SprintTaskCreationDto dto)
+    {
+        var response = await client.PostAsJsonAsync("/Sprint/AddSprintTask", dto);
+        var result = await response.Content.ReadAsStringAsync();
+        Console.WriteLine("here" + result);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+    }
+
     public async Task UpdateAsync(UserStoryUpdateDto dto)
     {
         // TODO!!!!
-        var response = await _client.PatchAsJsonAsync("/Project/UpdateStory", dto);
+        var response = await client.PatchAsJsonAsync("/Project/UpdateStory", dto);
         if (!response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadAsStringAsync();
@@ -62,7 +65,7 @@ public class UserStoryHttpClient : IUserStoryService
 
     public async Task RemoveAsync(int storyId)
     {
-        var response = await _client.DeleteAsync($"/Project/DeleteStory/{storyId}");
+        var response = await client.DeleteAsync($"userStory/{storyId}/task");
         if (!response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadAsStringAsync();
@@ -72,8 +75,8 @@ public class UserStoryHttpClient : IUserStoryService
 
     public async Task UpdateStoryPointsAsync(int userStoryId, int points)
     {
-        var uri = $"/Project/UpdateUserStoryPoints/{userStoryId}";
-        var response = await _client.PatchAsJsonAsync(uri, points);
+        var uri = $"userStory/{userStoryId}/storyPoints";
+        var response = await client.PatchAsJsonAsync(uri,points);
         if (!response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadAsStringAsync();

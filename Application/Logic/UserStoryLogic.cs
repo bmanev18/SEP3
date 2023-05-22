@@ -1,6 +1,7 @@
 ﻿using Application.DAOInterfaces;
 using Application.LogicInterfaces;
 using Shared.DTOs;
+using Shared.Model;
 
 namespace Application.Logic;
 
@@ -13,8 +14,28 @@ public class UserStoryLogic:IUserStoryLogic
         _storyDao = storyDao;
     }
 
-    public async Task CreateAsync(UserStoryDto dto)
+    public async Task<List<SprintTask>> GetTasks(int id)
     {
-        await _storyDao.CreateAsync(dto);
+        return await _storyDao.GetTasks(id);
+    }
+
+    public async Task RemoveTask(int id)
+    {
+        await _storyDao.RemoveTask(id);
+    }
+
+    public async Task AddSprintTask(SprintTaskCreationDto dto)
+    {
+        await _storyDao.AddSprintTask(dto);
+    }
+
+    public async Task DeleteUserStory(int id)
+    {
+        await _storyDao.DeleteUserStory(id);
+    }
+
+    public async Task UpdateUserStoryPointsAsync(int id, int points)
+    {
+        await _storyDao.UpdateUserStoryPointsAsync(id, points);
     }
 }

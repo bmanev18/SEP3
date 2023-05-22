@@ -14,22 +14,10 @@ public class SprintLogic : ISprintLogic
         this._sprintDao = _sprintDao;
     }
     
-    
-    public async Task CreateSprint(SprintCreationDto dto)
-    {
-        await _sprintDao.CreateSprint(dto);
-    }
-
     public async Task<Sprint> GetSprintById(int id)
     {
         return await _sprintDao.GetSprintById(id);
     }
-
-    public async Task<List<Sprint>> GetSprintsByProjectId(int id)
-    {
-        return await _sprintDao.GetSprintsByProjectId(id);
-    }
-    
 
     public async Task RemoveSprint(SprintRemovalDto dto)
     {
@@ -66,9 +54,4 @@ public class SprintLogic : ISprintLogic
     {
         return await _sprintDao.GetAllUserStoriesFromSprint(id);
     }
-    public async Task RemoveTask(int id)
-    {
-         await _sprintDao.RemoveTask(id);
-    }
-    
 }
