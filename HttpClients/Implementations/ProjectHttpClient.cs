@@ -54,17 +54,15 @@ public class ProjectHttpClient : IProjectService
         return projects;
     }
 
-    public async Task AddCollaborator(int projectId, string username, List<UserFinderDto> users, string role)
+    public async Task AddCollaborator(int projectId, string username)
     {
-        AddUserToProjectDto dto = new AddUserToProjectDto
+        var dto = new AddUserToProjectDto
         {
             ProjectID = projectId,
             Username = username,
-            Users = users,
-            Role = role
         };
-        HttpResponseMessage response = await _client.PutAsJsonAsync("/project", dto);
-        string result = await response.Content.ReadAsStringAsync();
+        var response = await _client.PutAsJsonAsync("/project", dto);
+        var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(result);

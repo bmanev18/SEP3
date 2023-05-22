@@ -22,10 +22,7 @@ public class ProjectLogic : IProjectLogic
 
     public async Task AddCollaboratorAsync(AddUserToProjectDto collaborator)
     {
-        if (collaborator.Role.Equals("2"))
-        {
-            CollaboratorValidator(collaborator.Users);
-        }
+        
         await _projectDao.AddCollaborator(collaborator);
     }
 
@@ -59,9 +56,9 @@ public class ProjectLogic : IProjectLogic
         return await _projectDao.GetAllProjects(username);
     }
 
-    public async Task<List<UserStory>> GetUserStoriesAsync(int id)
+    public async Task<List<UserStory>> GetUserStoriesAsync(int projectId)
     {
-        return await _projectDao.GetUserStoriesAsync(id);
+        return await _projectDao.GetUserStoriesAsync(projectId);
     }
 
     private void CollaboratorValidator(List<UserFinderDto?> users)

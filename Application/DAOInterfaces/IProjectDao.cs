@@ -13,7 +13,7 @@ public interface IProjectDao
     Task<int> RemoveCollaborator(AddUserToProjectDto collaborator);
     
     Task<int> AddUserStory(UserStoryDto dto);
-    Task<List<UserStory>> GetUserStoriesAsync(int id);
+    Task<List<UserStory>> GetUserStoriesAsync(int projectId);
     Task UpdateUserStoryPointsAsync(int userStoryId, int points);
     Task DeleteUserStory(int id);
 }
