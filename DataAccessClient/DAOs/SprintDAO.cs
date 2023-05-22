@@ -99,7 +99,7 @@ public class SprintDao : ISprintDao
         {
             Asignee = task.Assignee,
             Body = task.Body,
-            Status = task.Status,
+            // Status = task.Status,
             StoryPoints = task.StoryPoint,
             StoryId = task.UserStoryId,
         };
@@ -123,7 +123,7 @@ public class SprintDao : ISprintDao
                 Body = task.Body,
                 Id = task.Id,
                 StoryPoint = task.StoryPoints,
-                Status = task.Status
+                // Status = task.Status
             });
         }
 
@@ -135,7 +135,7 @@ public class SprintDao : ISprintDao
         TaskRequest request = new TaskRequest
         {
             Body = task.Body,
-            Status = task.Status,
+            // Status = task.Status,
             StoryPoints = task.StoryPoint,
             Id = task.Id,
             Asignee = task.Assignee

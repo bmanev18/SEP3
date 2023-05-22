@@ -6,7 +6,7 @@ public class SprintTask
     public string Assignee { get; set; }
     public string Body { get; set; }
     public int StoryPoint { get; set; }
-    public bool Status { get; set; }
+    // public bool Status { get; set; }
     
     
 }

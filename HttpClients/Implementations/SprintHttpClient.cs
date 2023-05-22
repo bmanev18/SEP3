@@ -54,17 +54,6 @@ public class SprintHttpClient : ISprintService
         }
     }
 
-
-    public async Task CreateTask(TaskCreationDto dto)
-    {
-        var response = await _client.PostAsJsonAsync("/Sprint/AddSprintTask", dto);
-        var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-    }
-
     public async Task<IEnumerable<SprintTask>> GetTasks(int? storyId)
     {
         var uri = (storyId == null) ? $"/Sprint/getAllTasks" : $"/Sprint/getAllTasks/{storyId}";
@@ -82,6 +71,17 @@ public class SprintHttpClient : ISprintService
                 PropertyNameCaseInsensitive = true
             })!;
         return userStories;
+    }
+
+    public async Task CreateTask(SprintTaskCreationDto dto)
+    {
+        var response = await _client.PostAsJsonAsync("/Sprint/AddSprintTask", dto);
+        var result = await response.Content.ReadAsStringAsync();
+        Console.WriteLine("here" + result);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
     }
 
     public async Task UpdateTask(SprintTask task)
@@ -104,4 +104,5 @@ public class SprintHttpClient : ISprintService
             throw new Exception(result);
         }
     }
+    
 }

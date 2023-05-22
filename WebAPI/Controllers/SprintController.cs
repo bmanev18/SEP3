@@ -7,7 +7,6 @@ namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-
 public class SprintController : ControllerBase
 {
     private readonly ISprintLogic _sprintLogic;
@@ -27,7 +26,7 @@ public class SprintController : ControllerBase
         Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto); //todo done
         Task<List<UserStory>> GetAllUserStoriesFromSprint(int id);*/ //todo done
     }
-    
+
     //POST
     [HttpPost("CreateSprint")]
     public async Task<ActionResult> CreateSprint(SprintCreationDto dto)
@@ -43,6 +42,7 @@ public class SprintController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+
     //GET
     [HttpGet("GetSprintById/{id:int}")]
     public async Task<ActionResult<Sprint>> GetSprintById(int id)
@@ -51,7 +51,6 @@ public class SprintController : ControllerBase
         {
             var result = await _sprintLogic.GetSprintById(id);
             return Ok(result);
-
         }
         catch (Exception e)
         {
@@ -76,7 +75,7 @@ public class SprintController : ControllerBase
     }
 
     [HttpGet("getAllSprints/{id:int}")]
-    public async Task<ActionResult<List<Sprint>>> GetSprintsByProjectId([FromRoute]int id)
+    public async Task<ActionResult<List<Sprint>>> GetSprintsByProjectId([FromRoute] int id)
     {
         try
         {
@@ -91,7 +90,7 @@ public class SprintController : ControllerBase
     }
 
     [HttpGet("getAllTasks/{id:int}")]
-    public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute]int id)
+    public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute] int id)
     {
         try
         {
@@ -104,6 +103,7 @@ public class SprintController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+
     //PATCH
     [HttpPatch("AssignSprintTask")]
     public async Task<ActionResult> AssignSprintTask(SprintTask task)
@@ -112,8 +112,8 @@ public class SprintController : ControllerBase
         {
             await _sprintLogic.EditTask(task);
             return Accepted();
-            
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Console.WriteLine(e);
             return StatusCode(500, e.Message);
@@ -127,7 +127,6 @@ public class SprintController : ControllerBase
         {
             await _sprintLogic.AddUserStoryToSprint(dto);
             return Accepted();
-
         }
         catch (Exception e)
         {
@@ -135,9 +134,9 @@ public class SprintController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    
-    [HttpDelete ("RemoveUserStory")]
-    public async Task<ActionResult> RemoveUserStoryFromSprint([FromQuery]int sprintId, int userStoryId)
+
+    [HttpDelete("RemoveUserStory")]
+    public async Task<ActionResult> RemoveUserStoryFromSprint([FromQuery] int sprintId, int userStoryId)
     {
         UserStoryToSprintDto dto = new UserStoryToSprintDto
         {
@@ -148,13 +147,14 @@ public class SprintController : ControllerBase
         {
             await _sprintLogic.RemoveUserStoryFromSprint(dto);
             return Accepted();
-            
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Console.WriteLine(e);
             return StatusCode(500, e.Message);
         }
     }
+
     //DELETE
     [HttpDelete("RemoveSprint")]
     public async Task<ActionResult> RemoveSprint(SprintRemovalDto dto)
@@ -163,7 +163,6 @@ public class SprintController : ControllerBase
         {
             await _sprintLogic.RemoveSprint(dto);
             return Ok();
-
         }
         catch (Exception e)
         {
@@ -171,6 +170,7 @@ public class SprintController : ControllerBase
             throw;
         }
     }
+
     [HttpDelete("RemoveTask")]
     public async Task<ActionResult> RemoveTask(int id)
     {
@@ -178,7 +178,6 @@ public class SprintController : ControllerBase
         {
             await _sprintLogic.RemoveTask(id);
             return Ok();
-
         }
         catch (Exception e)
         {
@@ -186,9 +185,10 @@ public class SprintController : ControllerBase
             throw;
         }
     }
+
     //PUT
-    [HttpPut("AddSprintTask")]
-    public async Task<ActionResult> AddSprintTask(SprintTaskCreationDto dto)
+    [HttpPost("AddSprintTask")]
+    public async Task<ActionResult> AddSprintTask([FromBody] SprintTaskCreationDto dto)
     {
         try
         {

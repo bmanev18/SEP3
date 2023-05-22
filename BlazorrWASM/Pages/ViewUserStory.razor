@@ -6,9 +6,10 @@
 @using global::Shared.DTOs
 @using global::UIComponents
 @using HttpClients.ClientInterfaces
-@inject NavigationManager NavigationManager
+@using System.Security.AccessControl
+@inject NavigationManager NavMgr
 
-<h3>ViewUserStory</h3>
+<h3>View User Story</h3>
 <div id="addTask">
     <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
     @if (_showFields)
@@ -16,9 +17,12 @@
         <input type="text" placeholder="Task Name" @bind="_name" @bind:event="oninput">
 
         <select @bind="_assignee">
-            @foreach (var collaborator in _collaborators)
+            @if (_collaborators != null)
             {
-                <option value=@collaborator.Username> @($"{collaborator.FirstName} {collaborator.LastName}")</option>
+                foreach (var collaborator in _collaborators)
+                {
+                    <option value=@collaborator.Username> @($"{collaborator.FirstName} {collaborator.LastName}")</option>
+                }
             }
         </select>
 
@@ -32,45 +36,55 @@
             <button @onclick="Create" class="createbtn"> Create </button>
         </div>
     }
-</div>
+</div> 
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Status</th>
-        <th>Task</th>
-        <th>Assigned</th>
-        <th>Story Points</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var task in _tasks)
-    {
+@if (_tasks == null)
+{
+    <span>Loading..tasks</span>
+}
+else if (!_tasks.Any())
+{
+    <span>No tasks to be found</span>
+}
+else
+{
+    <table class="table">
+        <thead>
         <tr>
-            <td>
-                <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/>
-            </td>
-            <td>
-                <label for="@task.Id" onclick="@(() => EditTask(task))">@task.Body</label>
-            </td>
-            <td>
-                @task.Assignee
-            </td>
-            <td>
-                @task.StoryPoint
-            </td>
-            <td>
-                <DeleteButton/>
-                <button class="btn">
-                    Edit
-                </button>
-            </td>
-
+            <th>Status</th>
+            <th>Task</th>
+            <th>Assigned</th>
+            <th>Story Points</th>
+            <th></th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var task in _tasks)
+        {
+            <tr>
+                <td>
+                    @* <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/> *@
+                </td>
+                <td>
+                    <label for="@task.Id" onclick="@(() => EditTask(task))">@task.Body</label>
+                </td>
+                <td>
+                    @task.Assignee
+                </td>
+                <td>
+                    @task.StoryPoint
+                </td>
+                <td>
+                    @* <DeleteButton/> *@
+                    <button class="btn" @onclick="() => Open(task.Id)">Edit </button>
+                </td>
+
+            </tr>
+        }
+        }
+        </tbody>
+    </table>
+}
 
 @code {
     private int _id = 0;
@@ -81,43 +95,46 @@
     private bool _showFields = false;
     private string _msg = "";
 
+    private IEnumerable<UserFinderDto>? _collaborators;
+    private IEnumerable<SprintTask>? _tasks;
+
+
     [Parameter]
     public int ProjectId { get; set; }
 
     [Parameter]
     public int StoryId { get; set; }
+    
 
-    //TODO Temporary values 
-    private IEnumerable<UserFinderDto> _collaborators = new List<UserFinderDto>()
+    protected override async Task OnInitializedAsync()
     {
-        new() { FirstName = "Jane", LastName = "Doe", Username = "janedoe", Role = "scrum master" },
-        new() { FirstName = "Bob", LastName = "Smith", Username = "bobsmith", Role = "developer" },
-        new() { FirstName = "Alice", LastName = "Johnson", Username = "alicejohnson", Role = "developer" }
-    };
+        try
+        {
+            await LoadCollaborators();
+            await LoadTasks();
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
 
-    private IEnumerable<SprintTask> _tasks = new List<SprintTask>()
-    {
-        new() { Id = 1, Body = "Task 1", Assignee = "John", Status = false },
-        new() { Id = 2, Body = "Task 2", Assignee = "Jane", Status = true },
-        new() { Id = 3, Body = "Task 3", Assignee = "Bob", Status = false },
-        new() { Id = 4, Body = "Task 4", Assignee = "Alice", Status = true }
-    };
-
-
-    /*protected override async Task OnInitializedAsync()
-    {
-        LoadCollaborators();
-    }*/
+    }
 
     private async Task LoadCollaborators()
     {
-        _collaborators = (await ProjectService.GetAllCollaborators(ProjectId)).Where(dto => dto.Role.Equals("developer"));
+        var allCollaborators = await ProjectService.GetAllCollaborators(ProjectId);
+        _collaborators = allCollaborators.Where(dto => dto.Role.Equals("developer")).ToList();
     }
 
     private async Task Create()
     {
-        var dto = new TaskCreationDto(_name, _assignee, _points);
+        var dto = new SprintTaskCreationDto(StoryId,_assignee,_name, _points);
+        Console.WriteLine(1);
         await SprintService.CreateTask(dto);
+        Console.WriteLine(2);
+        await LoadTasks();
+        Console.WriteLine(3);
     }
 
     private async Task UpdateStatus(int taskId, bool status)
@@ -139,6 +156,12 @@
 
     private void EditTask(SprintTask task)
     {
-        //NavigationManager.NavigateTo($"/EditTask/{ProjectId}/{StoryId}/task?taskId={task.Id}&name={task.Name}&assignee={task.Assignee}&points={task.Points}");
+    //NavigationManager.NavigateTo($"/EditTask/{ProjectId}/{StoryId}/task?taskId={task.Id}&name={task.Name}&assignee={task.Assignee}&points={task.Points}");
     }
+    
+    private async void Open(int id)
+    {
+        NavMgr.NavigateTo($"/ViewProject/{ProjectId}/ViewUserStory/{StoryId}/EditTask/{id}");
+    }
+
 }

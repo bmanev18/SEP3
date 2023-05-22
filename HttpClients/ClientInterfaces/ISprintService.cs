@@ -14,10 +14,10 @@ public interface ISprintService
     
     // Tasks
     Task<IEnumerable<SprintTask>> GetTasks(int? storyId = null);
-    Task CreateTask(TaskCreationDto dto);
+
+    Task CreateTask(SprintTaskCreationDto dto);
 
     Task UpdateTask(SprintTask task);
-
 
     Task RemoveTask(int taskId);
 }
