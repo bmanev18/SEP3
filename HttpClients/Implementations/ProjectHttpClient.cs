@@ -31,29 +31,6 @@ public class ProjectHttpClient : IProjectService
         })!;
         return project;
     }
-    
-    public async Task<IEnumerable<Project>> GetProjectsByUsername(string? username)
-    {
-        string uri = "/Project";
-        if (!string.IsNullOrEmpty(username))
-        {
-            uri += $"/{username}";
-        }
-        Console.WriteLine(uri);
-
-        HttpResponseMessage response = await client.GetAsync(uri);
-        string result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-        IEnumerable<Project> projects = JsonSerializer.Deserialize<IEnumerable<Project>>(result, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
-        return projects;
-    }
-
     public async Task AddCollaborator(int projectId, string username)
     {
         var dto = new AddUserToProjectDto
@@ -72,7 +49,7 @@ public class ProjectHttpClient : IProjectService
 
     public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
     {
-        HttpResponseMessage response = await client.GetAsync($"project/{id}/collaborators");
+        HttpResponseMessage response = await client.GetAsync($"project/{id}/collaborator");
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -105,7 +82,7 @@ public class ProjectHttpClient : IProjectService
     }
     public async Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id)
     {
-        var response = await client.GetAsync($"project/{id}/userStories");
+        var response = await client.GetAsync($"/project/{id}/userStory");
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -130,8 +107,7 @@ public class ProjectHttpClient : IProjectService
     }
     public async Task<IEnumerable<Sprint>> GetSprintsAsync(int? projectId)
     {
-        var uri = projectId == null ? "/Sprint/getAllSprints" : $"/Sprint/getAllSprints/{projectId}";
-        var response = await client.GetAsync(uri);
+        var response = await client.GetAsync($"/Project/{projectId}/sprint");
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {

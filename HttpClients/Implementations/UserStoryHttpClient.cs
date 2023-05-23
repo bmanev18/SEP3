@@ -27,23 +27,23 @@ public class UserStoryHttpClient : IUserStoryService
     public async Task<IEnumerable<SprintTask>> GetTasks(int id)
     {
         
-        var response = await client.GetAsync($"userStory{id}/tasks");
+        var response = await client.GetAsync($"/{id}/tasks");
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(result);
         }
-        var userStories = JsonSerializer.Deserialize<IEnumerable<SprintTask>>(result,
+        var sprintTasks = JsonSerializer.Deserialize<IEnumerable<SprintTask>>(result,
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             })!;
-        return userStories;
+        return sprintTasks;
     }
 
     public async Task CreateTask(SprintTaskCreationDto dto)
     {
-        var response = await client.PostAsJsonAsync("/Sprint/AddSprintTask", dto);
+        var response = await client.PostAsJsonAsync($"/userStory/task",dto);
         var result = await response.Content.ReadAsStringAsync();
         Console.WriteLine("here" + result);
         if (!response.IsSuccessStatusCode)
@@ -63,9 +63,9 @@ public class UserStoryHttpClient : IUserStoryService
         }
     }
 
-    public async Task RemoveAsync(int storyId)
+    public async Task RemoveAsync(int Id)
     {
-        var response = await client.DeleteAsync($"userStory/{storyId}/task");
+        var response = await client.DeleteAsync($"userStory/{Id}");
         if (!response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadAsStringAsync();
@@ -75,8 +75,7 @@ public class UserStoryHttpClient : IUserStoryService
 
     public async Task UpdateStoryPointsAsync(int userStoryId, int points)
     {
-        var uri = $"userStory/{userStoryId}/storyPoints";
-        var response = await client.PatchAsJsonAsync(uri,points);
+        var response = await client.PatchAsJsonAsync("UserStory/storyPoints",points);
         if (!response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadAsStringAsync();

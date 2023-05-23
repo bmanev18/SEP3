@@ -104,7 +104,9 @@ else
                     @* <StoryPoints StoryPoints="@userStory.StoryPoints" StoryPointsChanged="@(()=>UpdateStory(userStory))"/> *@
                 </td>
                 <td>
-                    <FancyCheckBox IsCompleted="@userStory.Status" OnChange="@(status => UpdateStory(userStory, status))"/>
+                    @*
+                    <FancyCheckBox IsCompleted="@userStory.Status" OnChange="@(status => UpdateStory(userStory, status))"/> 
+                *@
                 </td>
             </tr>
         }

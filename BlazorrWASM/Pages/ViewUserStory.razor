@@ -10,8 +10,9 @@
 @using System.Security.AccessControl
 @inject NavigationManager NavMgr
 
+@*
 <AuthorizeView roles="scrum master">
-    <Authorized>
+    <Authorized>*@
         <h3>View User Story</h3>
         <div id="addTask">
             <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
@@ -87,9 +88,9 @@
                 </tbody>
             </table>
         }
-    </Authorized>
-    <NotAuthorized>
-        @if (_tasks == null)
+    @*</Authorized>
+    <NotAuthorized>*@
+        @*@if (_tasks == null)
                 {
                     <span>Loading..tasks</span>
                 }
@@ -113,7 +114,7 @@
                         {
                             <tr>
                                 <td>
-                                    @* <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/> *@
+                                    $1$ <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/> #1#
                                 </td>
                                 <td>
                                     <label for="@task.Id" onclick="@(() => EditTask(task))">@task.Body</label>
@@ -129,9 +130,9 @@
                         }
                         </tbody>
                     </table>
-                }
-    </NotAuthorized>
-</AuthorizeView>
+                }*@
+    @*</NotAuthorized>
+</AuthorizeView>*@
 
 @code {
     private int _id = 0;
@@ -159,7 +160,6 @@
         {
             await LoadCollaborators();
             await LoadTasks();
-            
         }
         catch (Exception e)
         {

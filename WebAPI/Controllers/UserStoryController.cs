@@ -6,7 +6,7 @@ using Shared.Model;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]/{id:int}")]
+[Route("[controller]")]
 public class UserStoryController : ControllerBase
 {
     private readonly IUserStoryLogic _userStoryLogic;
@@ -33,7 +33,7 @@ public class UserStoryController : ControllerBase
         }
     }
 
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteUserStory([FromRoute] int id)
     {
         try
@@ -78,8 +78,8 @@ public class UserStoryController : ControllerBase
         }
     }
     
-    [HttpGet("task")]
-    public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute] int id)
+    [HttpGet("userStory/{id:int}/tasks")]
+    public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute]int id)
     {
         try
         {
@@ -92,7 +92,7 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpDelete("task/{taskId:int}")]
+    [HttpDelete("/task/{taskId:int}")]
     public async Task<ActionResult> RemoveTask(int id, int taskId)
     {
         try

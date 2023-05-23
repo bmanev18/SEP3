@@ -15,7 +15,7 @@ public class ProjectController : ControllerBase
 
     public ProjectController(IProjectLogic projectLogic)
     {
-        this._projectLogic = projectLogic;
+        _projectLogic = projectLogic;
     }
 
     [HttpPost]
@@ -111,6 +111,7 @@ public class ProjectController : ControllerBase
         try
         {
             List<UserStory> list = await _projectLogic.GetUserStoriesAsync(id);
+            Console.WriteLine(list);
             return Ok(list);
         }
         catch (Exception e)

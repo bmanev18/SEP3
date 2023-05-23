@@ -53,7 +53,7 @@ public class UserStoryDao : IUserStoryDao
 
     public async Task EditTask(SprintTask task)
     {
-        TaskRequest request = new TaskRequest()
+        TaskRequest request = new TaskRequest
         {
             Id = task.Id,
             StoryId = task.UserStoryId,
@@ -65,13 +65,13 @@ public class UserStoryDao : IUserStoryDao
         await _client.EditTaskAsync(request);
     }
 
-    public async Task<List<SprintTask>> GetTasks(int id)
+    public Task<List<SprintTask>> GetTasks(int id)
     {
         var request = new Id
         {
             Id_ = id
         };
-        var call = await _client.GetTasksAsync(request);
+        var call = _client.GetTasks(request);
         var tasks = new List<SprintTask>();
         foreach (var task in call.Tasks)
         {
@@ -86,7 +86,7 @@ public class UserStoryDao : IUserStoryDao
             });
         }
 
-        return tasks;
+        return Task.FromResult(tasks);
     }
 
     public async Task DeleteTask(int id)
