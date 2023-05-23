@@ -6,14 +6,8 @@ namespace Application.LogicInterfaces;
 public interface ISprintLogic
 {
     Task<Sprint> GetSprintById(int id);
-    
-    Task EditTask(SprintTask task);
-    Task RemoveSprint(SprintRemovalDto dto);
-
+    Task RemoveSprint(int id);
     Task AddUserStoryToSprint(UserStoryToSprintDto dto);
+    Task<List<UserStory>> GetUserStoriesFromSprint(int id);
     Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto);
-
-    Task<List<UserStory>> GetAllUserStoriesFromSprint(int id);
-    
-
 }

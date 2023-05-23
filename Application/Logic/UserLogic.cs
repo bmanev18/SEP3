@@ -13,14 +13,13 @@ public class UserLogic : IUserLogic
     {
         _userDao = userDao;
     }
-    
-    
-    public async Task CreateAsync(UserCreationDto dto)
+
+    public async Task<List<ProjectDto>> GetProjectsAsync(string username)
     {
-        await _userDao.CreateAsync(dto);
+        return await _userDao.GetProjects(username);
     }
 
-    public async Task<List<UserFinderDto>> LookForUsers(string username)
+    public async Task<List<UserFinderDto>> LookForUsersAsync(string username)
     {
         return await _userDao.LookForUsers(username);
     }

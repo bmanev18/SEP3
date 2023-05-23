@@ -6,9 +6,9 @@ namespace HttpClients.ClientInterfaces;
 
 public interface IUserService
 {
-    Task<User> Create(UserCreationDto dto);
+    Task<IEnumerable<Project>> GetProjectsByUsernameAsync(string? username);
     
-    Task<List<UserFinderDto>> LookForUsers(string usernameContains);
+    Task<List<UserFinderDto>> LookForUsersAsync(string usernameContains);
 
 
 }

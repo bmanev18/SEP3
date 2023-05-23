@@ -17,50 +17,14 @@ public class UserStoryDao : IUserStoryDao
         _client = new ProjectAccess.ProjectAccessClient(channel);
     }
 
-    public async Task<List<SprintTask>> GetTasks(int id)
+    public async Task UpdateUserStoryPointsAsync(int userStoryId, int points)
     {
-        var request = new Id
+        var request = new PointsUpdate
         {
-            Id_ = id
+            Id = userStoryId,
+            Points = points
         };
-        var call =  await _client.GetTasksAsync(request);
-        var tasks = new List<SprintTask>();
-        foreach (var task in call.Tasks)
-        {
-            tasks.Add(new SprintTask
-            {
-                Assignee = task.Asignee,
-                Body = task.Body,
-                Id = task.Id,
-                StoryPoint = task.StoryPoints,
-            });
-        }
-
-        return tasks;
-    }
-
-    public async Task RemoveTask(int id)
-    {
-        var request = new Id
-        {
-            Id_ = id
-        };
-       await _client.RemoveTaskAsync(request);
-    }
-
-    public Task AddSprintTask(SprintTaskCreationDto task)
-    {
-        {
-            var request = new TaskRequest
-            {
-                Asignee = task.Assignee,
-                Body = task.Body,
-                StoryPoints = task.StoryPoint,
-                StoryId = task.UserStoryId,
-            };
-            _client.AddTask(request);
-            return Task.CompletedTask;
-        }
+        await _client.UpdateUserStoryPointsAsync(request);
     }
 
     public async Task DeleteUserStory(int id)
@@ -72,14 +36,65 @@ public class UserStoryDao : IUserStoryDao
         await _client.DeleteUserStoryAsync(request);
     }
 
-    public async Task UpdateUserStoryPointsAsync(int userStoryId, int points)
+    public Task AddSprintTask(SprintTaskCreationDto task)
     {
-        var request = new PointsUpdate
         {
-            Id = userStoryId,
-            Points = points
-        };
-        await _client.UpdateUserStoryPointsAsync(request);
+            var request = new TaskCreationRequest
+            {
+                Assignee = task.Assignee,
+                Body = task.Body,
+                StoryPoints = task.StoryPoint,
+                UserStoryId = task.UserStoryId
+            };
+            _client.AddTask(request);
+            return Task.CompletedTask;
+        }
     }
-    
+
+    public async Task EditTask(SprintTask task)
+    {
+        TaskRequest request = new TaskRequest()
+        {
+            Id = task.Id,
+            StoryId = task.UserStoryId,
+            Assignee = task.Assignee,
+            Body = task.Body,
+            StoryPoints = task.StoryPoint,
+            Status = task.Status
+        };
+        await _client.EditTaskAsync(request);
+    }
+
+    public async Task<List<SprintTask>> GetTasks(int id)
+    {
+        var request = new Id
+        {
+            Id_ = id
+        };
+        var call = await _client.GetTasksAsync(request);
+        var tasks = new List<SprintTask>();
+        foreach (var task in call.Tasks)
+        {
+            tasks.Add(new SprintTask
+            {
+                Id = task.Id,
+                UserStoryId = task.StoryId,
+                Assignee = task.Assignee,
+                Body = task.Body,
+                StoryPoint = task.StoryPoints,
+                Status = task.Status
+            });
+        }
+
+        return tasks;
+    }
+
+    public async Task DeleteTask(int id)
+    {
+        var request = new Id
+        {
+            Id_ = id
+        };
+        await _client.RemoveTaskAsync(request);
+    }
 }

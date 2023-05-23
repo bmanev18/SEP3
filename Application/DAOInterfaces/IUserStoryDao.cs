@@ -5,9 +5,10 @@ namespace Application.DAOInterfaces;
 
 public interface IUserStoryDao
 {
-    Task<List<SprintTask>> GetTasks(int id);
-    Task RemoveTask(int id);
-    Task AddSprintTask(SprintTaskCreationDto dto);
-    Task DeleteUserStory(int id);
     Task UpdateUserStoryPointsAsync(int id, int points);
+    Task DeleteUserStory(int id);
+    Task AddSprintTask(SprintTaskCreationDto dto);
+    Task EditTask(SprintTask task);
+    Task<List<SprintTask>> GetTasks(int id);
+    Task DeleteTask(int id);
 }

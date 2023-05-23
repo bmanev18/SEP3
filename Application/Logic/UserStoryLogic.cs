@@ -14,19 +14,9 @@ public class UserStoryLogic:IUserStoryLogic
         _storyDao = storyDao;
     }
 
-    public async Task<List<SprintTask>> GetTasks(int id)
+    public async Task UpdateUserStoryPointsAsync(int id, int points)
     {
-        return await _storyDao.GetTasks(id);
-    }
-
-    public async Task RemoveTask(int id)
-    {
-        await _storyDao.RemoveTask(id);
-    }
-
-    public async Task AddSprintTask(SprintTaskCreationDto dto)
-    {
-        await _storyDao.AddSprintTask(dto);
+        await _storyDao.UpdateUserStoryPointsAsync(id, points);
     }
 
     public async Task DeleteUserStory(int id)
@@ -34,8 +24,23 @@ public class UserStoryLogic:IUserStoryLogic
         await _storyDao.DeleteUserStory(id);
     }
 
-    public async Task UpdateUserStoryPointsAsync(int id, int points)
+    public async Task AddTask(SprintTaskCreationDto dto)
     {
-        await _storyDao.UpdateUserStoryPointsAsync(id, points);
+        await _storyDao.AddSprintTask(dto);
+    }
+
+    public async Task EditTask(SprintTask task)
+    {
+        await _storyDao.EditTask(task);
+    }
+
+    public async Task<List<SprintTask>> GetTasks(int id)
+    {
+        return await _storyDao.GetTasks(id);
+    }
+
+    public async Task RemoveTask(int id)
+    {
+        await _storyDao.DeleteTask(id);
     }
 }

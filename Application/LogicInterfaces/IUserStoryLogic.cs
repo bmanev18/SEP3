@@ -5,10 +5,10 @@ namespace Application.LogicInterfaces;
 
 public interface IUserStoryLogic
 {
-    
+    Task UpdateUserStoryPointsAsync(int id, int points);
+    Task DeleteUserStory(int id);
+    Task AddTask(SprintTaskCreationDto dto);
+    Task EditTask(SprintTask task);
     Task<List<SprintTask>> GetTasks(int id);
     Task RemoveTask(int id);
-    Task AddSprintTask(SprintTaskCreationDto dto);
-    Task DeleteUserStory(int id);
-    Task UpdateUserStoryPointsAsync(int id, int points);
 }

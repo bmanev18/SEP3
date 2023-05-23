@@ -1,5 +1,4 @@
 ﻿using Application.LogicInterfaces;
-using DataAccessClient;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
 using Shared.Model;
@@ -12,11 +11,11 @@ namespace WebAPI.Controllers;
 [Route("[controller]")]
 public class ProjectController : ControllerBase
 {
-    private readonly IProjectLogic projectLogic;
+    private readonly IProjectLogic _projectLogic;
 
     public ProjectController(IProjectLogic projectLogic)
     {
-        this.projectLogic = projectLogic;
+        this._projectLogic = projectLogic;
     }
 
     [HttpPost]
@@ -24,7 +23,7 @@ public class ProjectController : ControllerBase
     {
         try
         {
-            await projectLogic.CreateAsync(dto);
+            await _projectLogic.CreateAsync(dto);
             return Created($"/{dto.Name}", dto);
         }
         catch (Exception e)
@@ -38,14 +37,14 @@ public class ProjectController : ControllerBase
     [HttpPut("{id:int}/collaborator")]
     public async Task<ActionResult> AddCollaborator([FromRoute] int id, [FromBody] string username)
     {
-       AddUserToProjectDto collaborator = new AddUserToProjectDto
+       var collaborator = new AddUserToProjectDto
         {
             ProjectID= id,
             Username = username
         };
         try
         {
-            await projectLogic.AddCollaboratorAsync(collaborator);
+            await _projectLogic.AddCollaboratorAsync(collaborator);
             return Accepted();
         }
         catch (Exception e)
@@ -55,32 +54,12 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpDelete]
-    public async Task<ActionResult> DeleteCollaborator(string username, int id)
-    {
-        AddUserToProjectDto dto = new AddUserToProjectDto
-        {
-            Username = username,
-            ProjectID = id
-        };
-        try
-        {
-            await projectLogic.RemoveCollaborator(dto);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    [HttpGet("{id:int}/collaborators")]
+    [HttpGet("{id:int}/collaborator")]
     public async Task<ActionResult<List<UserFinderDto>>> GetAllCollaborators([FromRoute] int id)
     {
         try
         {
-            List<UserFinderDto> list = await projectLogic.GetAllCollaborators(id);
+            List<UserFinderDto> list = await _projectLogic.GetAllCollaborators(id);
             return Ok(list);
         }
         catch (Exception e)
@@ -90,13 +69,33 @@ public class ProjectController : ControllerBase
         }
     }
 
+    [HttpDelete("{id:int}/collaborator")]
+    public async Task<ActionResult> DeleteCollaborator(string username, int id)
+    {
+        var dto = new AddUserToProjectDto
+        {
+            Username = username,
+            ProjectID = id
+        };
+        try
+        {
+            await _projectLogic.RemoveCollaborator(dto);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 
-    [HttpPost("userStory")]
-    public async Task<ActionResult> AddUserStory(UserStoryDto dto)
+
+    [HttpPost("{id:int}/userStory")]
+    public async Task<ActionResult> AddUserStory(UserStoryDto dto, int id)
     {
         try
         {
-            await projectLogic.AddUserStoryAsync(dto);
+            await _projectLogic.AddUserStoryAsync(dto);
             return Ok();
         }
         catch (Exception e)
@@ -106,12 +105,12 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}/userStories")]
+    [HttpGet("{id:int}/userStory")]
     public async Task<ActionResult<List<UserStory>>> GetUserStoriesAsync([FromRoute] int id)
     {
         try
         {
-            List<UserStory> list = await projectLogic.GetUserStoriesAsync(id);
+            List<UserStory> list = await _projectLogic.GetUserStoriesAsync(id);
             return Ok(list);
         }
         catch (Exception e)
@@ -125,7 +124,7 @@ public class ProjectController : ControllerBase
     {
         try
         {
-            await projectLogic.CreateSprint(dto,id);
+            await _projectLogic.CreateSprint(dto,id);
             return Created($"/{dto.Name}", dto);
         }
         catch (Exception e)
@@ -134,12 +133,12 @@ public class ProjectController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpGet("{id:int}/sprints")]
+    [HttpGet("{id:int}/sprint")]
     public async Task<ActionResult<List<Sprint>>> GetSprintsByProjectId([FromRoute] int id)
     {
         try
         {
-            var list = await projectLogic.GetSprintsByProjectId(id);
+            var list = await _projectLogic.GetSprintsByProjectId(id);
             return Ok(list);
         }
         catch (Exception e)
