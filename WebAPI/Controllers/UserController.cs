@@ -1,9 +1,7 @@
 ﻿using Application.LogicInterfaces;
-using DataAccessClient;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
 using Shared.Model;
-using UserCreationDto = Shared.DTOs.UserCreationDto;
 
 namespace WebAPI.Controllers;
 [ApiController]
@@ -17,13 +15,13 @@ public class UserController : ControllerBase
         _userLogic = userLogic;
     }
 
-    [HttpPost]
-    public async Task<ActionResult> CreateAsync(UserCreationDto dto)
+    [HttpGet("{username}/projects")]
+    public async Task<ActionResult<List<ProjectDto>>> GetProjects(string username)
     {
         try
         {
-           await _userLogic.CreateAsync(dto);
-            return Created($"/user/{dto.Username}", dto);
+            var list = await _userLogic.GetProjectsAsync(username);
+            return Ok(list);
         }
         catch (Exception e)
         {
@@ -32,12 +30,14 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet]
+    
+    
+    [HttpGet("search")]
     public async Task<ActionResult<List<UserFinderDto>>> LookForUsers([FromQuery]string username)
     {
         try
         {
-            var list = await _userLogic.LookForUsers(username);
+            var list = await _userLogic.LookForUsersAsync(username);
             return Ok(list);
 
         }
@@ -47,5 +47,4 @@ public class UserController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-
 }

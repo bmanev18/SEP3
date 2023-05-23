@@ -2,6 +2,7 @@
 @using HttpClients.ClientInterfaces
 @inject IUserStoryService UserStoryService
 @inject ISprintService SprintService
+@inject IProjectService ProjectService
 @inject NavigationManager NavMgr
 @using UIComponents;
 @using global::Shared.Model
@@ -240,12 +241,11 @@ else
         {
             try
             {
-                await UserStoryService.CreateUserStory(new UserStoryDto()
+                await ProjectService.CreateUserStory(new UserStoryDto
                 {
                     Project_id = Id,
                     Body = _storyName,
                     Priority = _priority,
-                    Status = _status,
                     StoryPoints = _storyPoints
                 });
 
@@ -270,13 +270,13 @@ else
         {
             try
             {
-                await SprintService.CreateSprint(new SprintCreationDto()
+                await ProjectService.CreateSprint(new SprintCreationDto()
                 {
                     ProjectId = Id,
                     Name = _sprintName,
                     StartDate = _startDate.ToString("dd/MM/yyyy"),
                     EndDate = _endDate.ToString("dd/MM/yyyy")
-                });
+                },Id);
 
                 await LoadSprintsAsync();
             }
@@ -290,12 +290,12 @@ else
 
     private async Task LoadUserStoriesAsync()
     {
-        _userStories = await UserStoryService.GetUserStoriesAsync(Id);
+        _userStories = await ProjectService.GetUserStoriesAsync(Id);
     }
 
     private async Task LoadSprintsAsync()
     {
-        _sprints = await SprintService.GetSprintsAsync(Id);
+        _sprints = await ProjectService.GetSprintsAsync(Id);
     }
 
 
@@ -338,7 +338,7 @@ else
             Id = userStory.ID,
             Priority = userStory.Priority,
             StoryPoints = userStory.StoryPoints,
-            Status = userStory.Status
+            //Status = userStory.Status
         };
 
         try

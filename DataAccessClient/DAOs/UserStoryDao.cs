@@ -2,6 +2,7 @@
 using DataAccessClient;
 using Grpc.Net.Client;
 using Shared.DTOs;
+using Shared.Model;
 
 namespace DataAccess.DAOs;
 
@@ -16,9 +17,84 @@ public class UserStoryDao : IUserStoryDao
         _client = new ProjectAccess.ProjectAccessClient(channel);
     }
 
-    public Task CreateAsync(UserStoryDto dto)
+    public async Task UpdateUserStoryPointsAsync(int userStoryId, int points)
     {
-        
-        throw new NotImplementedException();
+        var request = new PointsUpdate
+        {
+            Id = userStoryId,
+            Points = points
+        };
+        await _client.UpdateUserStoryPointsAsync(request);
+    }
+
+    public async Task DeleteUserStory(int id)
+    {
+        var request = new Id
+        {
+            Id_ = id
+        };
+        await _client.DeleteUserStoryAsync(request);
+    }
+
+    public Task AddSprintTask(SprintTaskCreationDto task)
+    {
+        {
+            var request = new TaskCreationRequest
+            {
+                Assignee = task.Assignee,
+                Body = task.Body,
+                StoryPoints = task.StoryPoint,
+                UserStoryId = task.UserStoryId
+            };
+            _client.AddTask(request);
+            return Task.CompletedTask;
+        }
+    }
+
+    public async Task EditTask(SprintTask task)
+    {
+        TaskRequest request = new TaskRequest()
+        {
+            Id = task.Id,
+            StoryId = task.UserStoryId,
+            Assignee = task.Assignee,
+            Body = task.Body,
+            StoryPoints = task.StoryPoint,
+            Status = task.Status
+        };
+        await _client.EditTaskAsync(request);
+    }
+
+    public async Task<List<SprintTask>> GetTasks(int id)
+    {
+        var request = new Id
+        {
+            Id_ = id
+        };
+        var call = await _client.GetTasksAsync(request);
+        var tasks = new List<SprintTask>();
+        foreach (var task in call.Tasks)
+        {
+            tasks.Add(new SprintTask
+            {
+                Id = task.Id,
+                UserStoryId = task.StoryId,
+                Assignee = task.Assignee,
+                Body = task.Body,
+                StoryPoint = task.StoryPoints,
+                Status = task.Status
+            });
+        }
+
+        return tasks;
+    }
+
+    public async Task DeleteTask(int id)
+    {
+        var request = new Id
+        {
+            Id_ = id
+        };
+        await _client.RemoveTaskAsync(request);
     }
 }

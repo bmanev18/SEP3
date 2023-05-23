@@ -1,5 +1,6 @@
 @page "/ViewProjects"
 @using HttpClients.ClientInterfaces
+@inject IUserService UserService
 @inject IProjectService ProjectService
 @inject IUserStoryService UserStoryService
 @inject NavigationManager NavMgr
@@ -9,18 +10,18 @@
 <h3>View My Projects</h3>
 
 
-@if (!string.IsNullOrEmpty(msg))@* display any msg in case it has ny value in case of error*@
+@if (!string.IsNullOrEmpty(_msg))@* display any msg in case it has ny value in case of error*@
 {
     <div>
-        <span>@msg</span>
+        <span>@_msg</span>
     </div>
 }
 
-@if (projects == null)
+@if (_projects == null)
 {
     <span>Loading..</span>
 }
-else if (!projects.Any())
+else if (!_projects.Any())
 {
     <span>No projects to be found</span>
 }
@@ -34,9 +35,9 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (Project project in projects)
+        @foreach (Project project in _projects)
         {
-            <tr @onclick="() => Open(project.id)">
+            <tr @onclick="() => Open(project.Id)">
                 <td class="text-center" >@project.Title</td>
             </tr>
         }
@@ -49,21 +50,22 @@ else
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; } = null!;
-    private string msg = "";
-    private IEnumerable<Project>? projects;
-    private static ProjectDto project;
-    private string body = "";
-    private ClaimsPrincipal user;
+    private string _msg = "";
+    private IEnumerable<Project>? _projects;
+    private static ProjectDto? _project;
+    private string _body = "";
+    private ClaimsPrincipal? _user;
 
     protected override async Task OnInitializedAsync()
     {
-        AuthenticationState AuthState = await this.AuthState;
-        user = AuthState.User;
-        msg = "";
-        Console.WriteLine(msg);
+        var authState = await AuthState;
+        _user = authState.User;
+        _msg = "";
+        Console.WriteLine(_msg);
         try
         {
-            projects = await ProjectService.GetProjectsByUsername(user.Identity.Name);
+
+            _projects = await UserService.GetProjectsByUsernameAsync(_user.Identity?.Name);
         }
         catch(Exception e)
         {

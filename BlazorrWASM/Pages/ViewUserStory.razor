@@ -2,6 +2,7 @@
 @using UIComponents
 @inject IProjectService ProjectService
 @inject ISprintService SprintService
+@inject IUserStoryService UserStoryService;
 @using global::Shared.Model
 @using global::Shared.DTOs
 @using global::UIComponents
@@ -191,7 +192,7 @@
 
     private async Task LoadTasks()
     {
-        _tasks = await SprintService.GetTasks(StoryId);
+        _tasks = await UserStoryService.GetTasks(StoryId);
     }
 
     private async Task RemoveTask(SprintTask SprintTask)

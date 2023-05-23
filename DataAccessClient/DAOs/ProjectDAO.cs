@@ -1,6 +1,5 @@
 ﻿using Application.DAOInterfaces;
 using DataAccessClient;
-using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 using Shared.DTOs;
 using Shared.Model;
@@ -31,15 +30,14 @@ public class ProjectDao : IProjectDao
         await _client.CreateProjectAsync(request);
     }
 
-    public Task<int> AddCollaborator(AddUserToProjectDto collaborator)
+    public async Task AddCollaborator(AddUserToProjectDto collaborator)
     {
         AddToProjectDto dto = new AddToProjectDto
         {
             Username = collaborator.Username,
             ProjectId = collaborator.ProjectID
         };
-        var response = _client.AddCollaborator(dto);
-        return Task.FromResult(response.Code);
+        await _client.AddCollaboratorAsync(dto);
     }
 
     public Task<int> RemoveCollaborator(AddUserToProjectDto collaborator)
@@ -66,25 +64,6 @@ public class ProjectDao : IProjectDao
         return Task.FromResult(list);
     }
 
-    public async Task UpdateUserStoryPointsAsync(int userStoryId, int points)
-    {
-        var request = new PointsUpdate
-        {
-            Id = userStoryId,
-            Points = points
-        };
-        await _client.UpdateUserStoryPointsAsync(request);
-    }
-
-    public async Task DeleteUserStory(int id)
-    {
-        var request = new Id
-        {
-            Id_ = id
-        };
-        await _client.DeleteUserStoryAsync(request);
-    }
-
     public Task<int> AddUserStory(UserStoryDto dto)
     {
         UserStoryMessage userStory = new UserStoryMessage
@@ -92,38 +71,65 @@ public class ProjectDao : IProjectDao
             ProjectId = dto.Project_id,
             Priority = dto.Priority,
             TaskBody = dto.Body,
-            Status = dto.Status,
             StoryPoint = dto.StoryPoints
         };
         ResponseWithID responseWithId = _client.AddUserStory(userStory);
         return Task.FromResult(responseWithId.Id);
     }
 
-    public Task<List<ProjectDto>> GetAllProjects(string username)
+
+    public Task<List<UserStory>> GetUserStoriesAsync(int id)
     {
-        var projectsResponse = _client.GetAllProjects(new Username { Username_ = username });
-        List<ProjectDto> list = new List<ProjectDto>();
-        foreach (var project in projectsResponse.Projects)
+        var productBacklog = _client.GetUserStories(new Id() { Id_ = id });
+        List<UserStory> list = new List<UserStory>();
+        foreach (var story in productBacklog.UserStories)
         {
-            list.Add(new ProjectDto() { Id = project.Id, Title = project.Title });
+            list.Add(new UserStory
+                { ID = story.Id, 
+                    Body = story.UserStory_, 
+                    Priority = story.Priority, 
+                    Project_id = story.ProjectId,
+                    StoryPoints = story.StoryPoint,
+                    Status = story.Status
+                });
         }
 
         return Task.FromResult(list);
     }
 
-    public Task<List<UserStory>> GetUserStoriesAsync(int projectId)
+    public async Task CreateSprint(SprintCreationDto dto, int id)
     {
-        var productBacklog = _client.GetUserStories(new Id { Id_ = projectId });
-        var list = new List<UserStory>();
-        foreach (var story in productBacklog.UserStories)
+        var request = new SprintCreationRequest
         {
-            list.Add(new UserStory
+            ProjectId = id,
+            Name = dto.Name,
+            StarDate = dto.StartDate,
+            EndDate = dto.EndDate
+        };
+        await _client.CreateSprintAsync(request);
+    }
+
+    public async Task<List<Sprint>> GetSprintsByProjectId(int id)
+    {
+        var request = new Id
+        {
+            Id_ = id
+        };
+        var call = await _client.GetSprintByProjectIdAsync(request);
+        var sprints = new List<Sprint>();
+        var callSprints = call.Sprints;
+        foreach (var sprint in callSprints)
+        {
+            sprints.Add(new Sprint
             {
-                ID = story.Id, Project_id = story.ProjectId, Body = story.UserStory_, Priority = story.Priority,
-                StoryPoints = story.StoryPoint
+                Id = sprint.Id,
+                ProjectId = sprint.ProjectId,
+                Name = sprint.Name,
+                StartDate = sprint.StarDate,
+                EndDate = sprint.EndDate
             });
         }
 
-        return Task.FromResult(list);
+        return sprints;
     }
 }

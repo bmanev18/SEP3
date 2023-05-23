@@ -6,7 +6,7 @@ using Shared.Model;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/{id:int}")]
 public class UserStoryController : ControllerBase
 {
     private readonly IUserStoryLogic _userStoryLogic;
@@ -16,18 +16,94 @@ public class UserStoryController : ControllerBase
         _userStoryLogic = userStoryLogic;
     }
 
-    [HttpPost]
-    public async Task<ActionResult> CreateAsync(UserStoryDto dto)
+
+    
+    [HttpPatch("storyPoints")]
+    public async Task<ActionResult> UpdateUserStoryPoints([FromRoute] int id, int points)
     {
         try
         {
-            await _userStoryLogic.CreateAsync(dto);
-            return Created($"/project/{dto.Project_id}", dto);
+            await _userStoryLogic.UpdateUserStoryPointsAsync(id, points);
+            return Ok();
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             return StatusCode(500, e.Message);
+        }
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult> DeleteUserStory([FromRoute] int id)
+    {
+        try
+        {
+            await _userStoryLogic.DeleteUserStory(id);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    [HttpPost("task")]
+    public async Task<ActionResult> AddTask([FromBody] SprintTaskCreationDto dto)
+    {
+        try
+        {
+            await _userStoryLogic.AddTask(dto);
+            return Accepted();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    [HttpPatch("task")]
+    public async Task<ActionResult> EditTask(SprintTask task)
+    {
+        try
+        {
+            await _userStoryLogic.EditTask(task);
+            return Accepted();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    [HttpGet("task")]
+    public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute] int id)
+    {
+        try
+        {
+            List<SprintTask> list = await _userStoryLogic.GetTasks(id);
+            return Ok(list);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+    [HttpDelete("task/{taskId:int}")]
+    public async Task<ActionResult> RemoveTask(int id, int taskId)
+    {
+        try
+        {
+            await _userStoryLogic.RemoveTask(taskId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

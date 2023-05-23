@@ -169,7 +169,7 @@
       _message = "Search field is empty!";
       return;
     }
-    var list = await UserService.LookForUsers(contains);
+    var list = await UserService.LookForUsersAsync(contains);
     _searchResults = UserComparer(_users, list);
 
   }

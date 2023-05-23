@@ -6,5 +6,6 @@
     &lt;TestId&gt;NUnit3x::8C6A4573-ECED-4994-8576-0E8E4E18C257::net7.0::Testing.ClassTests.ProjectDaoTest.GetAllProjects_Successful&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;NUnit3x::8C6A4573-ECED-4994-8576-0E8E4E18C257::net7.0::Testing.ClassTests.ProjectDaoTest.AddCollaborator_Successful&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;NUnit3x::8C6A4573-ECED-4994-8576-0E8E4E18C257::net7.0::Testing.ClassTests.ProjectDaoTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::8C6A4573-ECED-4994-8576-0E8E4E18C257::net7.0::Testing.ClassTests.UserLogicTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
