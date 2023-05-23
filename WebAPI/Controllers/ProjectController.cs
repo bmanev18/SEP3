@@ -125,7 +125,7 @@ public class ProjectController : ControllerBase
     {
         try
         {
-            await _projectLogic.CreateSprint(dto,id);
+            await _projectLogic.CreateSprint(dto);
             return Created($"/{dto.Name}", dto);
         }
         catch (Exception e)

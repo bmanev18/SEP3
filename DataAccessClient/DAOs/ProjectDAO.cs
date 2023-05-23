@@ -40,7 +40,7 @@ public class ProjectDao : IProjectDao
         await _client.AddCollaboratorAsync(dto);
     }
 
-    public Task<int> RemoveCollaborator(AddUserToProjectDto collaborator)
+    public Task RemoveCollaborator(AddUserToProjectDto collaborator)
     {
         AddToProjectDto dto = new AddToProjectDto
         {
@@ -64,7 +64,7 @@ public class ProjectDao : IProjectDao
         return Task.FromResult(list);
     }
 
-    public Task<int> AddUserStory(UserStoryDto dto)
+    public Task AddUserStory(UserStoryDto dto)
     {
         UserStoryMessage userStory = new UserStoryMessage
         {
@@ -97,11 +97,11 @@ public class ProjectDao : IProjectDao
         return Task.FromResult(list);
     }
 
-    public async Task CreateSprint(SprintCreationDto dto, int id)
+    public async Task CreateSprint(SprintCreationDto dto)
     {
         var request = new SprintCreationRequest
         {
-            ProjectId = id,
+            ProjectId = dto.ProjectId,
             Name = dto.Name,
             StarDate = dto.StartDate,
             EndDate = dto.EndDate

@@ -19,38 +19,40 @@ public class ProjectLogic : IProjectLogic
     {
         await projectDao.CreateAsync(dto);
     }
-    
+
     public async Task AddCollaboratorAsync(AddUserToProjectDto collaborator)
     {
         await projectDao.AddCollaborator(collaborator);
     }
+
     public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
     {
         return await projectDao.GetAllCollaborators(id);
     }
 
-    public async Task<int> RemoveCollaborator(AddUserToProjectDto collaborator)
+    public async Task RemoveCollaborator(AddUserToProjectDto collaborator)
     {
-       return await projectDao.RemoveCollaborator(collaborator);   
-    }
-    public async Task CreateSprint(SprintCreationDto dto, int id)
-    {
-        await projectDao.CreateSprint(dto, id);
+        await projectDao.RemoveCollaborator(collaborator);
     }
 
-    public async Task<List<Sprint>> GetSprintsByProjectId(int id)
+    public async Task AddUserStoryAsync(UserStoryDto dto)
     {
-      return await projectDao.GetSprintsByProjectId(id);
+        await projectDao.AddUserStory(dto);
     }
 
-    public async Task<int> AddUserStoryAsync(UserStoryDto dto)
-    {
-        return await projectDao.AddUserStory(dto);
-    }
-    
 
     public async Task<List<UserStory>> GetUserStoriesAsync(int id)
     {
         return await projectDao.GetUserStoriesAsync(id);
+    }
+
+    public async Task CreateSprint(SprintCreationDto dto)
+    {
+        await projectDao.CreateSprint(dto);
+    }
+
+    public async Task<List<Sprint>> GetSprintsByProjectId(int id)
+    {
+        return await projectDao.GetSprintsByProjectId(id);
     }
 }
