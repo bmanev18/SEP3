@@ -1,49 +1,119 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorWASM</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@* @using BlazorrWASM.Services *@
+@* @using global::Shared.Model *@
+@* @inject NavigationManager navManager *@
+@* @inject IAuthService AuthService *@
+@* $1$ <div class="top-row ps-3 navbar navbar-dark"> #1# *@
+@* $1$     <div class="container-fluid"> #1# *@
+@* $1$         <a class="navbar-brand" href="">Project Planner</a> #1# *@
+@* $1$         <button title="Navigation menu" class="navbar-toggler"> #1# *@
+@* $1$             <span class="navbar-toggler-icon"></span> #1# *@
+@* $1$         </button> #1# *@
+@* $1$     </div> #1# *@
+@* $1$ </div> #1# *@
+@* $1$ #1# *@
+@* $1$ #1# *@
+@* $1$  <MudPaper Width="250px" Class="py-3" Elevation="0"> #1# *@
+@* $1$         <MudNavMenu> #1# *@
+@* $1$             <MudNavLink Href="ViewProjects">Dashboard</MudNavLink> #1# *@
+@* $1$             <MudNavLink Href="CreateProject">Create Project</MudNavLink> #1# *@
+@* $1$             <MudNavLink Href="/billing" Disabled="true">Billing</MudNavLink> #1# *@
+@* $1$             <MudNavGroup Title="Settings" Expanded="true"> #1# *@
+@* $1$                 <MudNavLink Href="/users">Users</MudNavLink> #1# *@
+@* $1$                 <MudNavLink Href="/security">Security</MudNavLink> #1# *@
+@* $1$             </MudNavGroup> #1# *@
+@* $1$             <MudNavLink Href="/about">About</MudNavLink> #1# *@
+@* $1$         </MudNavMenu> #1# *@
+@* $1$     </MudPaper> #1# *@
+@* $1$    #1# *@
+@* $1$ @code { #1# *@
+@* $1$     private bool collapseNavMenu = true; #1# *@
+@* $1$ #1# *@
+@* $1$     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null; #1# *@
+@* $1$ #1# *@
+@* $1$     private void ToggleNavMenu() #1# *@
+@* $1$     { #1# *@
+@* $1$         collapseNavMenu = !collapseNavMenu; #1# *@
+@* $1$     } #1# *@
+@* $1$ #1# *@
+@* $1$ #1# *@
+@* $1$     #1# *@
+@* $1$ #1# *@
+@* $1$ } #1# *@
+@* <MudLayout> *@
+@* *@
+@*     $1$ <MudAppBar> #1# *@
+@*         My Application *@
+@*         <MudAppBar Elevation="1"> *@
+@*             <MudPaper Width="250px" Elevation="0" Class="py-3"> *@
+@*                 <MudNavMenu Bordered="true"> *@
+@*                     <MudNavLink Href="/dashboard">Dashboard</MudNavLink> *@
+@*                     <MudNavLink Match="NavLinkMatch.Prefix" Href="/components/navmenu">Servers</MudNavLink> *@
+@*                     <MudNavLink Href="/billing" Disabled="true">Billing</MudNavLink> *@
+@*                     <MudNavGroup Title="Settings" Expanded="true"> *@
+@*                         <MudNavLink Href="/users">Users</MudNavLink> *@
+@*                         <MudNavLink Href="/security">Security</MudNavLink> *@
+@*                     </MudNavGroup> *@
+@*                     <MudNavLink Href="/about">About</MudNavLink> *@
+@*                 </MudNavMenu> *@
+@*             </MudPaper> *@
+@*             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer"/> *@
+@*             <MudSpacer/> *@
+@* *@
+@*             <AuthorizeView> *@
+@*                 <Authorized> *@
+@*                     <label> @context.User.Identity.Name </label> *@
+@*                     <img class="icon" src="img/Logout.png" @onclick="Logout"/> *@
+@*                 </Authorized> *@
+@*                 <NotAuthorized> *@
+@*                     <label> Not Logged In </label> *@
+@*                     <img class="icon" src="img/Login.png" @onclick="Login"/> *@
+@*                 </NotAuthorized> *@
+@*             </AuthorizeView> *@
+@* *@
+@*         </MudAppBar> *@
+@*     $1$ <MudDrawer @bind-Open="@open"> #1# *@
+@*              *@
+@*     $1$ </MudDrawer> #1# *@
+@*     $1$     <MudDrawerHeader> #1# *@
+@*     $1$         <MudText Typo="Typo.h6">My App</MudText> #1# *@
+@*     $1$     </MudDrawerHeader> #1# *@
+@*     $1$      <MudNavMenu> #1# *@
+@*     $1$                                     <MudNavLink Href="/ViewProjects" Match="NavLinkMatch.All">My Projects</MudNavLink> #1# *@
+@*     $1$                                     <MudNavLink Match="NavLinkMatch.All">Library</MudNavLink> #1# *@
+@*     $1$                                     <MudNavLink Match="NavLinkMatch.All">Community</MudNavLink> #1# *@
+@*     $1$                                 </MudNavMenu> #1# *@
+@*     $1$ #1# *@
+@*     $1$ #1# *@
+@*     $1$ <MudMainContent Class="pt-16 px-16"> #1# *@
+@*     $1$     <MudContainer Class="mt-6"> #1# *@
+@*     $1$     </MudContainer> #1# *@
+@*     $1$ </MudMainContent> #1# *@
+@* $1$ </MudAppBar> #1# *@
+@* </MudLayout> *@
+@* @code{ *@
+@*     bool open = false; *@
+@* *@
+@*     void ToggleDrawer() *@
+@*     { *@
+@*         open = !open; *@
+@*     } *@
+@* *@
+@*     private void Login() *@
+@*     { *@
+@*         navManager.NavigateTo("/"); *@
+@*     } *@
+@* *@
+@*     private async Task Logout() *@
+@*     { *@
+@*         await AuthService.LogoutAsync(); *@
+@*         navManager.NavigateTo("/"); *@
+@*     } *@
+@* *@
+@* } *@
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-       
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="CreateUser">
-                <span class="oi oi-plus" aria-hidden="true"></span> Create user
-            </NavLink>
-        </div>
-        
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="SignInPage">
-                <span class="oi oi-plus" aria-hidden="true"></span> Sign in
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ViewProjects">
-                <span class="oi oi-plus" aria-hidden="true"></span> My projects
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="CreateProject">
-                <span class="oi oi-plus" aria-hidden="true"></span> Create project
-            </NavLink>
-        </div>
-        
-
-    </nav>
-</div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-
-}
+<MudPaper Width="250px" Elevation="0" Class="py-3">
+    <MudNavMenu Bordered="true">
+        <MudNavLink Href="ViewProjects">Dashboard</MudNavLink>
+        <MudNavLink Href="/billing" >About us</MudNavLink>
+    </MudNavMenu>
+</MudPaper>

@@ -11,6 +11,9 @@ public interface IUserStoryService
 
     Task RemoveAsync(int storyId);
     Task UpdateStoryPointsAsync(int userStoryId, int points);
+    Task UpdateUserStoryStatusAsync(int userStoryId, string status);
+
+    Task UpdateUserStoryPriorityAsync(int userStoryId, string priority);
     Task<IEnumerable<SprintTask>> GetTasks(int id);
     
     Task CreateTask(SprintTaskCreationDto dto);

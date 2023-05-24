@@ -19,6 +19,16 @@ public class UserStoryLogic:IUserStoryLogic
         await _storyDao.UpdateUserStoryPointsAsync(id, points);
     }
 
+    public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
+    {
+        await _storyDao.UpdateUserStoryStatusAsync(userStoryId, status);
+    }
+
+    public async Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
+    {
+        await _storyDao.UpdateUserStoryPriorityAsync(userStoryId, priority);
+    }
+
     public async Task DeleteUserStory(int id)
     {
         await _storyDao.DeleteUserStory(id);

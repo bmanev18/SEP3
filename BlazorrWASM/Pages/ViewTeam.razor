@@ -5,8 +5,6 @@
 @inject IProjectService ProjectService
 @inject IUserService UserService
 <h3>ViewTeam</h3>
-
-
 <AuthorizeView Roles="project manager">
   <Authorized>
     <div class="wrapper">
@@ -199,5 +197,4 @@
     var filtered = results.Where(u => !usernames.Contains(u.Username));
     return filtered.ToList();
   }
-
 }

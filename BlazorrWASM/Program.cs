@@ -8,6 +8,8 @@ using HttpClients.ClientInterfaces;
 using HttpClients.Implementations;
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Auth;
+using MudBlazor.Services;
+
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -20,6 +22,7 @@ builder.Services.AddScoped<IProjectService,ProjectHttpClient>();
 builder.Services.AddScoped<IUserStoryService,UserStoryHttpClient>();
 builder.Services.AddScoped<ISprintService,SprintHttpClient>();
 
+builder.Services.AddMudServices();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 AuthorizationPolicies.AddPolicies(builder.Services);
 builder.Services.AddScoped(

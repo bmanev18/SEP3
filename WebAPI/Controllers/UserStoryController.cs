@@ -32,6 +32,34 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    [HttpPatch("UpdateUserStoryStatus/{userStoryId}")]
+    public async Task<ActionResult> UpdateUserStatus([FromBody]string status,[FromRoute] int userStoryId)
+    {
+        try
+        {
+            await _userStoryLogic.UpdateUserStoryStatusAsync(userStoryId, status);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+    [HttpPatch("UpdateUserStoryPriority/{userStoryId}")]
+    public async Task<ActionResult> UpdateUserStoryPriority([FromBody]string priority,[FromRoute] int userStoryId)
+    {
+        try
+        {
+            await _userStoryLogic.UpdateUserStoryPriorityAsync(userStoryId, priority);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteUserStory([FromRoute] int id)

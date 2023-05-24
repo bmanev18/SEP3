@@ -26,6 +26,25 @@ public class UserStoryDao : IUserStoryDao
         };
         await _client.UpdateUserStoryPointsAsync(request);
     }
+    public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
+    {
+        var request = new StatusUpdate()
+        {
+            Id = userStoryId,
+            Status = status
+        };
+        await _client.UpdateUserStoryStatusAsync(request);
+    }
+
+    public async Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
+    {
+        var request = new PriorityUpdate()
+        {
+            Id = userStoryId,
+            Priority = priority
+        };
+        await _client.UpdateUserStoryPriorityAsync(request);
+    }
 
     public async Task DeleteUserStory(int id)
     {

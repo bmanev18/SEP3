@@ -24,6 +24,8 @@ public class UserStoryHttpClient : IUserStoryService
             throw new Exception(result);
         }
     }
+    
+
     public async Task<IEnumerable<SprintTask>> GetTasks(int id)
     {
         
@@ -82,6 +84,26 @@ public class UserStoryHttpClient : IUserStoryService
             throw new Exception(result);
         }
     }
-    
- 
+
+    public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
+    {
+        var uri = $"/UserStory/UpdateUserStoryStatus/{userStoryId}";
+        var response = await client.PatchAsJsonAsync(uri, status);
+        if (!response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            throw new Exception(result);
+        }
+    }
+
+    public async Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
+    {
+        var uri = $"/UserStory/UpdateUserStoryPriority/{userStoryId}";
+        var response = await client.PatchAsJsonAsync(uri, priority);
+        if (!response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            throw new Exception(result);
+        }
+    }
 }

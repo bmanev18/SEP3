@@ -9,6 +9,8 @@
 @using global::Shared.DTOs
 
 @*<AuthorizeView>*@
+&nbsp; 
+&nbsp; 
 <h3>View User Stories</h3>
 <div class="addUserStory-bar">
     <div class="fields-container">
@@ -72,13 +74,15 @@ else if (!_userStories.Any())
 }
 else
 {
-    <table class="table justify-content-center">
+    <table class="table justify-content-center" align="center">
         <thead>
         <tr>
             <th class="text-center">Title</th>
             <th class="text-center">Priority</th>
             <th class="text-center">Story Points</th>
             <th class="text-center">Status</th>
+                        <th>Delete?</th>
+
         </tr>
         </thead>
         <tbody>
@@ -86,7 +90,16 @@ else
         {
             <tr >
                 <td class="text-center">@userStory.Body</td>
-                <td class="text-center">@userStory.Priority</td>
+                 <td>
+                     <div class="input-box">
+                         <select @bind="userStory.Priority" @oninput="@(e => UpdateStoryPriorityAsync(userStory, e.Value.ToString()))">
+                             <option value="critical">critical</option>
+                             <option value="high">high</option>
+                             <option value="low">low</option>
+
+                         </select>
+                     </div>
+                     </td>
                 <td>
                     <div class="input-box">
                         <select @bind="userStory.StoryPoints" @oninput="@(e => UpdateStoryPointsAsync(userStory, e.Value.ToString()))">
@@ -101,13 +114,22 @@ else
                             <option value="100">100</option>
                         </select>
                     </div>
-                    @* <StoryPoints StoryPoints="@userStory.StoryPoints" StoryPointsChanged="@(()=>UpdateStory(userStory))"/> *@
                 </td>
                 <td>
-                    @*
-                    <FancyCheckBox IsCompleted="@userStory.Status" OnChange="@(status => UpdateStory(userStory, status))"/> 
-                *@
+                    <div class="input-box">
+                        <select @bind="userStory.Status" @oninput="@(e => UpdateStoryStatusAsync(userStory, e.Value.ToString()))">
+                            <option value="to-do">to-do</option>
+                            <option value="in progress">in progress</option>
+                            <option value="done">done</option>
+                                               
+                        </select>
+                    </div>
                 </td>
+                 <td>
+                                    <label @onclick="@(() => DeleteUserStoryAsync(userStory.ID))" style="cursor:pointer; color: red; font-weight: bold">
+                                        &#x2717;
+                                    </label>
+                                </td>
             </tr>
         }
 
@@ -201,7 +223,7 @@ else
     private string _storyName = "";
     private string _priority = "";
     private int _storyPoints; // By default is 0
-    private bool _status = false;
+    private string _status = "to-do";
 
     // Sprint fields
     //private int _sprintId = 0; // TODO when selecting should probably show user stories and tasks
@@ -312,26 +334,26 @@ else
         NavMgr.NavigateTo($"/ViewSprint/{storyId}");
     }
 
-    private async Task UpdateStory(UserStory userStory, bool status)
-    {
-        UserStoryUpdateDto dto = new()
-        {
-            Id = userStory.ID,
-            Priority = userStory.Priority,
-            StoryPoints = userStory.StoryPoints,
-            Status = status
-        };
-
-        try
-        {
-            await UserStoryService.UpdateAsync(dto);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            _storyMsg = e.Message;
-        }
-    }
+    // private async Task UpdateStory(UserStory userStory, bool status)
+    // {
+    //     UserStoryUpdateDto dto = new()
+    //     {
+    //         Id = userStory.ID,
+    //         Priority = userStory.Priority,
+    //         StoryPoints = userStory.StoryPoints,
+    //         Status = status
+    //     };
+    //
+    //     try
+    //     {
+    //         await UserStoryService.UpdateAsync(dto);
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Console.WriteLine(e);
+    //         _storyMsg = e.Message;
+    //     }
+    // }
 
     private async Task UpdateStory(UserStory userStory)
     {
@@ -358,6 +380,24 @@ else
     {
         var points = Convert.ToInt32(eValue);
         await UserStoryService.UpdateStoryPointsAsync(story.ID,points );
+    }
+
+    private async Task UpdateStoryStatusAsync(UserStory story, string? eValue)
+    {
+        
+        await UserStoryService.UpdateUserStoryStatusAsync(story.ID,eValue );
+    }
+    private async Task UpdateStoryPriorityAsync(UserStory story, string? eValue)
+    {
+        await UserStoryService.UpdateUserStoryPriorityAsync(story.ID,eValue );
+    }
+
+    private async Task DeleteUserStoryAsync(int  Id)
+    {
+        await UserStoryService.RemoveAsync(Id);
+        var list = new List<UserStory>(_userStories!);
+        list.RemoveAll(userStory => userStory.ID == Id);
+        _userStories = list.AsEnumerable();
     }
 
 }
