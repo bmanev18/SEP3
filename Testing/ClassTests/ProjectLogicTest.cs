@@ -69,6 +69,7 @@ public class ProjectLogicTest
         var actual = _logic.GetSprintsByProjectId(2).Result;
         Assert.That(actual, Has.Count.EqualTo(2));
     }
+    
 
     /*[Test]
     public void UpdateUserStoryPoints_Successful()

@@ -48,7 +48,7 @@ public class ProjectMockDao : IProjectDao
             new() { Id = 2, ProjectId = 2, Name = "Sprint 2", StartDate = "25/5/2023", EndDate = "27/5/2023" },
             new() { Id = 3, ProjectId = 3, Name = "Sprint 1", StartDate = "17/6/2023", EndDate = "19/6/2023" },
             new() { Id = 4, ProjectId = 2, Name = "Sprint 2", StartDate = "23/7/2023", EndDate = "25/7/2023" },
-            new() { Id = 5, ProjectId = 1, Name = "Sprint 2", StartDate = "18/4/2023", EndDate = "220/4/2023" },
+            new() { Id = 5, ProjectId = 1, Name = "Sprint 2", StartDate = "18/4/2023", EndDate = "22/4/2023" },
         };
     }
 
@@ -135,29 +135,4 @@ public class ProjectMockDao : IProjectDao
     {
         return Task.FromResult(_sprints.FindAll(sprint => sprint.ProjectId == id));
     }
-
-
-    // TODO place in User Story
-    /*public Task UpdateUserStoryPointsAsync(int userStoryId, int points)
-    {
-        _userStories.First(story => story.ID == _storyId).StoryPoints = points;
-
-        return Task.FromResult(_userStories.First(story => story.ID == _storyId).StoryPoints == points);
-    }
-
-    public Task DeleteUserStory(int id)
-    {
-        try
-        {
-            _userStories.Remove(_userStories.FirstOrDefault(story => story.ID == id) ??
-                                throw new InvalidOperationException());
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-
-        return Task.CompletedTask;
-    }*/
 }

@@ -176,7 +176,13 @@
 
     private async Task Create()
     {
-        var dto = new SprintTaskCreationDto(StoryId,_assignee,_name, _points);
+        var dto = new SprintTaskCreationDto
+        {
+            UserStoryId =   StoryId,
+            Assignee = _assignee,
+            Body = _name,
+            StoryPoint = _points
+        };
         Console.WriteLine(1);
         await SprintService.CreateTask(dto);
         Console.WriteLine(2);
