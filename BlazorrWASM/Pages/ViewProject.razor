@@ -12,6 +12,8 @@
 &nbsp; 
 &nbsp; 
 <h3>View User Stories</h3>
+
+
 <div class="addUserStory-bar">
     <div class="fields-container">
         @* <img src="img/@(_doShowUserStoryFields ? "close" : "add").png" class="funnel" @onclick="@(() => _doShowUserStoryFields = !_doShowUserStoryFields)" alt="Funnel"/> *@
@@ -21,6 +23,7 @@
             <div class="input-box">
                 <input type="text" placeholder="User Story" @bind="_storyName" @bind:event="oninput">
             </div>
+
             <div class="input-box">
                 <select @bind="_priority">
                     <option value="critical">Critical</option>
@@ -89,7 +92,8 @@ else
         @foreach (var userStory in _userStories)
         {
             <tr >
-                <td class="text-center">@userStory.Body</td>
+                <td class="text-center" @onclick="() => Open(userStory.ID)"  >@userStory.Body</td>
+
                  <td>
                      <div class="input-box">
                          <select @bind="userStory.Priority" @oninput="@(e => UpdateStoryPriorityAsync(userStory, e.Value.ToString()))">
@@ -398,6 +402,11 @@ else
         var list = new List<UserStory>(_userStories!);
         list.RemoveAll(userStory => userStory.ID == Id);
         _userStories = list.AsEnumerable();
+    }
+    
+    private async void Open(int storyId)
+    {
+        NavMgr.NavigateTo($"/ViewProject/{Id}/ViewUserStory/{storyId}");
     }
 
 }

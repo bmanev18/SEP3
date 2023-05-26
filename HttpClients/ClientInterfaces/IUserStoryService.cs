@@ -17,5 +17,6 @@ public interface IUserStoryService
     Task<IEnumerable<SprintTask>> GetTasks(int id);
     
     Task CreateTask(SprintTaskCreationDto dto);
+    Task UpdateTask(SprintTask task);
     
 }

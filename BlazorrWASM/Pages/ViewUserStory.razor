@@ -13,8 +13,13 @@
 @*
 <AuthorizeView roles="scrum master">
     <Authorized>*@
-        <h3>View User Story</h3>
-        <div id="addTask">
+
+@if (userStory != null)
+{
+    <h3>User Story: @userStory.Body</h3> <!-- Display the name of the user story dynamically -->
+}
+
+<div id="addTask">
             <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
             @if (_showFields)
             {
@@ -30,8 +35,19 @@
                     }
                 </select>
 
-                <StoryPoints Points="@_points"/>
-
+                <select @bind="_points">
+                         <option value="0">0</option>
+                         <option value="1">1</option>
+                         <option value="2">2</option>
+                         <option value="3">3</option>
+                         <option value="5">5</option>
+                         <option value="8">8</option>
+                         <option value="13">13</option>
+                         <option value="20">20</option>
+                         <option value="40">40</option>
+                         <option value="100">100</option>
+                     </select>
+                
                 <div class="input-box button">
                     @if (!string.IsNullOrEmpty(_msg))
                     {
@@ -67,10 +83,10 @@
                 {
                     <tr>
                         <td>
-                            @* <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/> *@
+                            @task.Status
                         </td>
                         <td>
-                            <label for="@task.Id" onclick="@(() => EditTask(task))">@task.Body</label>
+                            <label for="@task.Id">@task.Body</label>
                         </td>
                         <td>
                             @task.Assignee
@@ -79,62 +95,22 @@
                             @task.StoryPoint
                         </td>
                         <td>
-                            @* <DeleteButton/> *@
+                           
                             <button class="btn" @onclick="() => Open(task.Id)">Edit </button>
                         </td>
+                        <td>
+                            @* <DeleteButton/> *@
+                            <button class="btn" @onclick="() => RemoveTask(task.Id)">Delete </button>
+                            </td>
 
                     </tr>
                 }
                 </tbody>
             </table>
         }
-    @*</Authorized>
-    <NotAuthorized>*@
-        @*@if (_tasks == null)
-                {
-                    <span>Loading..tasks</span>
-                }
-                else if (!_tasks.Any())
-                {
-                    <span>No tasks to be found</span>
-                }
-                else
-                {
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Task</th>
-                            <th>Assigned</th>
-                            <th>Story Points</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var task in _tasks)
-                        {
-                            <tr>
-                                <td>
-                                    $1$ <FancyCheckBox IsCompleted="@task.Status" OnChange="@(status => UpdateStatus(task.Id, status))"/> #1#
-                                </td>
-                                <td>
-                                    <label for="@task.Id" onclick="@(() => EditTask(task))">@task.Body</label>
-                                </td>
-                                <td>
-                                    @task.Assignee
-                                </td>
-                                <td>
-                                    @task.StoryPoint
-                                </td>
-
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-                }*@
-    @*</NotAuthorized>
-</AuthorizeView>*@
 
 @code {
+    private string _status = "to-do";
     private int _id = 0;
     private string _name = "";
     private string _assignee = "";
@@ -145,7 +121,7 @@
 
     private IEnumerable<UserFinderDto>? _collaborators;
     private IEnumerable<SprintTask>? _tasks;
-
+    private UserStory userStory;
 
     [Parameter]
     public int ProjectId { get; set; }
@@ -158,24 +134,28 @@
     {
         try
         {
+            
             await LoadCollaborators();
             await LoadTasks();
+            await LoadUserStory();
+
+
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
-
     }
 
     private async Task LoadCollaborators()
     {
         var allCollaborators = await ProjectService.GetAllCollaborators(ProjectId);
-        _collaborators = allCollaborators.Where(dto => dto.Role.Equals("developer")).ToList();
+        _collaborators = allCollaborators.Where(dto => dto.Role.Equals("3")).ToList();
     }
 
     private async Task Create()
     {
+
         var dto = new SprintTaskCreationDto
         {
             UserStoryId =   StoryId,
@@ -184,16 +164,9 @@
             StoryPoint = _points
         };
         Console.WriteLine(1);
-        await SprintService.CreateTask(dto);
-        Console.WriteLine(2);
-        await LoadTasks();
-        Console.WriteLine(3);
-    }
 
-    private async Task UpdateStatus(int taskId, bool status)
-    {
-    /*var toUpdate = _tasks.FirstOrDefault(task => task.Id == taskId)!;
-        await SprintService.UpdateTask(toUpdate);*/
+        await SprintService.CreateTask(dto);
+        await LoadTasks();
     }
 
     private async Task LoadTasks()
@@ -201,20 +174,28 @@
         _tasks = await UserStoryService.GetTasks(StoryId);
     }
 
-    private async Task RemoveTask(SprintTask SprintTask)
+    private async Task RemoveTask(int id)
     {
-    /*var SprintTask = _tasks.FirstOrDefault(model => model.Id == taskId);
-        _tasks.ToList().Remove(SprintTask);*/
+        var taskToRemove = _tasks.FirstOrDefault(t => t.Id == id);
+        if (taskToRemove != null)
+        {
+            await UserStoryService.RemoveTask(id); // Remove the task from the backend using the service method
+            _tasks = _tasks.Where(t => t.Id != id); // Remove the task from the local collection
+        }
     }
 
-    private void EditTask(SprintTask task)
-    {
-    //NavigationManager.NavigateTo($"/EditTask/{ProjectId}/{StoryId}/task?taskId={task.Id}&name={task.Name}&assignee={task.Assignee}&points={task.Points}");
-    }
-    
     private async void Open(int id)
     {
         NavMgr.NavigateTo($"/ViewProject/{ProjectId}/ViewUserStory/{StoryId}/EditTask/{id}");
     }
+   
+    private async Task LoadUserStory()
+    {
+        IEnumerable<UserStory>? userStories = await ProjectService.GetUserStoriesAsync(ProjectId);
+        userStory = userStories.FirstOrDefault(us => us.ID == StoryId);
+        
+    }
+
+
 
 }

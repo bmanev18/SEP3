@@ -49,7 +49,7 @@ public class ProjectHttpClient : IProjectService
 
     public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
     {
-        HttpResponseMessage response = await client.GetAsync($"project/{id}/collaborator");
+        HttpResponseMessage response = await client.GetAsync($"/Project/{id}/collaborator");
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {

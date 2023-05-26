@@ -1,6 +1,5 @@
-﻿@namespace UIComponents
-<div class="input-box">
-    <select @bind="_points">
+﻿<div class="input-box">
+    <select value="@Points" @onchange="HandlePointsChanged">
         <option value="0">0</option>
         <option value="1">1</option>
         <option value="2">2</option>
@@ -15,12 +14,18 @@
 </div>
 
 @code {
-    private int _points;
-
     [Parameter]
     public int Points { get; set; }
 
     [Parameter]
-    public EventCallback<int> StoryPointsChanged { get; set; }
+    public EventCallback<int> PointsChanged { get; set; }
 
+    private async Task HandlePointsChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int selectedPoints))
+        {
+            Points = selectedPoints;
+            await PointsChanged.InvokeAsync(Points);
+        }
+    }
 }

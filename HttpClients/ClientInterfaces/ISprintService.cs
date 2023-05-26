@@ -11,7 +11,7 @@ public interface ISprintService
     // Tasks
     Task CreateTask(SprintTaskCreationDto dto);
 
-    Task UpdateTask(SprintTask task);
 
-    Task RemoveTask(int taskId);
+
+    
 }

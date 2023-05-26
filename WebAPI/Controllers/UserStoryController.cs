@@ -92,7 +92,7 @@ public class UserStoryController : ControllerBase
     }
     
     [HttpPatch("task")]
-    public async Task<ActionResult> EditTask(SprintTask task)
+    public async Task<IActionResult> EditTask([FromBody] SprintTask task)
     {
         try
         {
@@ -105,8 +105,9 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+
     
-    [HttpGet("userStory/{id:int}/tasks")]
+    [HttpGet("{id:int}/tasks")]
     public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute]int id)
     {
         try
@@ -121,7 +122,7 @@ public class UserStoryController : ControllerBase
         }
     }
     [HttpDelete("/task/{taskId:int}")]
-    public async Task<ActionResult> RemoveTask(int id, int taskId)
+    public async Task<ActionResult> RemoveTask([FromRoute]int taskId)
     {
         try
         {
