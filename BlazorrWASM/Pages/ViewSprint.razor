@@ -1,0 +1,144 @@
+@page "/ViewProject/{ProjectId:int}/ViewSprint/{Id:int}"
+@using global::Shared.Model
+@using global::Shared.DTOs
+@using System.Security.Claims
+@using HttpClients.ClientInterfaces
+@inject ISprintService SprintService;
+@using HttpClients.Implementations
+@using UIComponents
+<h3>View Sprint</h3>
+
+
+@if (!string.IsNullOrEmpty(_msg))@* display any msg in case it has ny value in case of error*@
+{
+    <div>
+        <span>@_msg</span>
+    </div>
+}
+&nbsp; 
+&nbsp; 
+&nbsp; 
+&nbsp; 
+&nbsp; 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+@if (!string.IsNullOrEmpty(_msg)) @* display any msg in case it has ny value in case of error*@
+{
+    <div>
+        <span>@_msg</span>
+    </div>
+}
+
+@if (userStories == null)
+{
+    <span>Loading..UserStories</span>
+}
+else if (!userStories.Any())
+{
+    <span>No user stories to be found</span>
+}
+else
+{
+    <table class="table justify-content-center" align="center">
+        <thead>
+        <tr>
+            <th class="text-center">Title</th>
+            <th class="text-center">Priority</th>
+            <th class="text-center">Story Points</th>
+            <th class="text-center">Status</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var userStory in userStories)
+        {
+            <tr >
+                <td class="text-center">@userStory.Body</td>
+                <td class="text-center">@userStory.Priority</td>
+                <td class="text-center">@userStory.StoryPoints</td>
+                <td class="text-center">@userStory.Status</td>
+            </tr>
+        }
+
+
+        </tbody>
+    </table>
+}
+
+<div>
+    <PlusMinus Checked="@doShowUserStory" OnChange="@(() => doShowUserStory = !doShowUserStory)" /> 
+    @if (doShowUserStory)
+    {
+        <div>Select user story to add:
+            <select @bind="body">
+                @foreach (UserStory userStory in _userStories)
+                {
+                    <option value="@userStory.Body">@userStory.Body</option>
+                }
+            </select>
+            <button @onclick="() => AddUserStory()" class="acceptbtn"> Add to Sprint </button>
+        </div>
+
+    }
+</div>
+
+
+@code {
+
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private string _msg = "";
+    private IEnumerable<UserStory>? userStories;
+    private IEnumerable<UserStory>? _userStories;
+
+    private ClaimsPrincipal? _user;
+    private SprintHttpClient sprintService;
+    
+    private bool doShowUserStory;
+    private int storyId;
+    private int body;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public int ProjectId { get; set; }
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await LoadUserStoriesAsync();
+            await LoadOtherStoriesAsync();
+   
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    private async Task LoadUserStoriesAsync()
+    {
+        userStories = await SprintService.GetUserStoriesFromSprint(Id);
+    }
+
+    private async Task LoadOtherStoriesAsync()
+    {
+        _userStories = await SprintService.OtherUserStories(ProjectId);
+    }
+
+    private async Task AddUserStory()
+    {
+        await SprintService.AddUserStory(Id, storyId);
+    }
+}   
+    
