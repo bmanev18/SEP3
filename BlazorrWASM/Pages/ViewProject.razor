@@ -7,13 +7,19 @@
 @using UIComponents;
 @using global::Shared.Model
 @using global::Shared.DTOs
+@inject IJSRuntime JSRuntime
+
+
 
 @*<AuthorizeView>*@
 &nbsp; 
-&nbsp;
+&nbsp;<td>
+     <button class="btn btn-primary" @onclick="() => OpenViewTeam()">
+         <span>@($"{GetLocalizedString("View the team of the project")}")</span>
+     </button>
+ </td>
 
-<h3>View User Stories</h3>
-
+<h2>User Stories</h2>
 
 <div class="addUserStory-bar">
     <div class="fields-container">
@@ -148,7 +154,7 @@ else
 
 
 @* Sprints Section *@
-<h3>View Sprints</h3>
+<h2>Sprints</h2>
 <div class="addSprint-bar">
     <div class="fields-container">
         <PlusMinus Checked="@_doShowSprintFields" OnChange="@(() => _doShowSprintFields = !_doShowSprintFields)"/>
@@ -246,23 +252,23 @@ else
 
     [Parameter]
     public int Id { get; set; }
+    private string projectName;
     
     
-
     protected override async Task OnInitializedAsync()
     {
         try
         {
             await LoadUserStoriesAsync();
             await LoadSprintsAsync();
-    /*_userStories = await UserStoryService.GetUserStoriesAsync(Id);
-            _sprints = await SprintService.GetSprintsAsync(Id);*/
+            
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
     }
+    
 
 
     private async Task CreateUserStory()
@@ -400,6 +406,16 @@ else
     private async void Open(int storyId)
     {
         NavMgr.NavigateTo($"/ViewProject/{Id}/ViewUserStory/{storyId}");
+    }
+    private async void OpenViewTeam()
+    {
+        NavMgr.NavigateTo($"/ViewTeam/{Id}");
+    }
+    
+    private string GetLocalizedString(string key)
+    {
+    
+        return key;
     }
 
 }

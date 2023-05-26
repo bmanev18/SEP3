@@ -69,8 +69,8 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpDelete("{id:int}/collaborator")]
-    public async Task<ActionResult> DeleteCollaborator(string username, int id)
+    [HttpDelete("{id:int}/collaborator/{username}")]
+    public async Task<ActionResult> DeleteCollaborator([FromRoute]string username, [FromRoute]int id)
     {
         var dto = new AddUserToProjectDto
         {

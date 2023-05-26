@@ -20,14 +20,6 @@
         <span>@_msg</span>
     </div>
 }
-&nbsp; 
-&nbsp; 
-&nbsp; 
-&nbsp; 
-&nbsp; 
-&nbsp;
-&nbsp;
-&nbsp;
 &nbsp;
 @if (_projects == null)
 {
@@ -39,14 +31,12 @@ else if (!_projects.Any())
 }
 else 
 {
-     
-    
     <table class="table justify-content-center">
         
         <tbody>
         @foreach (Project project in _projects)
         {
-            <tr @onclick="() => Open(project.Id)">
+            <tr>
                 <td class="text-center"><h5>@project.Title</h5></td>
                     <td> <MudButton @onclick="() => Open(project.Id)" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">VIEW</MudButton></td>
 

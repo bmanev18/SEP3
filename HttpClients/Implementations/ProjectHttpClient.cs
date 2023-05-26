@@ -64,7 +64,7 @@ public class ProjectHttpClient : IProjectService
 
     public async Task RemoveCollaborator(string username, int projectid)
     {
-        HttpResponseMessage response = await client.DeleteAsync($"/project/?username={username}&id={projectid}");
+        HttpResponseMessage response = await client.DeleteAsync($"/Project/{projectid}/collaborator/{username}");
         if (!response.IsSuccessStatusCode)
         {
             string content = await response.Content.ReadAsStringAsync();
