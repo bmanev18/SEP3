@@ -4,6 +4,7 @@
 @using System.Security.Claims
 @using HttpClients.ClientInterfaces
 @inject ISprintService SprintService;
+@inject IProjectService ProjectService;
 @using HttpClients.Implementations
 @using UIComponents
 <h3>View Sprint</h3>
@@ -31,11 +32,11 @@
     </div>
 }
 
-@if (userStories == null)
+@if (_userStories == null)
 {
     <span>Loading..UserStories</span>
 }
-else if (!userStories.Any())
+else if (!_userStories.Any())
 {
     <span>No user stories to be found</span>
 }
@@ -52,7 +53,7 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var userStory in userStories)
+        @foreach (var userStory in _userStories)
         {
             <tr >
                 <td class="text-center">@userStory.Body</td>
@@ -67,22 +68,39 @@ else
     </table>
 }
 
-<div>
+
     <PlusMinus Checked="@doShowUserStory" OnChange="@(() => doShowUserStory = !doShowUserStory)" /> 
     @if (doShowUserStory)
     {
-        <div>Select user story to add:
-            <select @bind="body">
-                @foreach (UserStory userStory in _userStories)
-                {
-                    <option value="@userStory.Body">@userStory.Body</option>
-                }
-            </select>
-            <button @onclick="() => AddUserStory()" class="acceptbtn"> Add to Sprint </button>
-        </div>
+@*         <div>Select user story to add: *@
+@*              *@
+@*                 <div class="input-box"> *@
+@*                     <select @bind="storyId"> *@
+@* @foreach (UserStory userStory in _otherUserStories) *@
+@* { *@
+@*     <option value="@userStory.Body">@userStory.Body</option> *@
+@* } *@
+@*                     </select> *@
+@*                 </div> *@
+@*              *@
+@*             <button @onclick="() => AddUserStory()" class="acceptbtn"> Add to Sprint </button> *@
+@*         </div> *@
+        <div>
+            Select user story to add:
+            <div class="input-box">
+                <select @bind="storyId">
+                    @foreach (UserStory userStory in _otherUserStories)
+                    {
+                        <option value="@userStory.ID">@userStory.Body</option>
+                    }
+                </select>
+            
+<MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => AddUserStory())">Add to sprint</MudButton>
+            </div> 
+            </div>
 
-    }
-</div>
+            }
+
 
 
 @code {
@@ -92,12 +110,12 @@ else
     public Task<AuthenticationState> AuthState { get; set; } = null!;
 
     private string _msg = "";
-    private IEnumerable<UserStory>? userStories;
     private IEnumerable<UserStory>? _userStories;
+    private List<UserStory>? _otherUserStories;
 
     private ClaimsPrincipal? _user;
     private SprintHttpClient sprintService;
-    
+
     private bool doShowUserStory;
     private int storyId;
     private int body;
@@ -118,7 +136,7 @@ else
         {
             await LoadUserStoriesAsync();
             await LoadOtherStoriesAsync();
-   
+
         }
         catch (Exception e)
         {
@@ -128,17 +146,29 @@ else
 
     private async Task LoadUserStoriesAsync()
     {
-        userStories = await SprintService.GetUserStoriesFromSprint(Id);
+        _userStories = await SprintService.GetUserStoriesFromSprint(Id);
     }
 
     private async Task LoadOtherStoriesAsync()
     {
-        _userStories = await SprintService.OtherUserStories(ProjectId);
+        var allStories = await ProjectService.GetUserStoriesAsync(ProjectId);
+        _otherUserStories = new List<UserStory>();
+        foreach (UserStory story in allStories)
+        {
+    //if (!_userStories.Contains(story))
+            if (_userStories.FirstOrDefault(userStory => userStory.ID == story.ID) == null)
+            {
+                _otherUserStories.Add(story);
+            }
+        }
     }
 
     private async Task AddUserStory()
     {
         await SprintService.AddUserStory(Id, storyId);
+        LoadUserStoriesAsync();
+
     }
-}   
+
+}
     

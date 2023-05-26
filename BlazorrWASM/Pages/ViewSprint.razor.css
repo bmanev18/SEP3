@@ -1,0 +1,11 @@
+.input-box {
+    margin-right: 10px;
+}
+.input-box button.acceptbtn {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
