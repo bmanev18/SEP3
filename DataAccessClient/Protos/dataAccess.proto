@@ -48,6 +48,7 @@ service ProjectAccess {
     rpc AddUserStoryToSprint(UserStoryToSprintRequest) returns (Response);
     rpc RemoveUserStoryFromSprint(UserStoryToSprintRequest) returns (Response);
     rpc GetAllUserStoriesFromSprint(Id) returns (UserStoriesResponse);
+    rpc GetOtherUserStories(Id) returns (UserStoriesResponse);
 }
 
 

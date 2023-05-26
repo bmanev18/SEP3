@@ -6,7 +6,7 @@ using Shared.Model;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]/{id:int}")]
+[Route("[controller]")]
 public class SprintController : ControllerBase
 {
     private readonly ISprintLogic _sprintLogic;
@@ -46,11 +46,16 @@ public class SprintController : ControllerBase
         }
     }
 
-    [HttpPost("userStory")]
-    public async Task<ActionResult> AddUserStoryToSprint(UserStoryToSprintDto dto)
+    [HttpPost("{sprintId:int}/AdduserStory/{userStoryId:int}")]
+    public async Task<ActionResult> AddUserStoryToSprint([FromRoute]int sprintId,[FromRoute]int userStoryId)
     {
         try
         {
+            UserStoryToSprintDto dto = new UserStoryToSprintDto
+            {
+                SprintId = sprintId,
+                UserStoryId = userStoryId
+            }; 
             await _sprintLogic.AddUserStoryToSprint(dto);
             return Accepted();
         }
@@ -61,8 +66,8 @@ public class SprintController : ControllerBase
         }
     }
 
-    [HttpGet("userStory")]
-    public async Task<ActionResult<List<UserStory>>> GetAllUserStoriesFromSprint(int id)
+    [HttpGet("{id:int}/AllUserStories")]
+    public async Task<ActionResult<List<UserStory>>> GetAllUserStoriesFromSprint([FromRoute]int id)
     {
         try
         {
@@ -75,9 +80,25 @@ public class SprintController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    
+    
+    [HttpGet("{id:int}/OtherUserStories")]
+    public async Task<ActionResult<List<UserStory>>> OtherUserStories([FromRoute]int id)
+    {
+        try
+        {
+            var list = await _sprintLogic.GetOtherUserStories(id);
+            return Ok(list);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
 
 
-    [HttpDelete("userStory/{userStoryId:int}")]
+    [HttpDelete("{id:int}/userStory/{userStoryId:int}")]
     public async Task<ActionResult> RemoveUserStoryFromSprint(int id, int userStoryId)
     {
         var dto = new UserStoryToSprintDto

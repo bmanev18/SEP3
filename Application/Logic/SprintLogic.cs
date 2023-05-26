@@ -34,6 +34,11 @@ public class SprintLogic : ISprintLogic
             return await _sprintDao.GetUserStoriesFromSprint(id);
         }
 
+    public async Task<List<UserStory>> GetOtherUserStories(int id)
+    {
+        return await _sprintDao.GetOtherUserStories(id);
+    }
+
     public async Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto)
     {
         await _sprintDao.RemoveUserStoryFromSprint(dto);

@@ -10,7 +10,8 @@
 
 @*<AuthorizeView>*@
 &nbsp; 
-&nbsp; 
+&nbsp;
+
 <h3>View User Stories</h3>
 
 
@@ -25,13 +26,15 @@
             </div>
 
             <div class="input-box">
+                Select priority: 
                 <select @bind="_priority">
-                    <option value="critical">Critical</option>
-                    <option value="high">High</option>
-                    <option value="low">Low</option>
+                    <option value="critical">critical</option>
+                    <option value="high">high</option>
+                    <option value="low">low</option>
                 </select>
             </div>
             <div class="input-box">
+                Select story points: 
                 <select @bind="_storyPoints">
                     <option value="0" selected>0</option>
                     <option value="1">1</option>
@@ -48,12 +51,12 @@
             // <StoryPoints @bind = "_storyPoints"/>
             //TODO select points and check box
 
-            <div class="button">
+            <div class="input-box button">
                 @if (!string.IsNullOrEmpty(_storyMsg))
                 {
                     <label style="color :red"> @_storyMsg </label>
                 }
-                <button @onclick="CreateUserStory" class="createbtn"> Create </button>
+                <button @onclick="CreateUserStory" class="acceptbtn"> Create </button>
             </div>
         }
     </div>
@@ -173,6 +176,8 @@ else
     </div>
 </div>
 
+@* View Sprints *@
+
 @if (!string.IsNullOrEmpty(_sprintMsg)) @* display any msg in case it has ny value in case of error*@
 {
     <div>
@@ -193,6 +198,7 @@ else
     <table class="table justify-content-center">
         <thead>
         <tr>
+            <th class="text-center"> </th>
             <th class="text-center">Name</th>
             <th class="text-center">Start Date</th>
             <th class="text-center">End Date</th>
@@ -202,6 +208,7 @@ else
         @foreach (Sprint sprint in _sprints)
         {
             <tr>
+                <td><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OpenSprint(sprint.Id))">User Stories</MudButton> </td>
                 <td class="text-center">@sprint.Name</td>
                 <td class="text-center">@sprint.StartDate</td>
                 <td class="text-center">@sprint.EndDate</td>
@@ -210,8 +217,6 @@ else
         </tbody>
     </table>
 }
-
-
 
 @*</AuthorizeView>*@
 
@@ -225,12 +230,12 @@ else
     /*User story fields*/
     //private int _storyId = 0; // Todo when selecting user story and probably showing tasks
     private string _storyName = "";
-    private string _priority = "";
+    private string _priority = " ";
     private int _storyPoints; // By default is 0
     private string _status = "to-do";
 
     // Sprint fields
-    //private int _sprintId = 0; // TODO when selecting should probably show user stories and tasks
+    private int _sprintId; // TODO when selecting should probably show user stories and tasks
     private string _sprintName = "";
     private DateTime _startDate = DateTime.Today;
     private DateTime _endDate = DateTime.Today.AddDays(1);
@@ -241,6 +246,8 @@ else
 
     [Parameter]
     public int Id { get; set; }
+    
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -278,6 +285,7 @@ else
                 });
 
                 await LoadUserStoriesAsync();
+                
             }
             catch (Exception e)
             {
@@ -326,6 +334,11 @@ else
         _sprints = await ProjectService.GetSprintsAsync(Id);
     }
 
+    // private async Task LoadSprintUserStories()
+    // {
+    //     _userStoriesinSprint = await SprintService.GetUserStoriesFromSprint(_sprintId);        
+    // }
+
 
     //TODO create those two pages
     private void OpenUserStory(int storyId)
@@ -333,32 +346,11 @@ else
         NavMgr.NavigateTo($"/ViewUserStory/{storyId}");
     }
 
-    private void OpenSprint(int storyId)
+    private void OpenSprint(int sprintId)
     {
-        NavMgr.NavigateTo($"/ViewSprint/{storyId}");
+        NavMgr.NavigateTo($"ViewProject/{Id}/ViewSprint/{sprintId}");
     }
-
-    // private async Task UpdateStory(UserStory userStory, bool status)
-    // {
-    //     UserStoryUpdateDto dto = new()
-    //     {
-    //         Id = userStory.ID,
-    //         Priority = userStory.Priority,
-    //         StoryPoints = userStory.StoryPoints,
-    //         Status = status
-    //     };
-    //
-    //     try
-    //     {
-    //         await UserStoryService.UpdateAsync(dto);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         _storyMsg = e.Message;
-    //     }
-    // }
-
+    
     private async Task UpdateStory(UserStory userStory)
     {
         UserStoryUpdateDto dto = new()
@@ -391,6 +383,7 @@ else
         
         await UserStoryService.UpdateUserStoryStatusAsync(story.ID,eValue );
     }
+    
     private async Task UpdateStoryPriorityAsync(UserStory story, string? eValue)
     {
         await UserStoryService.UpdateUserStoryPriorityAsync(story.ID,eValue );
@@ -410,3 +403,4 @@ else
     }
 
 }
+

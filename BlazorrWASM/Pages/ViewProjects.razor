@@ -7,7 +7,11 @@
 @using global::Shared.Model
 @using System.Security.Claims
 @using global::Shared.DTOs
-<h3>View My Projects</h3>
+&nbsp; 
+&nbsp; 
+&nbsp; 
+
+<h3 class="text-center">My Projects</h3>
 
 
 @if (!string.IsNullOrEmpty(_msg))@* display any msg in case it has ny value in case of error*@
@@ -16,7 +20,15 @@
         <span>@_msg</span>
     </div>
 }
-
+&nbsp; 
+&nbsp; 
+&nbsp; 
+&nbsp; 
+&nbsp; 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 @if (_projects == null)
 {
     <span>Loading..</span>
@@ -27,18 +39,17 @@ else if (!_projects.Any())
 }
 else 
 {
+     
+    
     <table class="table justify-content-center">
         
-        <thead>
-        <tr>
-            <th class="text-center">Title</th>
-        </tr>
-        </thead>
         <tbody>
         @foreach (Project project in _projects)
         {
             <tr @onclick="() => Open(project.Id)">
-                <td class="text-center" >@project.Title</td>
+                <td class="text-center"><h5>@project.Title</h5></td>
+                    <td> <MudButton @onclick="() => Open(project.Id)" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">VIEW</MudButton></td>
+
             </tr>
         }
 

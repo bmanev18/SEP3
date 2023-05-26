@@ -71,9 +71,10 @@ public class ProjectHttpClient : IProjectService
             throw new Exception(content);
         }
     }
+    
     public async Task CreateUserStory(UserStoryDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/project/userStory", dto);
+        HttpResponseMessage response = await client.PostAsJsonAsync($"/project/{dto.Project_id}/userStory", dto);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {

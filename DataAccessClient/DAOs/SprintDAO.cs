@@ -84,6 +84,31 @@ public class SprintDao : ISprintDao
 
         return Task.FromResult(userStories);
     }
+    
+    public Task<List<UserStory>> GetOtherUserStories(int id)
+    {
+        var request = new Id
+        {
+            Id_ = id
+        };
+        var call = _client.GetOtherUserStories(request);
+        var userStories = new List<UserStory>();
+        foreach (var us in call.UserStories)
+        {
+            userStories.Add(new UserStory
+            {
+                ID = us.Id,
+                Project_id = us.ProjectId,
+                Body = us.UserStory_,
+                Priority = us.Priority,
+                Status = us.Status,
+                StoryPoints = us.StoryPoint
+                
+            });
+        }
+
+        return Task.FromResult(userStories);
+    }
 
     public Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto)
     {
