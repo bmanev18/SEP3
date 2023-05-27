@@ -1,5 +1,4 @@
 .addUserStory-bar, .addSprint-bar {
-    border: 1px solid #ccc;
     padding: 10px;
     margin-right: 30%;
     /*margin-bottom: 10px;*/
@@ -41,6 +40,9 @@
 .input-box label {
     margin-right: 10px;
 }
+.buttonAndHeader{
+    display: inline;
+}
 
 .table {
     border-collapse: collapse;
@@ -57,4 +59,7 @@
 .table th {
     background-color: #4CAF50;
     color: white;
+}
+h2{
+    margin-left: 15px;
 }

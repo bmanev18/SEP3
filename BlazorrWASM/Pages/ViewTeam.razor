@@ -5,6 +5,9 @@
 @inject IProjectService ProjectService
 @inject IUserService UserService
 <h3>ViewTeam</h3>
+
+
+
 <AuthorizeView Roles="project manager">
   <Authorized>
     <div class="wrapper">
@@ -27,7 +30,10 @@
               <td class="text-center">@user.FirstName</td>
               <td class="text-center">@user.LastName</td>
               <td class="text-center">@RoleTranslator(user.Role)</td>
-              <td class="text"> <button class="removebtn" @onclick="() => RemoveCollaborator(user.Username)"> <img src="img/personRemove.png" class="search"> </button> </td>
+              @if (!user.Role.Equals("1"))
+              {
+                <td class="text"> <button class="removebtn" @onclick="() => RemoveCollaborator(user.Username)"> <img src="img/personRemove.png" class="search"> </button> </td>
+              }
             </tr>
           }
           </tbody>
@@ -199,6 +205,7 @@
   {
     var usernames = users.Select(u => u.Username);
     var filtered = results.Where(u => !usernames.Contains(u.Username));
-    return filtered.ToList();
+    var roleFiltered = filtered.Where(dto => !dto.Role.Equals("1"));
+    return roleFiltered.ToList();
   }
 }

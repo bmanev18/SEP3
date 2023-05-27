@@ -12,15 +12,15 @@
 
 
 @*<AuthorizeView>*@
-&nbsp; 
-&nbsp;<td>
+<div class="buttonAndHeader">
+<h2>User Stories</h2>
+
+<td>
      <button class="btn btn-primary" @onclick="() => OpenViewTeam()">
          <span>@($"{GetLocalizedString("View the team of the project")}")</span>
      </button>
  </td>
-
-<h2>User Stories</h2>
-
+</div>
 <div class="addUserStory-bar">
     <div class="fields-container">
         @* <img src="img/@(_doShowUserStoryFields ? "close" : "add").png" class="funnel" @onclick="@(() => _doShowUserStoryFields = !_doShowUserStoryFields)" alt="Funnel"/> *@

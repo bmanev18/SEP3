@@ -104,5 +104,10 @@ tbody tr:hover {
 }
 .lforuser{
     margin-left: 20px;
-    
+}
+.wrapper{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
 }

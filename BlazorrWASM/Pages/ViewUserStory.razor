@@ -10,16 +10,15 @@
 @using System.Security.AccessControl
 @inject NavigationManager NavMgr
 
-@*
+
 <AuthorizeView roles="scrum master">
-    <Authorized>*@
+    <Authorized>
+        @if (userStory != null)
+        {
+            <h3>User Story: @userStory.Body</h3> <!-- Display the name of the user story dynamically -->
+        }
 
-@if (userStory != null)
-{
-    <h3>User Story: @userStory.Body</h3> <!-- Display the name of the user story dynamically -->
-}
-
-<div id="addTask">
+        <div id="addTask">
             <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
             @if (_showFields)
             {
@@ -36,17 +35,17 @@
                 </select>
 
                 <select @bind="_points">
-                         <option value="0">0</option>
-                         <option value="1">1</option>
-                         <option value="2">2</option>
-                         <option value="3">3</option>
-                         <option value="5">5</option>
-                         <option value="8">8</option>
-                         <option value="13">13</option>
-                         <option value="20">20</option>
-                         <option value="40">40</option>
-                         <option value="100">100</option>
-                     </select>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="8">8</option>
+                    <option value="13">13</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="100">100</option>
+                </select>
                 
                 <div class="input-box button">
                     @if (!string.IsNullOrEmpty(_msg))
@@ -101,13 +100,62 @@
                         <td>
                             @* <DeleteButton/> *@
                             <button class="btn" @onclick="() => RemoveTask(task.Id)">Delete </button>
-                            </td>
+                        </td>
 
                     </tr>
                 }
                 </tbody>
             </table>
         }
+        </Authorized>
+    <NotAuthorized>
+         @if (userStory != null)
+                {
+                    <h3>User Story: @userStory.Body</h3> <!-- Display the name of the user story dynamically -->
+                }
+        
+                @if (_tasks == null)
+                {
+                    <span>Loading..tasks</span>
+                }
+                else if (!_tasks.Any())
+                {
+                    <span>No tasks to be found</span>
+                }
+                else
+                {
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Task</th>
+                            <th>Assigned</th>
+                            <th>Story Points</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var task in _tasks)
+                        {
+                            <tr>
+                                <td>
+                                    @task.Status
+                                </td>
+                                <td>
+                                    <label for="@task.Id">@task.Body</label>
+                                </td>
+                                <td>
+                                    @task.Assignee
+                                </td>
+                                <td>
+                                    @task.StoryPoint
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+    </NotAuthorized>
+    </AuthorizeView>
 
 @code {
     private string _status = "to-do";
