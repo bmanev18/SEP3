@@ -9,23 +9,23 @@ namespace HttpClients.Implementations;
 
 public class ProjectHttpClient : IProjectService
 {
-    private readonly HttpClient client;
+    private readonly HttpClient _client;
 
     public ProjectHttpClient(HttpClient client)
     {
-        this.client = client;
+        this._client = client;
     }
 
     public async Task<Project> Create(ProjectCreationDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/project", dto);
-        string result = await response.Content.ReadAsStringAsync();
+        var response = await _client.PostAsJsonAsync("/project", dto);
+        var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(result);
         }
 
-        Project project = JsonSerializer.Deserialize<Project>(result, new JsonSerializerOptions
+        var project = JsonSerializer.Deserialize<Project>(result, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         })!;
@@ -38,43 +38,42 @@ public class ProjectHttpClient : IProjectService
             ProjectID = projectId,
             Username = username,
         };
-        var response = await client.PutAsJsonAsync($"project/{projectId}/collaborator", username);
+        var response = await _client.PutAsJsonAsync($"project/{projectId}/collaborator", username);
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(result);
         }
-        
     }
 
     public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
     {
-        HttpResponseMessage response = await client.GetAsync($"/Project/{id}/collaborator");
-        string result = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync($"/project/{id}/collaborator");
+        var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
             Console.WriteLine(response);
         }
-        List<UserFinderDto> collaborators = JsonSerializer.Deserialize<List<UserFinderDto>>(result, new JsonSerializerOptions
+        var collaborators = JsonSerializer.Deserialize<List<UserFinderDto>>(result, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         })!;
         return collaborators;
     }
 
-    public async Task RemoveCollaborator(string username, int projectid)
+    public async Task RemoveCollaborator(string username, int projectId)
     {
-        HttpResponseMessage response = await client.DeleteAsync($"/Project/{projectid}/collaborator/{username}");
+        var response = await _client.DeleteAsync($"/project/{projectId}/collaborator/{username}");
         if (!response.IsSuccessStatusCode)
         {
-            string content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
             throw new Exception(content);
         }
     }
     
     public async Task CreateUserStory(UserStoryDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync($"/project/{dto.Project_id}/userStory", dto);
+        HttpResponseMessage response = await _client.PostAsJsonAsync($"/project/{dto.Project_id}/userStory", dto);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -83,7 +82,7 @@ public class ProjectHttpClient : IProjectService
     }
     public async Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id)
     {
-        var response = await client.GetAsync($"/project/{id}/userStory");
+        var response = await _client.GetAsync($"/project/{id}/userStory");
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -99,7 +98,7 @@ public class ProjectHttpClient : IProjectService
     }
     public async Task CreateSprint(SprintCreationDto dto,int id)
     {
-        var response = await client.PostAsJsonAsync($"project/{id}/sprint", dto);
+        var response = await _client.PostAsJsonAsync($"project/{id}/sprint", dto);
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -108,7 +107,7 @@ public class ProjectHttpClient : IProjectService
     }
     public async Task<IEnumerable<Sprint>> GetSprintsAsync(int? projectId)
     {
-        var response = await client.GetAsync($"/Project/{projectId}/sprint");
+        var response = await _client.GetAsync($"/Project/{projectId}/sprint");
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {

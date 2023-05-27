@@ -3,8 +3,9 @@ using DataAccessClient;
 using Grpc.Net.Client;
 using Shared.DTOs;
 using Shared.Model;
-using UserCreationDto = DataAccessClient.UserCreationDto;
+using UserMessage = DataAccessClient.UserMessage;
 using LoginDto = Shared.DTOs.LoginDto;
+using ProjectDto = Shared.DTOs.ProjectDto;
 
 namespace DataAccess.DAOs;
 
@@ -20,9 +21,9 @@ public class UserDao : IUserDao
     }
 
 
-    public async Task CreateAsync(Shared.DTOs.UserCreationDto dto)
+    public async Task CreateAsync(UserCreationDto dto)
     {
-        var request = new UserCreationDto
+        var request = new UserMessage
         {
             Password = dto.Password,
             Username = dto.Username,
@@ -31,7 +32,7 @@ public class UserDao : IUserDao
             LastName = dto.Lastname
         };
         var call = await _client.CreateUserAsync(request);
-        if (call.Code != 200)
+        if (!call.Response_)
         {
             throw new InvalidOperationException("User wasn't created");
         }
@@ -44,7 +45,7 @@ public class UserDao : IUserDao
             Username_ = loginDto.Username
         };
         var call = _client.UserByUsername(username);
-        if (call == null)
+        if (string.IsNullOrEmpty(call.Username))
         {
             throw new InvalidOperationException("No User found!");
         }
@@ -63,15 +64,12 @@ public class UserDao : IUserDao
     public Task<List<ProjectDto>> GetProjects(string username)
     {
         var projectsResponse = _client.GetAllProjects(new Username { Username_ = username });
-        var list = new List<ProjectDto>();
-        foreach (var project in projectsResponse.Projects)
+        /*if (projectsResponse.Projects.Count==0)
         {
-            list.Add(new ProjectDto
-            {
-                Id = project.Id,
-                Title = project.Title,
-            });
-        }
+            throw new InvalidOperationException("No projects were found");
+        }*/
+
+        var list = projectsResponse.Projects.Select(project => new ProjectDto { Id = project.Id, Title = project.Title, }).ToList();
 
         return Task.FromResult(list);
     }
@@ -83,11 +81,11 @@ public class UserDao : IUserDao
             Username_ = username
         };
         var call = _client.LookForUsers(request);
-        List<UserFinderDto> list = new();
-        foreach (var user in call.Users)
+        /*if (call.Users.Count == 0)
         {
-            list.Add(new UserFinderDto { Username = user.Username, FirstName = user.FirstName, LastName = user.LastName, Role = user.Role });
-        }
+            throw new InvalidOperationException("No users were found");
+        }*/
+        var list = call.Users.Select(user => new UserFinderDto { Username = user.Username, FirstName = user.FirstName, LastName = user.LastName, Role = user.Role }).ToList();
 
         return Task.FromResult(list);
     }

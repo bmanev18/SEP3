@@ -165,8 +165,8 @@ else
 
     private async Task AddUserStory()
     {
-        await SprintService.AddUserStory(Id, storyId);
-        LoadUserStoriesAsync();
+        await SprintService.AddUserStoryToSprint(Id, storyId);
+        await LoadUserStoriesAsync();
 
     }
 

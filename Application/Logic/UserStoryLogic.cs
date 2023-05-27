@@ -31,26 +31,26 @@ public class UserStoryLogic:IUserStoryLogic
 
     public async Task DeleteUserStory(int id)
     {
-        await _storyDao.DeleteUserStory(id);
+        await _storyDao.DeleteUserStoryAsync(id);
     }
 
     public async Task AddTask(SprintTaskCreationDto dto)
     {
-        await _storyDao.AddSprintTask(dto);
+        await _storyDao.AddSprintTaskAsync(dto);
     }
 
     public async Task EditTask(SprintTask task)
     {
-        await _storyDao.EditTask(task);
+        await _storyDao.EditTaskAsync(task);
     }
 
     public async Task<List<SprintTask>> GetTasks(int id)
     {
-        return await _storyDao.GetTasks(id);
+        return await _storyDao.GetTasksAsync(id);
     }
 
     public async Task RemoveTask(int id)
     {
-        await _storyDao.DeleteTask(id);
+        await _storyDao.DeleteTaskAsync(id);
     }
 }

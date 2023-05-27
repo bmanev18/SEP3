@@ -5,11 +5,11 @@ namespace Application.DAOInterfaces;
 
 public interface ISprintDao
 {
-    Task<Sprint> GetSprintById(int id);
-    Task RemoveSprint(int id);
-    Task AddUserStoryToSprint(UserStoryToSprintDto dto);
-    Task<List<UserStory>> GetUserStoriesFromSprint(int id);
-    public Task<List<UserStory>> GetOtherUserStories(int id);
+    Task<Sprint> GetSprintByIdAsync(int id);
+    Task RemoveSprintAsync(int id);
+    Task AddUserStoryToSprintAsync(UserStoryToSprintDto dto);
+    Task<List<UserStory>> GetUserStoriesFromSprintAsync(int id);
+     //Task<List<UserStory>> GetOtherUserStoriesAsync(int id);
 
-    Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto);
+    Task RemoveUserStoryFromSprintAsync(UserStoryToSprintDto dto);
 }

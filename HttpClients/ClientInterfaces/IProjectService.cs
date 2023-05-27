@@ -12,7 +12,7 @@ public interface IProjectService
 
     Task<List<UserFinderDto>> GetAllCollaborators(int id);
 
-    Task RemoveCollaborator(string username, int projectid);
+    Task RemoveCollaborator(string username, int projectId);
 
     Task CreateUserStory(UserStoryDto dto);
     Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id = null);

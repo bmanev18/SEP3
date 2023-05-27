@@ -48,14 +48,14 @@ public class UserStoryMockDao : IUserStoryDao
         return Task.CompletedTask;
     }
 
-    public Task DeleteUserStory(int id)
+    public Task DeleteUserStoryAsync(int id)
     {
         _userStories.RemoveAll(story => story.ID == id);
 
         return Task.CompletedTask;
     }
 
-    public Task AddSprintTask(SprintTaskCreationDto dto)
+    public Task AddSprintTaskAsync(SprintTaskCreationDto dto)
     {
         _tasks.Add(new SprintTask
         {
@@ -69,19 +69,19 @@ public class UserStoryMockDao : IUserStoryDao
         return Task.CompletedTask;
     }
 
-    public Task EditTask(SprintTask task)
+    public Task EditTaskAsync(SprintTask task)
     {
         var index = _tasks.FindIndex(t => t.Id == task.Id);
         _tasks[index] = task;
         return Task.CompletedTask;
     }
 
-    public Task<List<SprintTask>> GetTasks(int id)
+    public Task<List<SprintTask>> GetTasksAsync(int id)
     {
         return Task.FromResult(_tasks.FindAll(task => task.UserStoryId == id));
     }
 
-    public Task DeleteTask(int id)
+    public Task DeleteTaskAsync(int id)
     {
         _tasks.RemoveAll(task => task.Id == id);
         return Task.CompletedTask;

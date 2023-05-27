@@ -357,7 +357,7 @@ else
         NavMgr.NavigateTo($"ViewProject/{Id}/ViewSprint/{sprintId}");
     }
     
-    private async Task UpdateStory(UserStory userStory)
+    /*private async Task UpdateStory(UserStory userStory)
     {
         UserStoryUpdateDto dto = new()
         {
@@ -377,6 +377,7 @@ else
             _storyMsg = e.Message;
         }
     }
+    */
 
     private async Task UpdateStoryPointsAsync(UserStory story, string? eValue)
     {

@@ -10,7 +10,7 @@ public interface IProjectDao
     Task<List<UserFinderDto>> GetAllCollaborators(int id);
     Task RemoveCollaborator(AddUserToProjectDto collaborator);
 
-    Task AddUserStory(UserStoryDto dto);
+    Task AddUserStoryAsync(UserStoryDto dto);
     Task<List<UserStory>> GetUserStoriesAsync(int projectId);
     
     Task CreateSprint(SprintCreationDto dto);

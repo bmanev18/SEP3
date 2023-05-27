@@ -6,7 +6,7 @@ using Shared.Model;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/{id:int}")]
 public class UserStoryController : ControllerBase
 {
     private readonly IUserStoryLogic _userStoryLogic;
@@ -19,7 +19,7 @@ public class UserStoryController : ControllerBase
 
     
     [HttpPatch("storyPoints")]
-    public async Task<ActionResult> UpdateUserStoryPoints([FromRoute] int id, int points)
+    public async Task<ActionResult> UpdateUserStoryPoints([FromRoute] int id, [FromBody]int points)
     {
         try
         {
@@ -32,12 +32,12 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpPatch("UpdateUserStoryStatus/{userStoryId}")]
-    public async Task<ActionResult> UpdateUserStatus([FromBody]string status,[FromRoute] int userStoryId)
+    [HttpPatch("status")]
+    public async Task<ActionResult> UpdateUserStatus([FromBody]string status,[FromRoute] int id)
     {
         try
         {
-            await _userStoryLogic.UpdateUserStoryStatusAsync(userStoryId, status);
+            await _userStoryLogic.UpdateUserStoryStatusAsync(id, status);
             return Ok();
         }
         catch (Exception e)
@@ -46,12 +46,12 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpPatch("UpdateUserStoryPriority/{userStoryId}")]
-    public async Task<ActionResult> UpdateUserStoryPriority([FromBody]string priority,[FromRoute] int userStoryId)
+    [HttpPatch("priority")]
+    public async Task<ActionResult> UpdateUserStoryPriority([FromBody]string priority,[FromRoute] int id)
     {
         try
         {
-            await _userStoryLogic.UpdateUserStoryPriorityAsync(userStoryId, priority);
+            await _userStoryLogic.UpdateUserStoryPriorityAsync(id, priority);
             return Ok();
         }
         catch (Exception e)
@@ -61,7 +61,7 @@ public class UserStoryController : ControllerBase
         }
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("")]
     public async Task<ActionResult> DeleteUserStory([FromRoute] int id)
     {
         try
@@ -107,7 +107,7 @@ public class UserStoryController : ControllerBase
     }
 
     
-    [HttpGet("{id:int}/tasks")]
+    [HttpGet("tasks")]
     public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute]int id)
     {
         try
@@ -121,7 +121,7 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpDelete("/task/{taskId:int}")]
+    [HttpDelete("task/{taskId:int}")]
     public async Task<ActionResult> RemoveTask([FromRoute]int taskId)
     {
         try

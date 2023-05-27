@@ -99,7 +99,7 @@ public class ProjectMockDao : IProjectDao
         return Task.CompletedTask;
     }
 
-    public Task AddUserStory(UserStoryDto dto)
+    public Task AddUserStoryAsync(UserStoryDto dto)
     {
         _userStories.Add(new UserStory
         {

@@ -8,13 +8,13 @@ namespace DataAccess.DAOs;
 
 public class UserStoryDao : IUserStoryDao
 {
-    private readonly ProjectAccess.ProjectAccessClient _client;
+    private readonly UserStoryAccess.UserStoryAccessClient _client;
 
     public UserStoryDao()
     {
         var channel = GrpcChannel.ForAddress("http://localhost:9111");
         Console.WriteLine(channel.State);
-        _client = new ProjectAccess.ProjectAccessClient(channel);
+        _client = new UserStoryAccess.UserStoryAccessClient(channel);
     }
 
     public async Task UpdateUserStoryPointsAsync(int userStoryId, int points)
@@ -24,8 +24,13 @@ public class UserStoryDao : IUserStoryDao
             Id = userStoryId,
             Points = points
         };
-        await _client.UpdateUserStoryPointsAsync(request);
+        var call = await _client.UpdateUserStoryPointsAsync(request);
+        if (!call.Response_)
+        {
+            throw new InvalidOperationException("Unable to update user story points");
+        }
     }
+
     public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
     {
         var request = new StatusUpdate()
@@ -33,7 +38,11 @@ public class UserStoryDao : IUserStoryDao
             Id = userStoryId,
             Status = status
         };
-        await _client.UpdateUserStoryStatusAsync(request);
+        var call = await _client.UpdateUserStoryStatusAsync(request);
+        if (!call.Response_)
+        {
+            throw new InvalidOperationException("Unable to update user story status");
+        }
     }
 
     public async Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
@@ -43,19 +52,27 @@ public class UserStoryDao : IUserStoryDao
             Id = userStoryId,
             Priority = priority
         };
-        await _client.UpdateUserStoryPriorityAsync(request);
+        var call = await _client.UpdateUserStoryPriorityAsync(request);
+        if (!call.Response_)
+        {
+            throw new InvalidOperationException("Unable to update user story priority");
+        }
     }
 
-    public async Task DeleteUserStory(int id)
+    public async Task DeleteUserStoryAsync(int id)
     {
         var request = new Id
         {
             Id_ = id
         };
-        await _client.DeleteUserStoryAsync(request);
+        var call = await _client.DeleteUserStoryAsync(request);
+        if (!call.Response_)
+        {
+            throw new InvalidOperationException("Unable to delete user story");
+        }
     }
 
-    public Task AddSprintTask(SprintTaskCreationDto task)
+    public async Task AddSprintTaskAsync(SprintTaskCreationDto task)
     {
         {
             var request = new TaskCreationRequest
@@ -65,14 +82,17 @@ public class UserStoryDao : IUserStoryDao
                 StoryPoints = task.StoryPoint,
                 UserStoryId = task.UserStoryId
             };
-            _client.AddTask(request);
-            return Task.CompletedTask;
+            var call = await _client.AddTaskAsync(request);
+            if (!call.Response_)
+            {
+                throw new InvalidOperationException("Unable to add task to sprint");
+            }
         }
     }
 
-    public async Task EditTask(SprintTask task)
+    public async Task EditTaskAsync(SprintTask task)
     {
-        TaskRequest request = new TaskRequest
+        var request = new TaskMessage
         {
             Id = task.Id,
             StoryId = task.UserStoryId,
@@ -81,20 +101,23 @@ public class UserStoryDao : IUserStoryDao
             StoryPoints = task.StoryPoint,
             Status = task.Status
         };
-        await _client.EditTaskAsync(request);
+        var call = await _client.EditTaskAsync(request);
+        if (!call.Response_)
+        {
+            throw new InvalidOperationException("Unable to edit task");
+        }
     }
 
-    public Task<List<SprintTask>> GetTasks(int id)
+    public async Task<List<SprintTask>> GetTasksAsync(int id)
     {
-        var request = new Id
+        var call = await _client.GetTasksAsync(new Id { Id_ = id });
+        var callTasks = call.Tasks;
+        /*if (callTasks.Count == 0)
         {
-            Id_ = id
-        };
-        var call = _client.GetTasks(request);
-        var tasks = new List<SprintTask>();
-        foreach (var task in call.Tasks)
-        {
-            tasks.Add(new SprintTask
+            throw new InvalidOperationException("No tasks were found");
+        }*/
+
+        var tasks = callTasks.Select(task => new SprintTask
             {
                 Id = task.Id,
                 UserStoryId = task.StoryId,
@@ -102,18 +125,17 @@ public class UserStoryDao : IUserStoryDao
                 Body = task.Body,
                 StoryPoint = task.StoryPoints,
                 Status = task.Status
-            });
-        }
-
-        return Task.FromResult(tasks);
+            })
+            .ToList();
+        return tasks;
     }
 
-    public async Task DeleteTask(int id)
+    public async Task DeleteTaskAsync(int id)
     {
-        var request = new Id
+        var call = await _client.RemoveTaskAsync(new Id{Id_ = id});
+        if (!call.Response_)
         {
-            Id_ = id
-        };
-        await _client.RemoveTaskAsync(request);
+            throw new InvalidOperationException("Unable to delete task");
+        }
     }
 }

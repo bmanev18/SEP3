@@ -16,31 +16,31 @@ public class SprintLogic : ISprintLogic
     
     public async Task<Sprint> GetSprintById(int id)
     {
-        return await _sprintDao.GetSprintById(id);
+        return await _sprintDao.GetSprintByIdAsync(id);
     }
 
     public async Task RemoveSprint(int id)
     {
-        await _sprintDao.RemoveSprint(id);
+        await _sprintDao.RemoveSprintAsync(id);
     }
 
     public async Task AddUserStoryToSprint(UserStoryToSprintDto dto)
     {
-        await _sprintDao.AddUserStoryToSprint(dto);
+        await _sprintDao.AddUserStoryToSprintAsync(dto);
     }
 
     public async Task<List<UserStory>> GetUserStoriesFromSprint(int id)
         {
-            return await _sprintDao.GetUserStoriesFromSprint(id);
+            return await _sprintDao.GetUserStoriesFromSprintAsync(id);
         }
 
-    public async Task<List<UserStory>> GetOtherUserStories(int id)
+    /*public async Task<List<UserStory>> GetOtherUserStories(int id)
     {
-        return await _sprintDao.GetOtherUserStories(id);
-    }
+        return await _sprintDao.GetOtherUserStoriesAsync(id);
+    }*/
 
     public async Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto)
     {
-        await _sprintDao.RemoveUserStoryFromSprint(dto);
+        await _sprintDao.RemoveUserStoryFromSprintAsync(dto);
     }
 }

@@ -1,58 +1,49 @@
-
 syntax = "proto3";
 
 option java_package = "com.protobuf";
 option csharp_namespace = "DataAccessClient";
 
 service UserAccess {
-    rpc CreateUser (UserCreationDto) returns (Response);
-    rpc UserByUsername (Username) returns (UserCreationDto);
-    rpc UpdateUser (UserCreationDto) returns (UpdatedUserResponse);
-    rpc DeleteUser (Username) returns (Response);
-    rpc LookForUsers(Username) returns (FilteredUsersResponse);
+    rpc CreateUser (UserMessage) returns (Response);
+    rpc UserByUsername (Username) returns (UserMessage);
     rpc GetAllProjects (Username) returns (ProjectsResponse);
+    rpc LookForUsers(Username) returns (UsersResponse);
+    rpc UpdateUser (UserMessage) returns (Response);
+    rpc DeleteUser (Username) returns (Response);
 }
 
 
 service ProjectAccess {
-    //Project
-    rpc CreateProject (ProjectCreationDto) returns (ResponseWithID);
-
-
-    //Collaborators
-    rpc GetAllCollaborators(Id) returns (FilteredUsersResponse);
-    rpc AddCollaborator (AddToProjectDto) returns (Response);
-    rpc RemoveCollaborator(AddToProjectDto) returns (Response);
-
-    //UserStories
-    rpc AddUserStory (UserStoryMessage) returns (ResponseWithID);
+    rpc CreateProject (ProjectCreationRequest) returns (Response);
+    rpc AddCollaborator (UserProjectRequest) returns (Response);
+    rpc GetAllCollaborators(Id) returns (UsersResponse);
+    rpc RemoveCollaborator(UserProjectRequest) returns (Response);
+    rpc AddUserStory (UserStoryCreationRequest) returns (Response);
     rpc GetUserStories (Id) returns (UserStoriesResponse);
+    rpc CreateSprint(SprintCreationRequest) returns (Response);
+    rpc GetSprintByProjectId(Id) returns (AllSprintsMessage);
+}
+
+service UserStoryAccess{
     rpc UpdateUserStoryPoints(PointsUpdate) returns(Response);
     rpc UpdateUserStoryStatus(StatusUpdate) returns (Response);
     rpc UpdateUserStoryPriority(PriorityUpdate) returns (Response);
     rpc DeleteUserStory (Id) returns (Response);
-
-    //Sprints
-    rpc CreateSprint(SprintCreationRequest) returns (Response);
-    rpc GetSprintByID(Id) returns (SprintMessage);
-    rpc GetSprintByProjectId(Id) returns (AllSprintsMessage);
-    rpc RemoveSprint(Id) returns (Response);
-    rpc RemoveTask(Id) returns (Response);
-
-
-    //SprintBacklog
     rpc AddTask(TaskCreationRequest) returns (Response);
-    rpc GetTasks(Id) returns (AllTasksMessage);
-    rpc EditTask(TaskRequest) returns (Response);
-
-    rpc AddUserStoryToSprint(UserStoryToSprintRequest) returns (Response);
-    rpc RemoveUserStoryFromSprint(UserStoryToSprintRequest) returns (Response);
-    rpc GetAllUserStoriesFromSprint(Id) returns (UserStoriesResponse);
-    rpc GetOtherUserStories(Id) returns (UserStoriesResponse);
+    rpc GetTasks(Id) returns (TasksMessage);
+    rpc EditTask(TaskMessage) returns (Response);
+    rpc RemoveTask(Id) returns (Response);
 }
 
+service SprintAccess{
+    rpc GetSprintByID(Id) returns (SprintMessage);
+    rpc RemoveSprint(Id) returns (Response);
+    rpc AddUserStoryToSprint(UserStorySprintRequest) returns (Response);
+    rpc GetAllUserStoriesFromSprint(Id) returns (UserStoriesResponse);
+    rpc RemoveUserStoryFromSprint(UserStorySprintRequest) returns (Response);
+}
 
-message UserCreationDto {
+message UserMessage {
     string username = 1;
     string firstName = 2;
     string lastName = 3;
@@ -64,12 +55,7 @@ message Id {
 }
 
 message Response {
-    int32 code = 1;
-}
-
-message ResponseWithID {
-    int32 code = 1;
-    int32 id = 2;
+    bool response = 1;
 }
 
 message UserSearchDto {
@@ -79,71 +65,59 @@ message UserSearchDto {
     string role = 4;
 }
 
-message FilteredUsersResponse {
+message UsersResponse {
     repeated UserSearchDto users = 1;
-    int32 code = 2;
-}
-
-message UpdatedUserResponse {
-    UserCreationDto user = 1;
-    int32 code = 2;
 }
 
 message Username {
     string username = 1;
 }
 
-message AddToProjectDto {
+message UserProjectRequest {
     string username = 1;
     int32 projectId = 2;
 }
-message CollaboratorsResponse{
-    repeated UserCreationDto collaborators = 1;
-}
 
-//ProjectService
-message ProjectCreationDto {
+message ProjectCreationRequest {
     string ownerUsername = 1;
     string title = 2;
 }
 
-message UserStoryMessage {
+message UserStoryCreationRequest {
     int32 project_id = 1;
     string taskBody = 2;
     string priority = 3;
-    int32 storyPoint=4;
+    int32 storyPoint = 4;
 }
-message ProjectMessage {
+message ProjectDto {
     int32 id = 1;
     string title = 2;
 }
 message ProjectsResponse {
-    repeated ProjectMessage projects = 1;
-    int32 code = 2;
+    repeated ProjectDto projects = 1;
 }
-message UserStory {
+message UserStoryMessage {
     int32 id = 1;
     int32 project_id = 2;
     string userStory = 3;
     string priority = 4;
-    string status= 5;
-    int32 storyPoint=6;
+    string status = 5;
+    int32 storyPoint = 6;
 }
 message UserStoriesResponse {
-    repeated UserStory userStories = 1;
-    int32 code = 2;
+    repeated UserStoryMessage userStories = 1;
 }
 message PointsUpdate{
     int32 id = 1;
     int32 points = 2;
 }
 message StatusUpdate{
-    int32 id =1 ;
-    string status=2;
+    int32 id = 1 ;
+    string status = 2;
 }
 message PriorityUpdate{
     int32 id = 1;
-    string priority=2;
+    string priority = 2;
 }
 message SprintCreationRequest{
     int32 project_id = 1;
@@ -153,17 +127,15 @@ message SprintCreationRequest{
 }
 message SprintMessage{
     int32 id = 1;
-    int32 project_id=2;
+    int32 project_id = 2;
     string name = 3;
     string starDate = 4;
     string endDate = 5;
-    int32 code = 6;
 }
 message AllSprintsMessage{
     repeated SprintMessage sprints = 1;
-    int32 code = 2;
 }
-message TaskRequest{
+message TaskMessage{
     int32 id = 1;
     string assignee = 2;
     string body = 3;
@@ -178,16 +150,10 @@ message TaskCreationRequest{
     int32 storyPoints = 4;
     string status = 5;
 }
-message UserStoryToSprintRequest{
+message UserStorySprintRequest{
     int32 userStory_id = 1;
     int32 sprint_id = 2;
 }
-message AllTasksMessage{
-    repeated TaskRequest tasks = 1;
-    int32 code = 2;
-}
-
-message AssignTaskMessage{
-    Username username = 1;
-    int32 task_id = 2;
+message TasksMessage{
+    repeated TaskMessage tasks = 1;
 }

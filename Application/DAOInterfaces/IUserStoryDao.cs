@@ -8,9 +8,9 @@ public interface IUserStoryDao
     Task UpdateUserStoryPointsAsync(int id, int points);
     Task UpdateUserStoryStatusAsync(int userStoryId, string status);
     Task UpdateUserStoryPriorityAsync(int userStoryId, string priority);
-    Task DeleteUserStory(int id);
-    Task AddSprintTask(SprintTaskCreationDto dto);
-    Task EditTask(SprintTask task);
-    Task<List<SprintTask>> GetTasks(int id);
-    Task DeleteTask(int id);
+    Task DeleteUserStoryAsync(int id);
+    Task AddSprintTaskAsync(SprintTaskCreationDto dto);
+    Task EditTaskAsync(SprintTask task);
+    Task<List<SprintTask>> GetTasksAsync(int id);
+    Task DeleteTaskAsync(int id);
 }

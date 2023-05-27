@@ -213,7 +213,7 @@
         };
         Console.WriteLine(1);
 
-        await SprintService.CreateTask(dto);
+        await UserStoryService.CreateTask(dto);
         await LoadTasks();
     }
 
@@ -227,7 +227,7 @@
         var taskToRemove = _tasks.FirstOrDefault(t => t.Id == id);
         if (taskToRemove != null)
         {
-            await UserStoryService.RemoveTask(id); // Remove the task from the backend using the service method
+            await UserStoryService.RemoveTask(id, StoryId); // Remove the task from the backend using the service method
             _tasks = _tasks.Where(t => t.Id != id); // Remove the task from the local collection
         }
     }

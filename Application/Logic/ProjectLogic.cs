@@ -22,6 +22,13 @@ public class ProjectLogic : IProjectLogic
 
     public async Task AddCollaboratorAsync(AddUserToProjectDto collaborator)
     {
+        var list = GetAllCollaborators(collaborator.ProjectID);
+        UserFinderDto? dto = list.Result.FirstOrDefault(u => u.Username.Equals(collaborator.Username));
+        if (dto != null)
+        {
+            throw new Exception("User is already a collaborator!");
+        }
+
         await projectDao.AddCollaborator(collaborator);
     }
 
@@ -37,7 +44,7 @@ public class ProjectLogic : IProjectLogic
 
     public async Task AddUserStoryAsync(UserStoryDto dto)
     {
-        await projectDao.AddUserStory(dto);
+        await projectDao.AddUserStoryAsync(dto);
     }
 
 

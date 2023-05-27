@@ -39,7 +39,7 @@ public class SprintMockDao : ISprintDao
         };
     }
 
-    public Task<Sprint> GetSprintById(int id)
+    public Task<Sprint> GetSprintByIdAsync(int id)
     {
         var first = _sprints.FirstOrDefault(sprint => sprint.Id == id);
         if (first == null)
@@ -50,13 +50,13 @@ public class SprintMockDao : ISprintDao
         return Task.FromResult(first);
     }
 
-    public Task RemoveSprint(int id)
+    public Task RemoveSprintAsync(int id)
     {
         _sprints.RemoveAll(sprint => sprint.Id == id);
         return Task.CompletedTask;
     }
 
-    public Task AddUserStoryToSprint(UserStoryToSprintDto dto)
+    public Task AddUserStoryToSprintAsync(UserStoryToSprintDto dto)
     {
         var dtoSprintId = dto.SprintId;
         var dtoUserStoryId = dto.UserStoryId;
@@ -72,19 +72,19 @@ public class SprintMockDao : ISprintDao
         return Task.CompletedTask;
     }
 
-    public Task<List<UserStory>> GetUserStoriesFromSprint(int id)
+    public Task<List<UserStory>> GetUserStoriesFromSprintAsync(int id)
     {
         var userStoriesIds = _userStoriesInSprints[id];
         var userStories = _userStories.FindAll(story => userStoriesIds.Contains(story.ID));
         return Task.FromResult(userStories);
     }
 
-    public Task<List<UserStory>> GetOtherUserStories(int id)
+    public Task<List<UserStory>> GetOtherUserStoriesAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto)
+    public Task RemoveUserStoryFromSprintAsync(UserStoryToSprintDto dto)
     {
         _userStoriesInSprints[dto.SprintId].Remove(dto.UserStoryId);
         return Task.CompletedTask;

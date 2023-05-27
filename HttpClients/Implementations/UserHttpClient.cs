@@ -12,7 +12,7 @@ public class UserHttpClient : IUserService
 
     public UserHttpClient(HttpClient client)
     {
-        this._client = client;
+        _client = client;
     }
 
     public async Task<IEnumerable<Project>> GetProjectsByUsernameAsync(string? username)
