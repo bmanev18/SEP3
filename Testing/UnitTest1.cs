@@ -1,5 +1,6 @@
 using Application.DAOInterfaces;
 using DataAccess.DAOs;
+using DataAccess.Transport;
 using HttpClients.Implementations;
 using NUnit.Framework;
 using Shared.DTOs;

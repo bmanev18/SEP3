@@ -3,6 +3,7 @@ using Application.DAOInterfaces;
 using Application.Logic;
 using Application.LogicInterfaces;
 using DataAccess.DAOs;
+using DataAccess.Transport;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Auth;
@@ -23,6 +24,7 @@ builder.Services.AddScoped<IProjectLogic, ProjectLogic>();
 builder.Services.AddScoped<IProjectDao, ProjectDao>();
 builder.Services.AddScoped<ISprintLogic, SprintLogic>();
 builder.Services.AddScoped<ISprintDao, SprintDao>();
+//builder.Services.AddScoped<ITransport, Transport>();
 
 builder.Services.AddScoped<IUserStoryLogic, UserStoryLogic>();
 builder.Services.AddScoped<IUserStoryDao, UserStoryDao>();

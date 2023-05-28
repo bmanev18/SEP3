@@ -1,4 +1,6 @@
-﻿using Application.DAOInterfaces;
+﻿using System.Formats.Tar;
+using Application.DAOInterfaces;
+using DataAccess.Transport;
 using DataAccessClient;
 using Grpc.Net.Client;
 using Shared.DTOs;
@@ -19,11 +21,7 @@ public class UserStoryDao : IUserStoryDao
 
     public async Task UpdateUserStoryPointsAsync(int userStoryId, int points)
     {
-        var request = new PointsUpdate
-        {
-            Id = userStoryId,
-            Points = points
-        };
+        var request = Transporter.PointsUpdateConverter(userStoryId, points);
         var call = await _client.UpdateUserStoryPointsAsync(request);
         if (!call.Response_)
         {
@@ -33,11 +31,7 @@ public class UserStoryDao : IUserStoryDao
 
     public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
     {
-        var request = new StatusUpdate()
-        {
-            Id = userStoryId,
-            Status = status
-        };
+        var request = Transporter.StatusUpdateConverter(userStoryId, status);
         var call = await _client.UpdateUserStoryStatusAsync(request);
         if (!call.Response_)
         {
@@ -47,11 +41,7 @@ public class UserStoryDao : IUserStoryDao
 
     public async Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
     {
-        var request = new PriorityUpdate()
-        {
-            Id = userStoryId,
-            Priority = priority
-        };
+        var request = Transporter.PriorityUpdateConverter(userStoryId, priority);
         var call = await _client.UpdateUserStoryPriorityAsync(request);
         if (!call.Response_)
         {
@@ -61,10 +51,7 @@ public class UserStoryDao : IUserStoryDao
 
     public async Task DeleteUserStoryAsync(int id)
     {
-        var request = new Id
-        {
-            Id_ = id
-        };
+        var request = Transporter.IdMessageConverter(id);
         var call = await _client.DeleteUserStoryAsync(request);
         if (!call.Response_)
         {
@@ -74,33 +61,17 @@ public class UserStoryDao : IUserStoryDao
 
     public async Task AddSprintTaskAsync(SprintTaskCreationDto task)
     {
-        {
-            var request = new TaskCreationRequest
-            {
-                Assignee = task.Assignee,
-                Body = task.Body,
-                StoryPoints = task.StoryPoint,
-                UserStoryId = task.UserStoryId
-            };
-            var call = await _client.AddTaskAsync(request);
+        var request = Transporter.TaskCreationRequestConverter(task);
+        var call = await _client.AddTaskAsync(request);
             if (!call.Response_)
             {
                 throw new InvalidOperationException("Unable to add task to sprint");
             }
-        }
     }
 
     public async Task EditTaskAsync(SprintTask task)
     {
-        var request = new TaskMessage
-        {
-            Id = task.Id,
-            StoryId = task.UserStoryId,
-            Assignee = task.Assignee,
-            Body = task.Body,
-            StoryPoints = task.StoryPoint,
-            Status = task.Status
-        };
+        var request = Transporter.TaskMessageConverter(task);
         var call = await _client.EditTaskAsync(request);
         if (!call.Response_)
         {
@@ -110,29 +81,23 @@ public class UserStoryDao : IUserStoryDao
 
     public async Task<List<SprintTask>> GetTasksAsync(int id)
     {
-        var call = await _client.GetTasksAsync(new Id { Id_ = id });
+        var request = Transporter.IdMessageConverter(id);
+        var call = await _client.GetTasksAsync(request);
         var callTasks = call.Tasks;
         /*if (callTasks.Count == 0)
         {
             throw new InvalidOperationException("No tasks were found");
         }*/
 
-        var tasks = callTasks.Select(task => new SprintTask
-            {
-                Id = task.Id,
-                UserStoryId = task.StoryId,
-                Assignee = task.Assignee,
-                Body = task.Body,
-                StoryPoint = task.StoryPoints,
-                Status = task.Status
-            })
+        var tasks = callTasks.Select(Transporter.SprintTaskConverter)
             .ToList();
         return tasks;
     }
 
     public async Task DeleteTaskAsync(int id)
     {
-        var call = await _client.RemoveTaskAsync(new Id{Id_ = id});
+        var request = Transporter.IdMessageConverter(id);
+        var call = await _client.RemoveTaskAsync(request);
         if (!call.Response_)
         {
             throw new InvalidOperationException("Unable to delete task");

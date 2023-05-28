@@ -6,6 +6,7 @@ using Shared.DTOs;
 using Shared.Model;
 using UserStory = Shared.Model.UserStory;
 using System.Globalization;
+using DataAccess.Transport;
 
 namespace DataAccess.DAOs;
 
@@ -23,30 +24,20 @@ public class SprintDao : ISprintDao
 
     public async Task<Sprint> GetSprintByIdAsync(int id)
     {
-        var request = new Id
-        {
-            Id_ = id
-        };
+        var request = Transporter.IdMessageConverter(id);
         var call = await _client.GetSprintByIDAsync(request);
         /*if (call.ProjectId == 0)
         {
             throw new InvalidOperationException("No sprint was found");
         }*/
-
-        var sprint = new Sprint
-        {
-            Id = call.Id,
-            ProjectId = call.ProjectId,
-            Name = call.Name,
-            StartDate = call.StarDate,
-            EndDate = call.EndDate
-        };
+        var sprint = Transporter.SprintConverter(call);
         return sprint;
     }
 
     public async Task RemoveSprintAsync(int id)
     {
-        var call = await _client.RemoveSprintAsync(new Id { Id_ = id });
+        var request = Transporter.IdMessageConverter(id);
+        var call = await _client.RemoveSprintAsync(request);
         if (!call.Response_)
         {
             throw new InvalidOperationException("Unable to remove sprint");
@@ -55,11 +46,7 @@ public class SprintDao : ISprintDao
 
     public async Task AddUserStoryToSprintAsync(UserStoryToSprintDto dto)
     {
-        var request = new UserStorySprintRequest
-        {
-            SprintId = dto.SprintId,
-            UserStoryId = dto.UserStoryId
-        };
+        var request = Transporter.UserStorySprintRequestConverter(dto);
         var call = await _client.AddUserStoryToSprintAsync(request);
         if (!call.Response_)
         {
@@ -69,7 +56,8 @@ public class SprintDao : ISprintDao
 
     public async Task<List<UserStory>> GetUserStoriesFromSprintAsync(int id)
     {
-        var call = await _client.GetAllUserStoriesFromSprintAsync(new Id { Id_ = id });
+        var request = Transporter.IdMessageConverter(id);
+        var call = await _client.GetAllUserStoriesFromSprintAsync(request);
         var callUserStories = call.UserStories;
         /*if (callUserStories.Count == 0)
         {
@@ -77,15 +65,7 @@ public class SprintDao : ISprintDao
         }
         */
 
-        var userStories = callUserStories.Select(us => new UserStory
-            {
-                ID = us.Id,
-                Project_id = us.ProjectId,
-                Body = us.UserStory,
-                Priority = us.Priority,
-                Status = us.Status,
-                StoryPoints = us.StoryPoint
-            })
+        var userStories = callUserStories.Select(Transporter.UserStoryConverter)
             .ToList();
 
         return userStories;
@@ -118,11 +98,7 @@ public class SprintDao : ISprintDao
 
     public async Task RemoveUserStoryFromSprintAsync(UserStoryToSprintDto dto)
     {
-        var request = new UserStorySprintRequest
-        {
-            SprintId = dto.SprintId,
-            UserStoryId = dto.UserStoryId
-        };
+        var request = Transporter.UserStorySprintRequestConverter(dto);
         var call = await _client.RemoveUserStoryFromSprintAsync(request);
         if (!call.Response_)
         {
