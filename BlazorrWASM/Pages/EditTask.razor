@@ -133,7 +133,7 @@ else
 
     private async Task LoadCollaborators()
     {
-        _collaborators = (await ProjectService.GetAllCollaborators(ProjectId)).Where(dto => dto.Role.Equals("3"));
+        _collaborators = (await ProjectService.GetAllCollaborators(ProjectId)).Where(dto => dto.Role.Equals("developer"));
     }
 
     private async Task LoadTask()

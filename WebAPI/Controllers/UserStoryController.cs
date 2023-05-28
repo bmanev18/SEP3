@@ -107,12 +107,13 @@ public class UserStoryController : ControllerBase
     }
 
     
-    [HttpGet("tasks")]
+    [HttpGet("task")]
     public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute]int id)
     {
         try
         {
             List<SprintTask> list = await _userStoryLogic.GetTasks(id);
+            Console.WriteLine(list.Count);
             return Ok(list);
         }
         catch (Exception e)

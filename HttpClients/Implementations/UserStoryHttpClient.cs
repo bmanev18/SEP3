@@ -59,7 +59,7 @@ public class UserStoryHttpClient : IUserStoryService
 
     public async Task CreateTask(SprintTaskCreationDto dto)
     {
-        var response = await _client.PostAsJsonAsync($"userStory/{dto.UserStoryId}/tasks", dto);
+        var response = await _client.PostAsJsonAsync($"userStory/{dto.UserStoryId}/task", dto);
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -69,7 +69,7 @@ public class UserStoryHttpClient : IUserStoryService
 
     public async Task UpdateTask(SprintTask task)
     {
-        var response = await _client.PatchAsJsonAsync($"/userStory/task", task);
+        var response = await _client.PatchAsJsonAsync($"/userStory/{task.UserStoryId}/task", task);
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -79,7 +79,7 @@ public class UserStoryHttpClient : IUserStoryService
 
     public async Task<IEnumerable<SprintTask>> GetTasks(int id)
     {
-        var response = await _client.GetAsync($"userStory/{id}/tasks");
+        var response = await _client.GetAsync($"userStory/{id}/task");
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {

@@ -198,7 +198,7 @@
     private async Task LoadCollaborators()
     {
         var allCollaborators = await ProjectService.GetAllCollaborators(ProjectId);
-        _collaborators = allCollaborators.Where(dto => dto.Role.Equals("3")).ToList();
+        _collaborators = allCollaborators.Where(dto => dto.Role.Equals("developer")).ToList();
     }
 
     private async Task Create()
