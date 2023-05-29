@@ -1,0 +1,109 @@
+﻿@page "/CreateMeetingNote/{id:int}"
+@using System.Security.Claims
+@using global::Shared.DTOs
+@using global::Shared.Model
+@using HttpClients.ClientInterfaces
+@inject IProjectService ProjectService;
+<h3>CreateMeetingNote</h3>
+
+<div class="container">
+    <div class="wrapper">
+        <form action="#">
+            <div class="row">
+                <input type="text" placeholder="Title" @bind="_title">
+            </div>
+            <div class="row">
+                <input type="text" placeholder="Note" @bind="_note">
+            </div>
+            <div class="row button">
+                <input value="Create" @onclick="Create" class="loginbtn text-center" readonly>
+            </div>
+            @if (!string.IsNullOrEmpty(message)) 
+            { 
+                <div class="field"> 
+                    <label style="color: red"> 
+                        @message 
+                    </label> 
+                </div> 
+            } 
+             
+        </form>
+    </div>
+</div>
+<div>
+    @if (_meetings != null)
+    {
+        @foreach (Meeting meeting in _meetings)
+        {
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@meeting.title</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudText Typo="Typo.h6">@meeting.author</MudText>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2">@meeting.note</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+    }
+</div>
+   
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+    private string _title = "";
+    private string message = "";
+    private string _note = "";
+    private Meeting note;
+    private IEnumerable<Meeting>? _meetings;
+    private ClaimsPrincipal? _user;
+    [Parameter] 
+    public int id { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+        _user = authState.User;
+        await LoadMeetingNotes();
+    }
+
+    private async Task LoadMeetingNotes()
+    {
+        _meetings = await ProjectService.GetMeetingNotesAsync(id);
+        
+    }
+
+    private async Task Create()
+    {
+        message = "";
+        if (string.IsNullOrEmpty(_title))
+        {
+            message = "Cannot create a title-less note!";
+            return;
+        }
+        try
+        {
+            Console.WriteLine($"{_title} / {_note}");
+            await ProjectService.CreateMeetingNote(new Meeting
+            {
+                author = _user.Identity.Name,
+                title = _title,
+                note = _note,
+                project_id = id
+            }, id);
+            message = "Note created successfully!";
+            await LoadMeetingNotes();
+            _title = "";
+            _note = "";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            message = e.Message;
+        }
+    }
+}

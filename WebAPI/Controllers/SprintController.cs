@@ -31,8 +31,8 @@ public class SprintController : ControllerBase
         }
     }
     
-    [HttpDelete]
-    public async Task<ActionResult> RemoveSprint(int sprintId)
+    [HttpDelete("")]
+    public async Task<ActionResult> RemoveSprint([FromRoute]int sprintId)
     {
         try
         {
@@ -83,7 +83,7 @@ public class SprintController : ControllerBase
 
 
     [HttpDelete("userStory/{userStoryId:int}")]
-    public async Task<ActionResult> RemoveUserStoryFromSprint(int sprintId, int userStoryId)
+    public async Task<ActionResult> RemoveUserStoryFromSprint([FromRoute]int sprintId, [FromRoute]int userStoryId)
     {
         var dto = new UserStoryToSprintDto
         {

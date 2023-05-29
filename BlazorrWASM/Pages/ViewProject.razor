@@ -14,7 +14,7 @@
 <AuthorizeView roles="scrum master, project manager">
 <Authorized>
 <div class="buttonAndHeader">
-<h2>User Stories</h2>
+<h3>User Stories</h3>
 
 <td>
      <button class="btn btn-primary" @onclick="() => OpenViewTeam()">
@@ -152,13 +152,10 @@ else
         </tbody>
     </table>
 }
-        </Authorized>
-    
-
-
-
+        
+   
 @* Sprints Section *@
-<h2>Sprints</h2>
+<h3>Sprints</h3>
 <div class="addSprint-bar">
     <div class="fields-container">
         <PlusMinus Checked="@_doShowSprintFields" OnChange="@(() => _doShowSprintFields = !_doShowSprintFields)"/>
@@ -212,6 +209,7 @@ else
             <th class="text-center">Name</th>
             <th class="text-center">Start Date</th>
             <th class="text-center">End Date</th>
+              <th class="text-center">Delete?</th>
         </tr>
         </thead>
         <tbody>
@@ -222,16 +220,21 @@ else
                 <td class="text-center">@sprint.Name</td>
                 <td class="text-center">@sprint.StartDate</td>
                 <td class="text-center">@sprint.EndDate</td>
+                <td>
+                 <label @onclick="@(() => DeleteSprintAsync(sprint.Id))" style="cursor:pointer; color: red; font-weight: bold">
+                   &#x2717;
+                   </label>
+                   </td>
             </tr>
         }
         </tbody>
     </table>
 }
-
+</Authorized>
 <NotAuthorized>
         
         <div class="buttonAndHeader">
-            <h2>User Stories</h2>
+            <h3>User Stories</h3>
 
             <td>
                 <button class="btn btn-primary" @onclick="() => OpenViewTeam()">
@@ -256,6 +259,7 @@ else
             <th class="text-center">Priority</th>
             <th class="text-center">Story Points</th>
             <th class="text-center">Status</th>
+           
         </tr>
         </thead>
         <tbody>
@@ -275,6 +279,48 @@ else
                         </select>
                     </div>
                 </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<h3>Sprints</h3>
+@if (!string.IsNullOrEmpty(_sprintMsg)) @* display any msg in case it has ny value in case of error*@
+{
+    <div>
+        <span>@_sprintMsg</span>
+    </div>
+}
+
+@if (_sprints == null)
+{
+    <span>Loading..UserStories</span>
+}
+else if (!_sprints.Any())
+{
+    <span>No sprints to be found</span>
+}
+else
+{
+    <table class="table justify-content-center">
+        <thead>
+        <tr>
+            <th class="text-center"> </th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Start Date</th>
+            <th class="text-center">End Date</th>
+           
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (Sprint sprint in _sprints)
+        {
+            <tr>
+                <td><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OpenSprint(sprint.Id))">User Stories</MudButton> </td>
+                <td class="text-center">@sprint.Name</td>
+                <td class="text-center">@sprint.StartDate</td>
+                <td class="text-center">@sprint.EndDate</td>
             </tr>
         }
         </tbody>
@@ -310,23 +356,24 @@ else
 
     [Parameter]
     public int Id { get; set; }
+
     private string projectName;
-    
-    
+
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
             await LoadUserStoriesAsync();
             await LoadSprintsAsync();
-            
+
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
     }
-    
+
 
 
     private async Task CreateUserStory()
@@ -349,7 +396,7 @@ else
                 });
 
                 await LoadUserStoriesAsync();
-                
+
             }
             catch (Exception e)
             {
@@ -376,7 +423,7 @@ else
                     Name = _sprintName,
                     StartDate = _startDate.ToString("dd/MM/yyyy"),
                     EndDate = _endDate.ToString("dd/MM/yyyy")
-                },Id);
+                }, Id);
 
                 await LoadSprintsAsync();
             }
@@ -398,12 +445,6 @@ else
         _sprints = await ProjectService.GetSprintsAsync(Id);
     }
 
-    // private async Task LoadSprintUserStories()
-    // {
-    //     _userStoriesinSprint = await SprintService.GetUserStoriesFromSprint(_sprintId);        
-    // }
-
-
     //TODO create those two pages
     private void OpenUserStory(int storyId)
     {
@@ -414,68 +455,56 @@ else
     {
         NavMgr.NavigateTo($"ViewProject/{Id}/ViewSprint/{sprintId}");
     }
-    
-    /*private async Task UpdateStory(UserStory userStory)
-    {
-        UserStoryUpdateDto dto = new()
-        {
-            Id = userStory.ID,
-            Priority = userStory.Priority,
-            StoryPoints = userStory.StoryPoints,
-            //Status = userStory.Status
-        };
-
-        try
-        {
-            await UserStoryService.UpdateAsync(dto);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            _storyMsg = e.Message;
-        }
-    }
-    */
 
     private async Task UpdateStoryPointsAsync(UserStory story, string? eValue)
     {
         var points = Convert.ToInt32(eValue);
-        await UserStoryService.UpdateStoryPointsAsync(story.ID,points );
+        await UserStoryService.UpdateStoryPointsAsync(story.ID, points);
     }
 
     private async Task UpdateStoryStatusAsync(UserStory story, string? eValue)
     {
-        
-        await UserStoryService.UpdateUserStoryStatusAsync(story.ID,eValue );
-    }
-    
-    private async Task UpdateStoryPriorityAsync(UserStory story, string? eValue)
-    {
-        await UserStoryService.UpdateUserStoryPriorityAsync(story.ID,eValue );
+
+        await UserStoryService.UpdateUserStoryStatusAsync(story.ID, eValue);
     }
 
-    private async Task DeleteUserStoryAsync(int  Id)
+    private async Task UpdateStoryPriorityAsync(UserStory story, string? eValue)
+    {
+        await UserStoryService.UpdateUserStoryPriorityAsync(story.ID, eValue);
+    }
+
+    private async Task DeleteUserStoryAsync(int Id)
     {
         await UserStoryService.RemoveAsync(Id);
         var list = new List<UserStory>(_userStories!);
         list.RemoveAll(userStory => userStory.ID == Id);
         _userStories = list.AsEnumerable();
     }
-    
+
     private async void Open(int storyId)
     {
         NavMgr.NavigateTo($"/ViewProject/{Id}/ViewUserStory/{storyId}");
     }
+
     private async void OpenViewTeam()
     {
         NavMgr.NavigateTo($"/ViewTeam/{Id}");
     }
-    
+
     private string GetLocalizedString(string key)
     {
-    
+
         return key;
     }
 
-}
+    private async void DeleteSprintAsync(int id)
+    {
+    
+        var list = new List<Sprint>(_sprints!);
+        list.RemoveAll(sprint => sprint.Id == id);
+        _sprints = list.AsEnumerable();
+        await SprintService.DeleteSprint(id);
 
+    }
+
+}

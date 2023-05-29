@@ -137,9 +137,17 @@
                         @foreach (var task in _tasks)
                         {
                             <tr>
-                                <td>
-                                    @task.Status
-                                </td>
+                               <td>
+                                   <div class="input-box">
+                                       <select @bind="task.Status" @oninput="@(e => UpdateTaskStatusAsync(task.Id, e.Value.ToString()))">
+                                           <option value="to-do">to-do</option>
+                                           <option value="in progress">in progress</option>
+                                           <option value="done">done</option>
+                                       </select>
+                                   </div>
+                               </td>
+
+
                                 <td>
                                     <label for="@task.Id">@task.Body</label>
                                 </td>
@@ -158,6 +166,7 @@
     </AuthorizeView>
 
 @code {
+    private SprintTask task;
     private string _status = "to-do";
     private int _id = 0;
     private string _name = "";
@@ -243,7 +252,18 @@
         userStory = userStories.FirstOrDefault(us => us.ID == StoryId);
         
     }
+    
+    private async Task UpdateTaskStatusAsync(int taskId, string status)
+    {
+        var taskToUpdate = _tasks.FirstOrDefault(t => t.Id == taskId);
+        if (taskToUpdate != null)
+        {
+            taskToUpdate.Status = status;
+            await UserStoryService.UpdateTask(taskToUpdate);
+        }
+    }
 
+   
 
 
 }

@@ -10,7 +10,7 @@
 @inject NavigationManager NavMgr
 @inject IUserStoryService UserStoryService
 
-<h2 class="page-heading">Edit Task</h2>
+<h3>Edit Task</h3>
 
 @if (task == null)
 {
@@ -76,32 +76,6 @@ else
     </div>
 
 }
-
-<style>
-    .page-heading {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-
-    .loading-container {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .edit-task-container {
-        max-width: 500px;
-        margin: 0 auto;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .error-label {
-        color: red;
-    }
-</style>
 
 @code {
     private SprintTask task;

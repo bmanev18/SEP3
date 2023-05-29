@@ -1,0 +1,32 @@
+﻿.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #16a085;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #138b67;
+}
+
+.project-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #16a085;
+}
+
+.project-view-button {
+    margin-top: 10px;
+}
+h3 {
+    top: 50%;
+    left: 50%;
+    font-size: 24px;
+    font-weight: bold;
+    color: #16a085;
+}
+

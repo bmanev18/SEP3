@@ -122,6 +122,32 @@ public class ProjectHttpClient : IProjectService
         return sprints;
         
     }
+    public async Task CreateMeetingNote(Meeting meeting, int id)
+    {
+        Console.WriteLine($"{meeting.title} and {meeting.note} or {id}");
+        var response = await _client.PostAsJsonAsync($"project/{id}/CreateMeetingNote", meeting);
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+    }
+
+    public async Task<IEnumerable<Meeting>> GetMeetingNotesAsync(int projectId)
+    {
+        var response = await _client.GetAsync($"/Project/{projectId}/getNotes");
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+        var notes = JsonSerializer.Deserialize<IEnumerable<Meeting>>(result,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            })!;
+        return notes;    
+    }
 
     
 }

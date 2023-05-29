@@ -62,4 +62,13 @@ public class ProjectLogic : IProjectLogic
     {
         return await projectDao.GetSprintsByProjectId(id);
     }
+    public async Task CreateMeetingNote(Meeting meeting)
+    {
+        await projectDao.CreateMeetingNote(meeting);
+    }
+
+    public async Task<List<Meeting>> GetAllMeetingNotes(int id)
+    {
+        return await projectDao.GetAllMeetingNotes(id);
+    }
 }

@@ -20,4 +20,6 @@ public interface IProjectService
     Task CreateSprint(SprintCreationDto dto, int id);
 
     Task<IEnumerable<Sprint>> GetSprintsAsync(int? projectId = null);
+    Task CreateMeetingNote(Meeting meeting,  int id);
+    Task<IEnumerable<Meeting>> GetMeetingNotesAsync(int projectId);
 }

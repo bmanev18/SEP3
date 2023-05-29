@@ -6,6 +6,7 @@ using Shared.Model;
 namespace Testing.MockDAOs;
 
 public class ProjectMockDao : IProjectDao
+
 {
     private readonly List<ProjectDto> _projects;
 
@@ -134,5 +135,15 @@ public class ProjectMockDao : IProjectDao
     public Task<List<Sprint>> GetSprintsByProjectId(int id)
     {
         return Task.FromResult(_sprints.FindAll(sprint => sprint.ProjectId == id));
+    }
+
+    public Task CreateMeetingNote(Meeting meeting)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Meeting>> GetAllMeetingNotes(int id)
+    {
+        throw new NotImplementedException();
     }
 }

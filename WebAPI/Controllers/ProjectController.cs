@@ -33,6 +33,24 @@ public class ProjectController : ControllerBase
         }
     }
 
+    [HttpPost("{id:int}/CreateMeetingNote")]
+    public async Task<ActionResult> CreateMeetingNoteAsync([FromBody]Meeting meeting,[FromRoute] int id)
+    {
+        Console.WriteLine(meeting.title);
+        meeting.project_id = id;
+        try
+        {
+            await _projectLogic.CreateMeetingNote(meeting);
+            return Created($"/{meeting.title}", meeting);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+
+
 
     [HttpPut("{id:int}/collaborator")]
     public async Task<ActionResult> AddCollaborator([FromRoute] int id, [FromBody] string username)
@@ -140,6 +158,21 @@ public class ProjectController : ControllerBase
         try
         {
             var list = await _projectLogic.GetSprintsByProjectId(id);
+            return Ok(list);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+ 
+    [HttpGet("{id:int}/getNotes")]
+    public async Task<ActionResult<List<Meeting>>> GetMeetingNotes([FromRoute] int id)
+    {
+        try
+        {
+            var list = await _projectLogic.GetAllMeetingNotes(id);
             return Ok(list);
         }
         catch (Exception e)

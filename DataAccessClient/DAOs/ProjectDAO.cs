@@ -40,6 +40,23 @@ public class ProjectDao : IProjectDao
             throw new InvalidOperationException("Unable to add collaborator");
         }
     }
+    public async Task CreateMeetingNote(Meeting meeting)
+    {
+        var request = Transporter.MeetingNoteConverter(meeting);
+        var call =  _client.CreateMeetingNote(request);
+        if (!call.Response_)
+        {
+            throw new InvalidOperationException("Unable to create note");
+        }
+    }
+    public async Task<List<Meeting>> GetAllMeetingNotes(int id)
+    {
+        var request = Transporter.IdMessageConverter(id);
+        var meetingNotes = await _client.GetMeetingNotesAsync(request);
+        var callMeetingNotes = meetingNotes.MeetingNotes;
+        var list = callMeetingNotes.Select(Transporter.MeetingConverter).ToList();
+        return list;
+    }
 
     public async Task RemoveCollaborator(AddUserToProjectDto collaborator)
     {

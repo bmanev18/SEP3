@@ -73,4 +73,14 @@ label {
     margin-right: 10px;
 }
 
+h3 {
+    top: 50%;
+    left: 50%;
+    font-size: 24px;
+    font-weight: bold;
+    color: #16a085;
+}
+
+
+
 

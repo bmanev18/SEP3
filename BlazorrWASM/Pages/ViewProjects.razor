@@ -39,7 +39,7 @@ else
             <tr>
                 <td class="text-center"><h5>@project.Title</h5></td>
                     <td> <MudButton @onclick="() => Open(project.Id)" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">VIEW</MudButton></td>
-
+<td><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OpenMeetingNotes(project.Id))">Create note</MudButton> </td>
             </tr>
         }
 
@@ -73,10 +73,13 @@ else
             Console.WriteLine(e);
         }
     }
-
     
     private void Open(int id)
     {
         NavMgr.NavigateTo($"/ViewProject/{id}");
+    }
+    private void OpenMeetingNotes(int id)
+    {
+        NavMgr.NavigateTo($"/CreateMeetingNote/{id}");
     }
 }

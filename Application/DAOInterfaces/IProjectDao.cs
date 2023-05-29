@@ -15,4 +15,6 @@ public interface IProjectDao
     
     Task CreateSprint(SprintCreationDto dto);
     Task<List<Sprint>> GetSprintsByProjectId(int id);
+    Task CreateMeetingNote(Meeting meeting);
+    Task<List<Meeting>> GetAllMeetingNotes(int id);
 }

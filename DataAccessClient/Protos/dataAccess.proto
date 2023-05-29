@@ -22,6 +22,9 @@ service ProjectAccess {
     rpc GetUserStories (Id) returns (UserStoriesResponse);
     rpc CreateSprint(SprintCreationRequest) returns (Response);
     rpc GetSprintByProjectId(Id) returns (AllSprintsMessage);
+    rpc CreateMeetingNote(MeetingNote) returns (Response);
+    rpc GetMeetingNotes(Id) returns (MeetingResponse);
+
 }
 
 service UserStoryAccess{
@@ -50,12 +53,26 @@ message UserMessage {
     string password = 4;
     string role = 5;
 }
+
+message MeetingNote{
+    int32 project_id=1;
+    string note=2;
+    string author=3;
+    string title=4;
+}
+message MeetingResponse{
+    repeated MeetingNote meetingNotes=1;
+}
 message Id {
     int32 id = 1;
 }
 
 message Response {
     bool response = 1;
+}
+
+message SumResponse{
+    int32 sum=1;
 }
 
 message UserSearchDto {

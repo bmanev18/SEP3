@@ -33,6 +33,30 @@ public static class Transporter
         var request = new Id { Id_ = id };
         return request;
     }
+    public static MeetingNote MeetingNoteConverter(Meeting meeting)
+    {
+        Console.WriteLine($"webapi: {meeting.title}");
+        var request = new MeetingNote()
+        {
+            ProjectId = meeting.project_id,
+            Author = meeting.author,
+            Note = meeting.note,
+            Title = meeting.title
+        };
+        Console.WriteLine($"grpc: {request.Title}");
+        return request;
+    }
+    public static Meeting MeetingConverter(MeetingNote note)
+    {
+        var request = new Meeting()
+        {
+            project_id =  note.ProjectId,
+            author = note.Author,
+            note = note.Note,
+            title = note.Title
+        };
+        return request;
+    }
 
     public static UserStoryCreationRequest UserStoryCreationRequestConverter(UserStoryDto dto)
     {

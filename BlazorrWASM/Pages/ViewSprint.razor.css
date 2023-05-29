@@ -1,11 +1,66 @@
-.input-box {
-    margin-right: 10px;
+@page "/ViewProject/{ProjectId:int}/ViewSprint/{Id:int}"
+
+.container {
+    margin: 20px;
 }
-.input-box button.acceptbtn {
-    padding: 5px 10px;
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    border-radius: 5px;
+
+h3 {
+    top: 50%;
+    left: 50%;
+    font-size: 24px;
+    font-weight: bold;
+    color: #16a085;
+}
+
+
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+.loading-message {
+    text-align: center;
+}
+
+.table {
+    margin: 0 auto;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.delete-label {
     cursor: pointer;
+    color: red;
+    font-weight: bold;
+}
+
+.select-user-story {
+    margin-top: 20px;
+}
+
+.input-box {
+    margin-top: 10px;
+}
+
+.input-box select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.add-button {
+    margin-top: 10px;
+}
+
+.authorized-section {
+    margin-bottom: 20px;
+}
+
+.unauthorized-section {
+    margin-bottom: 20px;
 }
