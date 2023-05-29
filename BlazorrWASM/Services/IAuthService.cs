@@ -9,8 +9,5 @@ public interface IAuthService
     public Task LogoutAsync();
     public Task RegisterAsync(string username, string firstname, string lastname,string password, string role);
     public Task<ClaimsPrincipal> GetAuthAsync();
-
-    public string ValidateRole(string role);
-
     public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; }
 }

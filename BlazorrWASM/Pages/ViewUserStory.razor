@@ -11,7 +11,7 @@
 @inject NavigationManager NavMgr
 
 
-<AuthorizeView roles="scrum master">
+<AuthorizeView roles="scrum master, project manager">
     <Authorized>
         @if (userStory != null)
         {

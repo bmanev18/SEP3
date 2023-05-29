@@ -29,8 +29,8 @@
               <td class="text-center">@user.Username</td>
               <td class="text-center">@user.FirstName</td>
               <td class="text-center">@user.LastName</td>
-              <td class="text-center">@RoleTranslator(user.Role)</td>
-              @if (!user.Role.Equals("1"))
+              <td class="text-center">@user.Role</td>
+              @if (!user.Role.Equals("project manager"))
               {
                 <td class="text"> <button class="removebtn" @onclick="() => RemoveCollaborator(user.Username)"> <img src="img/personRemove.png" class="search"> </button> </td>
               }
@@ -66,7 +66,7 @@
                 <td class="text-center">@user.Username</td>
                 <td class="text-center">@user.FirstName</td>
                 <td class="text-center">@user.LastName</td>
-                <td class="text-center">@RoleTranslator(user.Role)</td>
+                <td class="text-center">@user.Role</td>
                 <td class="text"> <button class="removebtn" @onclick="@(() => AddCollaborator(user.Username))"> <img src="img/personAdd.png" class="search"> </button> </td>
               </tr>
             }
@@ -96,7 +96,7 @@
              <td class="text-center">@user.Username</td>
              <td class="text-center">@user.FirstName</td>
              <td class="text-center">@user.LastName</td>
-             <td class="text-center">@RoleTranslator(user.Role)</td>
+             <td class="text-center">@user.Role</td>
            </tr>
          }
          </tbody>
@@ -132,24 +132,7 @@
       _message = e.Message;
     }
   }
-
-  private static String RoleTranslator(string role)
-  {
-    string translated;
-    if (role.Equals("2"))
-    {
-      translated = "Scrum Master";
-    }
-    else if(role.Equals("1"))
-    {
-      translated = "Project Manager";
-    }
-    else
-    {
-      translated = "Developer";
-    }
-    return translated;
-  }
+  
 
   private async Task RemoveCollaborator(string username)
   {
@@ -184,9 +167,9 @@
 
   private async Task AddCollaborator(string username)
   {
-  // }
     try
     {
+      
       await ProjectService.AddCollaborator(Id, username);
       await OnInitializedAsync();
       var added = _searchResults.FirstOrDefault(u => u.Username.Equals(username));
@@ -205,7 +188,7 @@
   {
     var usernames = users.Select(u => u.Username);
     var filtered = results.Where(u => !usernames.Contains(u.Username));
-    var roleFiltered = filtered.Where(dto => !dto.Role.Equals("1"));
+    var roleFiltered = filtered.Where(dto => !dto.Role.Equals(dto.Role));
     return roleFiltered.ToList();
   }
 }

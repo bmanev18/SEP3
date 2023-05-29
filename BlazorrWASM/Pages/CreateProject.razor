@@ -29,23 +29,20 @@
     </NotAuthorized>
 </AuthorizeView>
 
-
-
-
-
-
-@* <div class="container"> *@
-@*   <div class="card"> *@
-@*     <img src="https://lh3.googleusercontent.com/ytP9VP86DItizVX2YNA-xTYzV09IS7rh4WexVp7eilIcfHmm74B7odbcwD5DTXmL0PF42i2wnRKSFPBHlmSjCblWHDCD2oD1oaM1CGFcSd48VBKJfsCi4bS170PKxGwji8CPmehwPw=w200-h247-no" alt="Person" class="card__image"> *@
-@*     <p class="card__name">Lily-Grace Colley</p> *@
-@*     <button class="btn draw-border">Select</button> *@
-@*   </div> *@
-@* </div> *@
-
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+    
     private string title = "";
-    private string message= "";
+    private string message = "";
+    private ClaimsPrincipal? _user;
 
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+        _user = authState.User;
+    }
     private async Task Create()
     {
         message = "";
@@ -58,9 +55,11 @@
         {
             await ProjectService.Create(new ProjectCreationDto
             {
-                OwnerUsername = "test",
+                
+                OwnerUsername = _user.Identity.Name,
                 Name = title
             });
+            message = "Project created succesfully!";
         }
         catch (Exception e)
         {

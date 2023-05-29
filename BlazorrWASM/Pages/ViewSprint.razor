@@ -167,6 +167,7 @@ else
     {
         await SprintService.AddUserStoryToSprint(Id, storyId);
         await LoadUserStoriesAsync();
+        await LoadOtherStoriesAsync();
 
     }
 

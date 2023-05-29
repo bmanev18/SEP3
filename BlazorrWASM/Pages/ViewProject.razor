@@ -11,7 +11,8 @@
 
 
 
-@*<AuthorizeView>*@
+<AuthorizeView roles="scrum master, project manager">
+<Authorized>
 <div class="buttonAndHeader">
 <h2>User Stories</h2>
 
@@ -93,7 +94,8 @@ else
             <th class="text-center">Priority</th>
             <th class="text-center">Story Points</th>
             <th class="text-center">Status</th>
-                        <th>Delete?</th>
+            <th class="text-center">Delete?</th>
+                        
 
         </tr>
         </thead>
@@ -150,6 +152,8 @@ else
         </tbody>
     </table>
 }
+        </Authorized>
+    
 
 
 
@@ -224,6 +228,60 @@ else
     </table>
 }
 
+<NotAuthorized>
+        
+        <div class="buttonAndHeader">
+            <h2>User Stories</h2>
+
+            <td>
+                <button class="btn btn-primary" @onclick="() => OpenViewTeam()">
+                    <span>@($"{GetLocalizedString("View the team of the project")}")</span>
+                </button>
+            </td>
+        </div>
+@if (_userStories == null)
+{
+    <span>Loading..UserStories</span>
+}
+else if (!_userStories.Any())
+{
+    <span>No user stories to be found</span>
+}
+else
+{
+    <table class="table justify-content-center" align="center">
+        <thead>
+        <tr>
+            <th class="text-center">Title</th>
+            <th class="text-center">Priority</th>
+            <th class="text-center">Story Points</th>
+            <th class="text-center">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var userStory in _userStories)
+        {
+            <tr>
+                <td class="text-center" @onclick="() => Open(userStory.ID)">@userStory.Body</td>
+                <td>@userStory.Priority</td>
+                <td>@userStory.StoryPoints</td>
+                <td>
+                    <div class="input-box">
+                        <select @bind="userStory.Status" @oninput="@(e => UpdateStoryStatusAsync(userStory, e.Value.ToString()))">
+                            <option value="to-do">to-do</option>
+                            <option value="in progress">in progress</option>
+                            <option value="done">done</option>
+
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+    </NotAuthorized>
+    </AuthorizeView>
 @*</AuthorizeView>*@
 
 @code {

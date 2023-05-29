@@ -55,7 +55,7 @@ public class AuthService : IAuthService
             Role = user.Role,
             Username = user.Username
         };
-
+    
         _userDao.CreateAsync(dto);
         return Task.CompletedTask;
     }
@@ -67,7 +67,7 @@ public class AuthService : IAuthService
             throw new ValidationException("All Fields Are Mandatory!");
         }
 
-        if (user.Password.Length <= 8)
+        if (user.Password.Length < 8)
         {
             throw new ValidationException("Password must be at least 8 characters!");
         }

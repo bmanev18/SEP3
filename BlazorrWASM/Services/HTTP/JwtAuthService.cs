@@ -62,7 +62,7 @@ public class JwtAuthService : IAuthService
             Password = password,
             Firstname = firstname,
             Lastname = lastname,
-            Role = ValidateRole(role)
+            Role = role
             
         };
         
@@ -121,23 +121,5 @@ public class JwtAuthService : IAuthService
 
         ClaimsPrincipal principal = new(identity);
         return principal;
-    }
-
-    public string ValidateRole(string role)
-    {
-        string output;
-        if (role.Equals("project manager"))
-        {
-            output = "1";
-        } else if (role.Equals("scrum master"))
-        {
-            output = "2";
-        }
-        else
-        {
-            output = "3";
-        }
-
-        return output;
     }
 }
