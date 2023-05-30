@@ -5,7 +5,7 @@ using Shared.Model;
 
 namespace Application.Logic;
 
-public class UserStoryLogic:IUserStoryLogic
+public class UserStoryLogic : IUserStoryLogic
 {
     private readonly IUserStoryDao _storyDao;
 
@@ -29,27 +29,27 @@ public class UserStoryLogic:IUserStoryLogic
         await _storyDao.UpdateUserStoryPriorityAsync(userStoryId, priority);
     }
 
-    public async Task DeleteUserStory(int id)
+    public async Task DeleteUserStoryAsync(int id)
     {
         await _storyDao.DeleteUserStoryAsync(id);
     }
 
-    public async Task AddTask(SprintTaskCreationDto dto)
+    public async Task AddTaskAsync(SprintTaskCreationDto dto)
     {
-        await _storyDao.AddSprintTaskAsync(dto);
+        await _storyDao.AddTaskAsync(dto);
     }
 
-    public async Task EditTask(SprintTask task)
+    public async Task EditTaskAsync(SprintTask task)
     {
         await _storyDao.EditTaskAsync(task);
     }
 
-    public async Task<List<SprintTask>> GetTasks(int id)
+    public async Task<List<SprintTask>> GetTasksAsync(int id)
     {
         return await _storyDao.GetTasksAsync(id);
     }
 
-    public async Task RemoveTask(int id)
+    public async Task RemoveTaskAsync(int id)
     {
         await _storyDao.DeleteTaskAsync(id);
     }

@@ -14,6 +14,7 @@
 </div>
 
 @code {
+
     [Parameter]
     public int Points { get; set; }
 
@@ -22,10 +23,11 @@
 
     private async Task HandlePointsChanged(ChangeEventArgs e)
     {
-        if (int.TryParse(e.Value?.ToString(), out int selectedPoints))
+        if (int.TryParse(e.Value?.ToString(), out var selectedPoints))
         {
             Points = selectedPoints;
             await PointsChanged.InvokeAsync(Points);
         }
     }
+
 }

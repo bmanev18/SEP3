@@ -6,12 +6,12 @@ using Shared.DTOs;
 using Shared.Model;
 
 namespace BlazorrWASM.Services.HTTP;
+
 public class JwtAuthService : IAuthService
 {
-    private readonly HttpClient client = new ();
+    private readonly HttpClient _client = new();
 
-    // this private variable for simple caching
-    public static string? Jwt { get; private set; } = "";
+    private static string? Jwt { get; set; } = "";
 
     public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; } = null!;
 
@@ -24,26 +24,22 @@ public class JwtAuthService : IAuthService
             Password = password
         };
 
-        string userAsJson = JsonSerializer.Serialize(userLoginDto);
+        var userAsJson = JsonSerializer.Serialize(userLoginDto);
         StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await client.PostAsync("https://localhost:7203/auth/login", content);
-        string responseContent = await response.Content.ReadAsStringAsync();
+        var response = await _client.PostAsync("https://localhost:7203/auth/login", content);
+        var responseContent = await response.Content.ReadAsStringAsync();
         Console.WriteLine(response.StatusCode);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(responseContent);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(responseContent);
 
 
-        string token = responseContent;
+        var token = responseContent;
         Jwt = token;
 
-        ClaimsPrincipal principal = CreateClaimsPrincipal();
-        
-        OnAuthStateChanged.Invoke(principal);   
+        var principal = CreateClaimsPrincipal();
 
+        OnAuthStateChanged.Invoke(principal);
     }
 
     public Task LogoutAsync()
@@ -54,7 +50,7 @@ public class JwtAuthService : IAuthService
         return Task.CompletedTask;
     }
 
-    public async Task RegisterAsync(string username, string firstname,string lastname,string password, string role)
+    public async Task RegisterAsync(string username, string firstname, string lastname, string password, string role)
     {
         User user = new()
         {
@@ -63,32 +59,26 @@ public class JwtAuthService : IAuthService
             Firstname = firstname,
             Lastname = lastname,
             Role = role
-            
         };
-        
-        string userAsJson = JsonSerializer.Serialize(user);
-        StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await client.PostAsync("https://localhost:7203/auth/register", content);
-        string responseContent = await response.Content.ReadAsStringAsync();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(responseContent);
-        }
+        var userAsJson = JsonSerializer.Serialize(user);
+        StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
+        var response = await _client.PostAsync("https://localhost:7203/auth/register", content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode) throw new Exception(responseContent);
     }
 
     public Task<ClaimsPrincipal> GetAuthAsync()
     {
-        ClaimsPrincipal principal = CreateClaimsPrincipal();
+        var principal = CreateClaimsPrincipal();
         return Task.FromResult(principal);
     }
 
-    // Below methods stolen from https://github.com/SteveSandersonMS/presentation-2019-06-NDCOslo/blob/master/demos/MissionControl/MissionControl.Client/Util/ServiceExtensions.cs
-
     private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
     {
-        string payload = jwt.Split('.')[1];
-        byte[] jsonBytes = ParseBase64WithoutPadding(payload);
+        var payload = jwt.Split('.')[1];
+        var jsonBytes = ParseBase64WithoutPadding(payload);
         Dictionary<string, object>? keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
         return keyValuePairs!.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!));
     }
@@ -104,19 +94,16 @@ public class JwtAuthService : IAuthService
                 base64 += "=";
                 break;
         }
-    
+
         return Convert.FromBase64String(base64);
     }
 
     private static ClaimsPrincipal CreateClaimsPrincipal()
     {
-        if (string.IsNullOrEmpty(Jwt))
-        {
-            return new ClaimsPrincipal();
-        }
+        if (string.IsNullOrEmpty(Jwt)) return new ClaimsPrincipal();
 
         IEnumerable<Claim> claims = ParseClaimsFromJwt(Jwt);
-    
+
         ClaimsIdentity identity = new(claims, "jwt");
 
         ClaimsPrincipal principal = new(identity);

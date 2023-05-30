@@ -190,9 +190,6 @@
 </style>
 
 @code {
-    //private SprintTask? _task;
-    //private string _status = "to-do";
-    //private int _id = 0;
     private string _name = "";
     private string _assignee = "";
     private int _points;
@@ -229,7 +226,7 @@
     {
         try
         {
-            var allCollaborators = await ProjectService.GetAllCollaborators(ProjectId);
+            var allCollaborators = await ProjectService.GetAllCollaboratorsAsync(ProjectId);
             _collaborators = allCollaborators.Where(dto => dto.Role.Equals("developer")).ToList();
         }
         catch (Exception e)
@@ -249,7 +246,7 @@
         };
         try
         {
-            await UserStoryService.CreateTask(dto);
+            await UserStoryService.CreateTaskAsync(dto);
             await LoadTasks();
         }
         catch (Exception e)
@@ -262,7 +259,7 @@
     {
         try
         {
-            _tasks = await UserStoryService.GetTasks(StoryId);
+            _tasks = await UserStoryService.GetTasksAsync(StoryId);
         }
         catch (Exception e)
         {
@@ -276,14 +273,12 @@
         {
             try
             {
-await UserStoryService.RemoveTask(taskId, StoryId);
+                await UserStoryService.RemoveTaskAsync(taskId, StoryId);
             }
             catch (Exception e)
             {
                 _msg = e.Message;
             }
-            
-    //_tasks = _tasks.Where(t => t.Id != taskId); // Remove the task from the local collection
         }
         await LoadTasks();
     }
@@ -296,7 +291,7 @@ await UserStoryService.RemoveTask(taskId, StoryId);
     private async Task LoadUserStory()
     {
         var userStories = await ProjectService.GetUserStoriesAsync(ProjectId);
-        _userStory = userStories.FirstOrDefault(us => us.ID == StoryId);
+        _userStory = userStories.FirstOrDefault(us => us.Id == StoryId);
     }
 
     private async Task UpdateTaskStatusAsync(int taskId, string status)
@@ -305,7 +300,7 @@ await UserStoryService.RemoveTask(taskId, StoryId);
         if (taskToUpdate != null)
         {
             taskToUpdate.Status = status;
-            await UserStoryService.UpdateTask(taskToUpdate);
+            await UserStoryService.UpdateTaskAsync(taskToUpdate);
         }
         await LoadTasks();
     }

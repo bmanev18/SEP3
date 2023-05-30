@@ -2,7 +2,7 @@
     width: 250px;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
-    background-color:  #16a085;
+    background-color: #16a085;
     box-shadow: none;
     border: 1px solid #16a085;
 }
@@ -12,14 +12,14 @@
 }
 
 .mud-nav-link {
-    color:  #16a085;
+    color: #16a085;
     text-decoration: none;
     padding: 0.5rem 1rem;
 }
 
 .mud-nav-link:hover {
     background-color: #16a085;
-    color:  #16a085;
+    color: #16a085;
 }
 
 .mud-nav-link.active {

@@ -1,10 +1,10 @@
 ﻿@namespace UIComponents
 
 <label class="container">
-    <input type="checkbox" 
-           checked="@Checked" 
+    <input type="checkbox"
+           checked="@Checked"
            @onchange="@(arg => OnChange.InvokeAsync((bool)arg.Value!))"/>
-    
+
     <div class="line"></div>
     <div class="line line-indicator"></div>
 </label>

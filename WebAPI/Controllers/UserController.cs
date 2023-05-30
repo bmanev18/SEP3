@@ -1,9 +1,9 @@
 ﻿using Application.LogicInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
-using Shared.Model;
 
 namespace WebAPI.Controllers;
+
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
@@ -16,7 +16,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{username}/projects")]
-    public async Task<ActionResult<List<ProjectDto>>> GetProjects(string username)
+    public async Task<ActionResult<List<Project>>> GetProjects(string username)
     {
         try
         {
@@ -30,16 +30,14 @@ public class UserController : ControllerBase
         }
     }
 
-    
-    
+
     [HttpGet("search")]
-    public async Task<ActionResult<List<UserFinderDto>>> LookForUsers([FromQuery]string username)
+    public async Task<ActionResult<List<UserFinderDto>>> LookForUsers([FromQuery] string username)
     {
         try
         {
             var list = await _userLogic.LookForUsersAsync(username);
             return Ok(list);
-
         }
         catch (Exception e)
         {

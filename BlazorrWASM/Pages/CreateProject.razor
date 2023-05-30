@@ -65,7 +65,7 @@
         }
         try
         {
-            await ProjectService.Create(new ProjectCreationDto
+            await ProjectService.CreateAsync(new ProjectCreationDto
             {
                 OwnerUsername = _user.Identity.Name,
                 Name = _title

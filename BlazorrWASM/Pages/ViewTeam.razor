@@ -166,7 +166,7 @@
         _message = "";
         try
         {
-            _users = await ProjectService.GetAllCollaborators(Id);
+            _users = await ProjectService.GetAllCollaboratorsAsync(Id);
         }
         catch (Exception e)
         {
@@ -180,7 +180,7 @@
         _message = "";
         try
         {
-            await ProjectService.RemoveCollaborator(username, Id);
+            await ProjectService.RemoveCollaboratorAsync(username, Id);
 
             var list = new List<UserFinderDto>(_users!);
             list.RemoveAll(user => user.Username.Equals(username));
@@ -209,11 +209,9 @@
     {
         try
         {
-            await ProjectService.AddCollaborator(Id, username);
+            await ProjectService.AddCollaboratorAsync(Id, username);
             await OnInitializedAsync();
             _searchResults!.RemoveAll(u => u.Username.Equals(username));
-            /*var added = _searchResults!.FirstOrDefault(u => u.Username.Equals(username));
-            _searchResults.Remove(added);*/
             _showTable = false;
         }
         catch (Exception e)

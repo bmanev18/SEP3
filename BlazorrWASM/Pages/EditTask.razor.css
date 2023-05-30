@@ -129,11 +129,11 @@ select {
     background-color: #16a085;
 }
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins',sans-serif;
+    font-family: 'Poppins', sans-serif;
     text-align: center;
     color: #16a085;
 }

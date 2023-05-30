@@ -7,8 +7,8 @@ namespace Testing.MockDAOs;
 public class UserMockDao : IUserDao
 {
     private readonly List<User> _users;
-    private readonly List<ProjectDto> _projects;
-    private readonly Dictionary<int,List<string>> _collaboratorsInProject;
+    private readonly List<Project> _projects;
+    private readonly Dictionary<int, List<string>> _collaboratorsInProject;
 
 
     public UserMockDao()
@@ -26,12 +26,12 @@ public class UserMockDao : IUserDao
             new()
                 { Username = "user5", Password = "password5", Firstname = "David", Lastname = "Wilson", Role = "developer" }
         };
-        
-        _projects = new List<ProjectDto>
+
+        _projects = new List<Project>
         {
-            new ProjectDto { Id = 1, Title = "Project 1" },
-            new ProjectDto { Id = 2, Title = "Project 2" },
-            new ProjectDto { Id = 3, Title = "Project 3" }
+            new() { Id = 1, Title = "Project 1" },
+            new() { Id = 2, Title = "Project 2" },
+            new() { Id = 3, Title = "Project 3" }
         };
 
         _collaboratorsInProject = new Dictionary<int, List<string>>
@@ -45,10 +45,7 @@ public class UserMockDao : IUserDao
     public Task CreateAsync(UserCreationDto dto)
     {
         List<string> roles = new() { "product owner", "scrum master", "developer" };
-        if (!roles.Contains(dto.Role))
-        {
-            throw new ArgumentException("incorrect role");
-        }
+        if (!roles.Contains(dto.Role)) throw new ArgumentException("incorrect role");
 
         _users.Add(new User
         {
@@ -61,22 +58,18 @@ public class UserMockDao : IUserDao
         return Task.CompletedTask;
     }
 
-    public Task<User> GetUserByUsername(LoginDto loginDto)
+    public Task<User> GetUserByUsernameAsync(LoginDto loginDto)
     {
         var firstOrDefault = _users.FirstOrDefault(user =>
             user.Username.Equals(loginDto.Username) && user.Password.Equals(loginDto.Password));
-        if (firstOrDefault == null)
-        {
-            throw new NullReferenceException("No user was found");
-        }
+        if (firstOrDefault == null) throw new NullReferenceException("No user was found");
 
         return Task.FromResult(firstOrDefault);
     }
 
 
-    public Task<List<ProjectDto>> GetProjects(string username)
+    public Task<List<Project>> GetProjectsAsync(string username)
     {
-
         var keys = _collaboratorsInProject
             .Where(pair => pair.Value.Contains(username))
             .Select(pair => pair.Key)
@@ -87,7 +80,7 @@ public class UserMockDao : IUserDao
         return Task.FromResult(list);
     }
 
-    public Task<List<UserFinderDto>> LookForUsers(string username)
+    public Task<List<UserFinderDto>> LookForUsersAsync(string username)
     {
         var findAll = _users
             .FindAll(user => user.Username.Contains(username))
@@ -100,10 +93,7 @@ public class UserMockDao : IUserDao
             })
             .ToList();
         ;
-        if (findAll == null)
-        {
-            throw new NullReferenceException("No users were found");
-        }
+        if (findAll == null) throw new NullReferenceException("No users were found");
 
         return Task.FromResult(findAll);
     }

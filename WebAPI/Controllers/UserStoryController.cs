@@ -6,7 +6,7 @@ using Shared.Model;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]/{id:int}")]
+[Route("[controller]/{storyId:int}")]
 public class UserStoryController : ControllerBase
 {
     private readonly IUserStoryLogic _userStoryLogic;
@@ -17,13 +17,12 @@ public class UserStoryController : ControllerBase
     }
 
 
-    
     [HttpPatch("storyPoints")]
-    public async Task<ActionResult> UpdateUserStoryPoints([FromRoute] int id, [FromBody]int points)
+    public async Task<ActionResult> UpdateUserStoryPoints([FromRoute] int storyId, [FromBody] int points)
     {
         try
         {
-            await _userStoryLogic.UpdateUserStoryPointsAsync(id, points);
+            await _userStoryLogic.UpdateUserStoryPointsAsync(storyId, points);
             return Ok();
         }
         catch (Exception e)
@@ -32,12 +31,13 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+
     [HttpPatch("status")]
-    public async Task<ActionResult> UpdateUserStatus([FromBody]string status,[FromRoute] int id)
+    public async Task<ActionResult> UpdateUserStatus([FromBody] string status, [FromRoute] int storyId)
     {
         try
         {
-            await _userStoryLogic.UpdateUserStoryStatusAsync(id, status);
+            await _userStoryLogic.UpdateUserStoryStatusAsync(storyId, status);
             return Ok();
         }
         catch (Exception e)
@@ -46,12 +46,13 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+
     [HttpPatch("priority")]
-    public async Task<ActionResult> UpdateUserStoryPriority([FromBody]string priority,[FromRoute] int id)
+    public async Task<ActionResult> UpdateUserStoryPriority([FromBody] string priority, [FromRoute] int storyId)
     {
         try
         {
-            await _userStoryLogic.UpdateUserStoryPriorityAsync(id, priority);
+            await _userStoryLogic.UpdateUserStoryPriorityAsync(storyId, priority);
             return Ok();
         }
         catch (Exception e)
@@ -62,11 +63,11 @@ public class UserStoryController : ControllerBase
     }
 
     [HttpDelete("")]
-    public async Task<ActionResult> DeleteUserStory([FromRoute] int id)
+    public async Task<ActionResult> DeleteUserStory([FromRoute] int storyId)
     {
         try
         {
-            await _userStoryLogic.DeleteUserStory(id);
+            await _userStoryLogic.DeleteUserStoryAsync(storyId);
             return Ok();
         }
         catch (Exception e)
@@ -75,28 +76,13 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    
+
     [HttpPost("task")]
     public async Task<ActionResult> AddTask([FromBody] SprintTaskCreationDto dto)
     {
         try
         {
-            await _userStoryLogic.AddTask(dto);
-            return Accepted();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(500, e.Message);
-        }
-    }
-    
-    [HttpPatch("task")]
-    public async Task<IActionResult> EditTask([FromBody] SprintTask task)
-    {
-        try
-        {
-            await _userStoryLogic.EditTask(task);
+            await _userStoryLogic.AddTaskAsync(dto);
             return Accepted();
         }
         catch (Exception e)
@@ -106,13 +92,28 @@ public class UserStoryController : ControllerBase
         }
     }
 
-    
-    [HttpGet("task")]
-    public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute]int id)
+    [HttpPatch("task")]
+    public async Task<IActionResult> EditTask([FromBody] SprintTask task)
     {
         try
         {
-            List<SprintTask> list = await _userStoryLogic.GetTasks(id);
+            await _userStoryLogic.EditTaskAsync(task);
+            return Accepted();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+
+
+    [HttpGet("task")]
+    public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute] int storyId)
+    {
+        try
+        {
+            var list = await _userStoryLogic.GetTasksAsync(storyId);
             Console.WriteLine(list.Count);
             return Ok(list);
         }
@@ -122,12 +123,13 @@ public class UserStoryController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+
     [HttpDelete("task/{taskId:int}")]
-    public async Task<ActionResult> RemoveTask([FromRoute]int taskId)
+    public async Task<ActionResult> RemoveTask([FromRoute] int taskId)
     {
         try
         {
-            await _userStoryLogic.RemoveTask(taskId);
+            await _userStoryLogic.RemoveTaskAsync(taskId);
             return Ok();
         }
         catch (Exception e)

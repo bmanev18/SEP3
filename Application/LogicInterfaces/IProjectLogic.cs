@@ -7,14 +7,14 @@ public interface IProjectLogic
 {
     Task CreateAsync(ProjectCreationDto dto);
     Task AddCollaboratorAsync(AddUserToProjectDto collaborator);
-    Task<List<UserFinderDto>> GetAllCollaborators(int id);
-    Task RemoveCollaborator(AddUserToProjectDto collaborator);
-    
-    Task AddUserStoryAsync(UserStoryDto dto);
+    Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id);
+    Task RemoveCollaboratorAsync(AddUserToProjectDto collaborator);
+
+    Task AddUserStoryAsync(UserStoryCreationDto creationDto);
     Task<List<UserStory>> GetUserStoriesAsync(int projectId);
-    
-    Task CreateSprint(SprintCreationDto dto);
-    Task<List<Sprint>> GetSprintsByProjectId(int id);
-    Task CreateMeetingNote(Meeting meeting);
-    Task<List<Meeting>> GetAllMeetingNotes(int id);
+
+    Task CreateSprintAsync(SprintCreationDto dto);
+    Task<List<Sprint>> GetSprintsByProjectIdAsync(int id);
+    Task CreateMeetingNoteAsync(Meeting meeting);
+    Task<List<Meeting>> Async(int id);
 }

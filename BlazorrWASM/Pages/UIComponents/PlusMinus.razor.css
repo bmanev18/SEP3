@@ -29,7 +29,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: .7s transform cubic-bezier(0,1,.33,1.2), background .4s;
+    transition: .7s transform cubic-bezier(0, 1, .33, 1.2), background .4s;
 }
 
 .line-indicator {

@@ -3,7 +3,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using ClientInterfaces;
-using Shared.DTOs;
 using Shared.Model;
 
 public class SprintHttpClient : ISprintService
@@ -15,14 +14,11 @@ public class SprintHttpClient : ISprintService
         _client = client;
     }
 
-    public async Task<Sprint> GetSprintById(int sprintId)
+    public async Task<Sprint> GetSprintByIdAsync(int sprintId)
     {
         var response = await _client.GetAsync($"/sprint/{sprintId}");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
 
         var sprint = JsonSerializer.Deserialize<Sprint>(result,
             new JsonSerializerOptions
@@ -32,17 +28,14 @@ public class SprintHttpClient : ISprintService
         return sprint;
     }
 
-    public async Task DeleteSprint(int sprintId)
+    public async Task DeleteSprintAsync(int sprintId)
     {
         var response = await _client.DeleteAsync($"/sprint/{sprintId}");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
 
-    public async Task AddUserStoryToSprint(int sprintId, int storyId)
+    public async Task AddUserStoryToSprintAsync(int sprintId, int storyId)
     {
         var response = await _client.PostAsJsonAsync($"/sprint/{sprintId}/userStory", storyId);
         if (!response.IsSuccessStatusCode)
@@ -52,14 +45,11 @@ public class SprintHttpClient : ISprintService
         }
     }
 
-    public async Task<IEnumerable<UserStory>> GetUserStoriesFromSprint(int sprintId)
+    public async Task<IEnumerable<UserStory>> GetUserStoriesFromSprintAsync(int sprintId)
     {
         var response = await _client.GetAsync($"/sprint/{sprintId}/userStory");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
 
         var userStories = JsonSerializer.Deserialize<IEnumerable<UserStory>>(result,
             new JsonSerializerOptions
@@ -69,7 +59,7 @@ public class SprintHttpClient : ISprintService
         return userStories;
     }
 
-    public async Task RemoveStoryFromSprint(int sprintId, int storyId)
+    public async Task RemoveStoryFromSprintAsync(int sprintId, int storyId)
     {
         var response = await _client.DeleteAsync($"/sprint/{sprintId}/userStory/{storyId}");
         if (!response.IsSuccessStatusCode)
@@ -78,47 +68,4 @@ public class SprintHttpClient : ISprintService
             throw new Exception(result);
         }
     }
-
-    /*public async Task<IEnumerable<UserStory>> OtherUserStories(int projectid)
-    {
-        var response = await _client.GetAsync($"/Sprint/{projectid}/OtherUserStories");
-        Console.WriteLine("hehehe");
-        var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-
-        var userStories = JsonSerializer.Deserialize<IEnumerable<UserStory>>(result,
-            new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            })!;
-        return userStories;      
-    }*/
-
-
-    /*public async Task CreateTask(SprintTaskCreationDto dto)
-    {
-        var response = await _client.PostAsJsonAsync("/userStory/task", dto);
-        var result = await response.Content.ReadAsStringAsync();
-        Console.WriteLine("here" + result);
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-    }*/
-
-
-    /*
-    public async Task UpdateTask(SprintTask task)
-    {
-        // TODO Controller missing method AssignSprintTask -> UpdateTask
-        var response = await _client.PatchAsJsonAsync("/Sprint/assignSprintTask", task);
-        var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-    }*/
 }

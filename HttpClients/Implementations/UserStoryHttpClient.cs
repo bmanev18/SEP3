@@ -57,34 +57,28 @@ public class UserStoryHttpClient : IUserStoryService
         }
     }
 
-    public async Task CreateTask(SprintTaskCreationDto dto)
+    public async Task CreateTaskAsync(SprintTaskCreationDto dto)
     {
         var response = await _client.PostAsJsonAsync($"userStory/{dto.UserStoryId}/task", dto);
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
 
-    public async Task UpdateTask(SprintTask? task)
+    public async Task UpdateTaskAsync(SprintTask? task)
     {
-        var response = await _client.PatchAsJsonAsync($"/userStory/{task.UserStoryId}/task", task);
-        var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
+        if (task != null)
         {
-            throw new Exception(result);
+            var response = await _client.PatchAsJsonAsync($"/userStory/{task.UserStoryId}/task", task);
+            var result = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) throw new Exception(result);
         }
     }
 
-    public async Task<IEnumerable<SprintTask>> GetTasks(int id)
+    public async Task<IEnumerable<SprintTask>> GetTasksAsync(int id)
     {
         var response = await _client.GetAsync($"userStory/{id}/task");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
 
         var sprintTasks = JsonSerializer.Deserialize<IEnumerable<SprintTask>>(result,
             new JsonSerializerOptions
@@ -94,7 +88,7 @@ public class UserStoryHttpClient : IUserStoryService
         return sprintTasks;
     }
 
-    public async Task RemoveTask(int taskId, int storyId)
+    public async Task RemoveTaskAsync(int taskId, int storyId)
     {
         var response = await _client.DeleteAsync($"userStory/{storyId}/task/{taskId}");
         if (!response.IsSuccessStatusCode)
@@ -103,15 +97,4 @@ public class UserStoryHttpClient : IUserStoryService
             throw new Exception(result);
         }
     }
-
-    /*public async Task UpdateAsync(UserStoryUpdateDto dto)
-    {
-        // TODO!!!!
-        var response = await client.PatchAsJsonAsync("/Project/UpdateStory", dto);
-        if (!response.IsSuccessStatusCode)
-        {
-            var result = await response.Content.ReadAsStringAsync();
-            throw new Exception(result);
-        }
-    }*/
 }

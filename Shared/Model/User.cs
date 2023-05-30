@@ -2,12 +2,12 @@
 
 public class User
 {
-    public string Username { get; set; }
-    public string Password { get; set; }
-    
-    public string Firstname { get; set; }
-    
-    public string Lastname { get; set; }
-    
-    public string Role { get; set; }
+    public required string Username { get; init; }
+    public required string Password { get; init; }
+
+    public required string Firstname { get; init; }
+
+    public required string Lastname { get; init; }
+
+    public required string Role { get; init; }
 }

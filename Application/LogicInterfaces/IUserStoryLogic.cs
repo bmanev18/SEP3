@@ -8,9 +8,11 @@ public interface IUserStoryLogic
     Task UpdateUserStoryPointsAsync(int id, int points);
     Task UpdateUserStoryStatusAsync(int userStoryId, string status);
     Task UpdateUserStoryPriorityAsync(int userStoryId, string priority);
-    Task DeleteUserStory(int id);
-    Task AddTask(SprintTaskCreationDto dto);
-    Task EditTask(SprintTask task);
-    Task<List<SprintTask>> GetTasks(int id);
-    Task RemoveTask(int id);
+    Task DeleteUserStoryAsync(int id);
+
+    Task AddTaskAsync(SprintTaskCreationDto dto);
+    Task EditTaskAsync(SprintTask task);
+
+    Task<List<SprintTask>> GetTasksAsync(int id);
+    Task RemoveTaskAsync(int id);
 }

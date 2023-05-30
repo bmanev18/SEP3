@@ -7,68 +7,66 @@ namespace Application.Logic;
 
 public class ProjectLogic : IProjectLogic
 {
-    private readonly IProjectDao projectDao;
+    private readonly IProjectDao _projectDao;
 
     public ProjectLogic(IProjectDao projectDao)
     {
-        this.projectDao = projectDao;
+        _projectDao = projectDao;
     }
 
 
     public async Task CreateAsync(ProjectCreationDto dto)
     {
-        await projectDao.CreateAsync(dto);
+        await _projectDao.CreateAsync(dto);
     }
 
     public async Task AddCollaboratorAsync(AddUserToProjectDto collaborator)
     {
-        var list = GetAllCollaborators(collaborator.ProjectID);
-        UserFinderDto? dto = list.Result.FirstOrDefault(u => u.Username.Equals(collaborator.Username));
-        if (dto != null)
-        {
-            throw new Exception("User is already a collaborator!");
-        }
+        var list = GetAllCollaboratorsAsync(collaborator.ProjectId);
+        var dto = list.Result.FirstOrDefault(u => u.Username.Equals(collaborator.Username));
+        if (dto != null) throw new Exception("User is already a collaborator!");
 
-        await projectDao.AddCollaborator(collaborator);
+        await _projectDao.AddCollaboratorAsync(collaborator);
     }
 
-    public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
+    public async Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id)
     {
-        return await projectDao.GetAllCollaborators(id);
+        return await _projectDao.GetAllCollaboratorsAsync(id);
     }
 
-    public async Task RemoveCollaborator(AddUserToProjectDto collaborator)
+    public async Task RemoveCollaboratorAsync(AddUserToProjectDto collaborator)
     {
-        await projectDao.RemoveCollaborator(collaborator);
+        await _projectDao.RemoveCollaboratorAsync(collaborator);
     }
 
-    public async Task AddUserStoryAsync(UserStoryDto dto)
+    public async Task AddUserStoryAsync(UserStoryCreationDto creationDto)
     {
-        await projectDao.AddUserStoryAsync(dto);
+        await _projectDao.AddUserStoryAsync(creationDto);
     }
 
 
     public async Task<List<UserStory>> GetUserStoriesAsync(int id)
     {
-        return await projectDao.GetUserStoriesAsync(id);
+        return await _projectDao.GetUserStoriesAsync(id);
     }
 
-    public async Task CreateSprint(SprintCreationDto dto)
+    public async Task CreateSprintAsync(SprintCreationDto dto)
     {
-        await projectDao.CreateSprint(dto);
+        await _projectDao.CreateSprintAsync(dto);
     }
 
-    public async Task<List<Sprint>> GetSprintsByProjectId(int id)
+    public async Task<List<Sprint>> GetSprintsByProjectIdAsync(int id)
     {
-        return await projectDao.GetSprintsByProjectId(id);
-    }
-    public async Task CreateMeetingNote(Meeting meeting)
-    {
-        await projectDao.CreateMeetingNote(meeting);
+        return await _projectDao.GetSprintsByProjectIdAsync(id);
     }
 
-    public async Task<List<Meeting>> GetAllMeetingNotes(int id)
+    public async Task CreateMeetingNoteAsync(Meeting meeting)
     {
-        return await projectDao.GetAllMeetingNotes(id);
+        await _projectDao.CreateMeetingNoteAsync(meeting);
+    }
+
+    public async Task<List<Meeting>> Async(int id)
+    {
+        return await _projectDao.GetAllMeetingNotesAsync(id);
     }
 }

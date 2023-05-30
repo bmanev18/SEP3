@@ -52,7 +52,7 @@
                         <td class="text-center">@userStory.StoryPoints</td>
                         <td class="text-center">@userStory.Status</td>
                         <td>
-                            <label @onclick="@(() => DeleteUserStoryFromSprint(userStory.ID))" style="cursor:pointer; color: red; font-weight: bold">
+                            <label @onclick="@(() => DeleteUserStoryFromSprint(userStory.Id))" style="cursor:pointer; color: red; font-weight: bold">
                                 &#x2717;
                             </label>
                         </td>
@@ -67,24 +67,26 @@
         @if (_doShowUserStory)
         {
             <div>
-                Select user story to add:
-                <div class="input-box">
-                    @if (_otherUserStories.Count == 0)
-                    {
-                        <label>No other user stories</label>
-                    }
-                    else
-                    {
+                @if (_otherUserStories.Count == 0)
+                {
+                    <label>No other user stories to add</label>
+                }
+                else
+                {
+                    <label>Select user story to add:</label>
+                    <div class="input-box">
+
                         <select @bind="_storyId">
                             @foreach (var userStory in _otherUserStories)
                             {
-                                <option value="@userStory.ID">@userStory.Body</option>
+                                <option value="@userStory.Id">@userStory.Body</option>
                             }
                         </select>
-                    }
 
-                    <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(AddUserStory)">Add to sprint</MudButton>
-                </div>
+
+                        <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(AddUserStory)">Add to sprint</MudButton>
+                    </div>
+                }
             </div>
         }
     </Authorized>
@@ -149,12 +151,8 @@
     private IEnumerable<UserStory>? _userStories;
     private List<UserStory> _otherUserStories = new();
 
-    /*private ClaimsPrincipal? _user;
-    private SprintHttpClient sprintService;*/
-
     private bool _doShowUserStory;
     private int _storyId;
-    //private int body;
 
     [Parameter]
     public int Id { get; set; }
@@ -177,36 +175,35 @@
 
     private async Task LoadUserStoriesAsync()
     {
-        _userStories = await SprintService.GetUserStoriesFromSprint(Id);
+        _userStories = await SprintService.GetUserStoriesFromSprintAsync(Id);
     }
 
     private async Task LoadOtherStoriesAsync()
     {
         var allStories = await ProjectService.GetUserStoriesAsync(ProjectId);
         _otherUserStories = new List<UserStory>();
-        if (_userStories!=null)
+        if (_userStories != null)
         {
             foreach (var story in allStories)
-                    {
-                        if (_userStories.FirstOrDefault(userStory => userStory.ID == story.ID) == null)
-                        {
-                            _otherUserStories.Add(story);
-                        }
-                    }
+            {
+                if (_userStories.FirstOrDefault(userStory => userStory.Id == story.Id) == null)
+                {
+                    _otherUserStories.Add(story);
+                }
+            }
         }
-        
     }
 
     private async Task AddUserStory()
     {
-        await SprintService.AddUserStoryToSprint(Id, _storyId);
+        await SprintService.AddUserStoryToSprintAsync(Id, _storyId);
         await LoadUserStoriesAsync();
         await LoadOtherStoriesAsync();
     }
 
     private async void DeleteUserStoryFromSprint(int idOfUserStory)
     {
-        await SprintService.RemoveStoryFromSprint(Id, idOfUserStory);
+        await SprintService.RemoveStoryFromSprintAsync(Id, idOfUserStory);
         await LoadUserStoriesAsync();
         await LoadOtherStoriesAsync();
         StateHasChanged();

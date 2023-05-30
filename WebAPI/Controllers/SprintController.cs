@@ -15,13 +15,13 @@ public class SprintController : ControllerBase
     {
         _sprintLogic = sprintLogic;
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<Sprint>> GetSprintById(int sprintId)
     {
         try
         {
-            var result = await _sprintLogic.GetSprintById(sprintId);
+            var result = await _sprintLogic.GetSprintByIdAsync(sprintId);
             return Ok(result);
         }
         catch (Exception e)
@@ -30,13 +30,13 @@ public class SprintController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    
+
     [HttpDelete("")]
-    public async Task<ActionResult> RemoveSprint([FromRoute]int sprintId)
+    public async Task<ActionResult> RemoveSprint([FromRoute] int sprintId)
     {
         try
         {
-            await _sprintLogic.RemoveSprint(sprintId);
+            await _sprintLogic.RemoveSprintAsync(sprintId);
             return Ok();
         }
         catch (Exception e)
@@ -47,16 +47,16 @@ public class SprintController : ControllerBase
     }
 
     [HttpPost("userStory")]
-    public async Task<ActionResult> AddUserStoryToSprint([FromRoute]int sprintId,[FromBody]int storyId)
+    public async Task<ActionResult> AddUserStoryToSprint([FromRoute] int sprintId, [FromBody] int storyId)
     {
         try
         {
-            UserStoryToSprintDto dto = new UserStoryToSprintDto
+            var dto = new UserStoryToSprintDto
             {
                 SprintId = sprintId,
                 UserStoryId = storyId
-            }; 
-            await _sprintLogic.AddUserStoryToSprint(dto);
+            };
+            await _sprintLogic.AddUserStoryToSprintAsync(dto);
             return Accepted();
         }
         catch (Exception e)
@@ -67,11 +67,11 @@ public class SprintController : ControllerBase
     }
 
     [HttpGet("userStory")]
-    public async Task<ActionResult<List<UserStory>>> GetAllUserStoriesFromSprint([FromRoute]int sprintId)
+    public async Task<ActionResult<List<UserStory>>> GetAllUserStoriesFromSprint([FromRoute] int sprintId)
     {
         try
         {
-            var list = await _sprintLogic.GetUserStoriesFromSprint(sprintId);
+            var list = await _sprintLogic.GetUserStoriesFromSprintAsync(sprintId);
             return Ok(list);
         }
         catch (Exception e)
@@ -83,7 +83,7 @@ public class SprintController : ControllerBase
 
 
     [HttpDelete("userStory/{userStoryId:int}")]
-    public async Task<ActionResult> RemoveUserStoryFromSprint([FromRoute]int sprintId, [FromRoute]int userStoryId)
+    public async Task<ActionResult> RemoveUserStoryFromSprint([FromRoute] int sprintId, [FromRoute] int userStoryId)
     {
         var dto = new UserStoryToSprintDto
         {
@@ -92,7 +92,7 @@ public class SprintController : ControllerBase
         };
         try
         {
-            await _sprintLogic.RemoveUserStoryFromSprint(dto);
+            await _sprintLogic.RemoveUserStoryFromSprintAsync(dto);
             return Accepted();
         }
         catch (Exception e)
@@ -101,19 +101,4 @@ public class SprintController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-
-    /*[HttpGet("{id:int}/OtherUserStories")]
-    public async Task<ActionResult<List<UserStory>>> OtherUserStories([FromRoute]int id)
-    {
-        try
-        {
-            var list = await _sprintLogic.GetOtherUserStories(id);
-            return Ok(list);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(500, e.Message);
-        }
-    }*/
 }

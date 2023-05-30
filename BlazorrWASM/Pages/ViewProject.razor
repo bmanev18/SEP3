@@ -11,7 +11,7 @@
 <AuthorizeView roles="scrum master, project manager">
 <Authorized>
 
-    <h3>User Stories</h3>
+<h3>User Stories</h3>
 
 <div class="addUserStory-bar">
     <div class="fields-container">
@@ -92,7 +92,7 @@ else
         @foreach (var userStory in _userStories)
         {
             <tr >
-                <td class="text-center" @onclick="() => OpenUserStory(userStory.ID)">@userStory.Body</td>
+                <td class="text-center" @onclick="() => OpenUserStory(userStory.Id)">@userStory.Body</td>
 
                 <td>
                     <div class="input-box">
@@ -130,7 +130,7 @@ else
                     </div>
                 </td>
                 <td>
-                    <label @onclick="@(() => DeleteUserStoryAsync(userStory.ID))" style="cursor:pointer; color: red; font-weight: bold">
+                    <label @onclick="@(() => DeleteUserStoryAsync(userStory.Id))" style="cursor:pointer; color: red; font-weight: bold">
                         &#x2717;
                     </label>
                 </td>
@@ -195,7 +195,7 @@ else
     <table class="table justify-content-center">
         <thead>
         <tr>
-            
+
             <th class="text-center">Name</th>
             <th class="text-center"> User stories </th>
             <th class="text-center">Start Date</th>
@@ -204,14 +204,14 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (Sprint sprint in _sprints)
+        @foreach (var sprint in _sprints)
         {
             <tr>
-                
+
                 <td class="text-center">@sprint.Name</td>
                 <td>
                     <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OpenSprint(sprint.Id))">User Stories</MudButton>
-                    </td>
+                </td>
                 <td class="text-center">@sprint.StartDate</td>
                 <td class="text-center">@sprint.EndDate</td>
                 <td>
@@ -260,7 +260,7 @@ else
             @foreach (var userStory in _userStories)
             {
                 <tr>
-                    <td class="text-center" @onclick="() => OpenUserStory(userStory.ID)">@userStory.Body</td>
+                    <td class="text-center" @onclick="() => OpenUserStory(userStory.Id)">@userStory.Body</td>
                     <td>@userStory.Priority</td>
                     <td>@userStory.StoryPoints</td>
                     <td>
@@ -308,7 +308,7 @@ else
             </tr>
             </thead>
             <tbody>
-            @foreach (Sprint sprint in _sprints)
+            @foreach (var sprint in _sprints)
             {
                 <tr>
                     <td>
@@ -324,7 +324,6 @@ else
     }
 </NotAuthorized>
 </AuthorizeView>
-@*</AuthorizeView>*@
 
 @code {
     // Global 
@@ -334,14 +333,11 @@ else
     private IEnumerable<Sprint>? _sprints;
 
     /*User story fields*/
-    //private int _storyId = 0; // Todo when selecting user story and probably showing tasks
     private string _storyName = "";
     private string _priority = " ";
-    private int _storyPoints; // By default is 0
-    //private string _status = "to-do";
+    private int _storyPoints;
 
     // Sprint fields
-    //private int _sprintId; // TODO when selecting should probably show user stories and tasks
     private string _sprintName = "";
     private DateTime _startDate = DateTime.Today;
     private DateTime _endDate = DateTime.Today.AddDays(1);
@@ -352,8 +348,6 @@ else
 
     [Parameter]
     public int Id { get; set; }
-
-    //private string _projectName;
 
 
     protected override async Task OnInitializedAsync()
@@ -381,9 +375,9 @@ else
         {
             try
             {
-                await ProjectService.CreateUserStory(new UserStoryDto
+                await ProjectService.CreateUserStoryAsync(new UserStoryCreationDto
                 {
-                    Project_id = Id,
+                    ProjectId = Id,
                     Body = _storyName,
                     Priority = _priority,
                     StoryPoints = _storyPoints
@@ -410,7 +404,7 @@ else
         {
             try
             {
-                await ProjectService.CreateSprint(new SprintCreationDto()
+                await ProjectService.CreateSprintAsync(new SprintCreationDto()
                 {
                     ProjectId = Id,
                     Name = _sprintName,
@@ -440,7 +434,6 @@ else
 
     private void OpenUserStory(int storyId)
     {
-        //NavMgr.NavigateTo($"/ViewUserStory/{storyId}");
         NavMgr.NavigateTo($"/ViewProject/{Id}/ViewUserStory/{storyId}");
     }
 
@@ -452,17 +445,17 @@ else
     private async Task UpdateStoryPointsAsync(UserStory story, string? eValue)
     {
         var points = Convert.ToInt32(eValue);
-        await UserStoryService.UpdateStoryPointsAsync(story.ID, points);
+        await UserStoryService.UpdateStoryPointsAsync(story.Id, points);
     }
 
     private async Task UpdateStoryStatusAsync(UserStory story, string? eValue)
     {
-        await UserStoryService.UpdateUserStoryStatusAsync(story.ID, eValue!);
+        await UserStoryService.UpdateUserStoryStatusAsync(story.Id, eValue!);
     }
 
     private async Task UpdateStoryPriorityAsync(UserStory story, string? eValue)
     {
-        await UserStoryService.UpdateUserStoryPriorityAsync(story.ID, eValue!);
+        await UserStoryService.UpdateUserStoryPriorityAsync(story.Id, eValue!);
     }
 
     private async Task DeleteUserStoryAsync(int id)
@@ -470,11 +463,6 @@ else
         await UserStoryService.RemoveAsync(id);
         await LoadUserStoriesAsync();
     }
-
-    /*private async void Open(int storyId)
-    {
-        NavMgr.NavigateTo($"/ViewProject/{Id}/ViewUserStory/{storyId}");
-    }*/
 
     private void OpenViewTeam()
     {
@@ -491,7 +479,7 @@ else
         var list = new List<Sprint>(_sprints!);
         list.RemoveAll(sprint => sprint.Id == id);
         _sprints = list.AsEnumerable();
-        await SprintService.DeleteSprint(id);
+        await SprintService.DeleteSprintAsync(id);
     }
 
 }

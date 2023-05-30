@@ -2,6 +2,6 @@
 
 public class UserStoryToSprintDto
 {
-    public int SprintId { get; set; }
-    public int UserStoryId { get; set; }
+    public required int SprintId { get; init; }
+    public required int UserStoryId { get; init; }
 }

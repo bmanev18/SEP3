@@ -14,11 +14,11 @@ public class UserStoryMockDao : IUserStoryDao
     {
         _userStories = new List<UserStory>
         {
-            new() { ID = 1, Project_id = 1, Body = "Story 1", Priority = "high", Status = "to-Do", StoryPoints = 5 },
-            new() { ID = 2, Project_id = 1, Body = "Story 2", Priority = "low", Status = "in progress", StoryPoints = 3 },
-            new() { ID = 3, Project_id = 2, Body = "Story 3", Priority = "critical", Status = "to-Do", StoryPoints = 8 },
-            new() { ID = 4, Project_id = 2, Body = "Story 4", Priority = "high", Status = "done", StoryPoints = 13 },
-            new() { ID = 5, Project_id = 3, Body = "Story 5", Priority = "low", Status = "in progress", StoryPoints = 5 }
+            new() { Id = 1, ProjectId = 1, Body = "Story 1", Priority = "high", Status = "to-Do", StoryPoints = 5 },
+            new() { Id = 2, ProjectId = 1, Body = "Story 2", Priority = "low", Status = "in progress", StoryPoints = 3 },
+            new() { Id = 3, ProjectId = 2, Body = "Story 3", Priority = "critical", Status = "to-Do", StoryPoints = 8 },
+            new() { Id = 4, ProjectId = 2, Body = "Story 4", Priority = "high", Status = "done", StoryPoints = 13 },
+            new() { Id = 5, ProjectId = 3, Body = "Story 5", Priority = "low", Status = "in progress", StoryPoints = 5 }
         };
         _tasks = new List<SprintTask>
         {
@@ -32,30 +32,30 @@ public class UserStoryMockDao : IUserStoryDao
 
     public Task UpdateUserStoryPointsAsync(int id, int points)
     {
-        _userStories.First(story => story.ID == id).StoryPoints = points;
+        _userStories.First(story => story.Id == id).StoryPoints = points;
         return Task.CompletedTask;
     }
 
     public Task UpdateUserStoryStatusAsync(int userStoryId, string status)
     {
-        _userStories.First(story => story.ID == userStoryId).Status = status;
+        _userStories.First(story => story.Id == userStoryId).Status = status;
         return Task.CompletedTask;
     }
 
     public Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
     {
-        _userStories.First(story => story.ID == userStoryId).Priority = priority;
+        _userStories.First(story => story.Id == userStoryId).Priority = priority;
         return Task.CompletedTask;
     }
 
     public Task DeleteUserStoryAsync(int id)
     {
-        _userStories.RemoveAll(story => story.ID == id);
+        _userStories.RemoveAll(story => story.Id == id);
 
         return Task.CompletedTask;
     }
 
-    public Task AddSprintTaskAsync(SprintTaskCreationDto dto)
+    public Task AddTaskAsync(SprintTaskCreationDto dto)
     {
         _tasks.Add(new SprintTask
         {

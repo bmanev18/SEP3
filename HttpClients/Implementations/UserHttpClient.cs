@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Shared.DTOs;
 using Shared.Model;
 using HttpClients.ClientInterfaces;
@@ -21,10 +20,7 @@ public class UserHttpClient : IUserService
 
         var response = await _client.GetAsync(uri);
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
 
         var projects = JsonSerializer.Deserialize<IEnumerable<Project>>(result, new JsonSerializerOptions
         {
@@ -37,10 +33,7 @@ public class UserHttpClient : IUserService
     {
         var response = await _client.GetAsync($"/user/search?username={usernameContains}");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
 
         var users = JsonSerializer.Deserialize<List<UserFinderDto>>(result, new JsonSerializerOptions
         {

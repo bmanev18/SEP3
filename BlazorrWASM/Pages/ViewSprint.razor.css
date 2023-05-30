@@ -61,16 +61,18 @@ h3 {
 .unauthorized-section {
     margin-bottom: 20px;
 }
-*{
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins',sans-serif;
+    font-family: 'Poppins', sans-serif;
     text-align: center;
 }
- h3{
+
+h3 {
     text-align: center;
     color: #16a085;
-     margin-bottom: 20px;
-     margin-top: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }

@@ -2,8 +2,8 @@
 
 public class Meeting
 {
-    public int project_id { get; set; }
-    public string title { get; set; }
-    public string note { get; set; }
-    public string author { get; set; }
+    public required int ProjectId { get; set; }
+    public required string Title { get; init; }
+    public required string Note { get; init; }
+    public required string Author { get; init; }
 }

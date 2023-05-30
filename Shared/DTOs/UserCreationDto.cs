@@ -2,11 +2,9 @@
 
 public class UserCreationDto
 {
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public string FirstName { get; set; }
-    public string Lastname { get; set; }
-    
-    public string Role { get; set; }
-
+    public required string Username { get; init; }
+    public required string Password { get; init; }
+    public required string FirstName { get; init; }
+    public required string Lastname { get; init; }
+    public required string Role { get; init; }
 }

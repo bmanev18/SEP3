@@ -37,7 +37,7 @@ public class UserStoryLogicTest
     [Test]
     public void DeleteUserStory_Successful()
     {
-        var actual = _logic.DeleteUserStory(5);
+        var actual = _logic.DeleteUserStoryAsync(5);
         Assert.That(ReferenceEquals(actual, Task.CompletedTask));
     }
 
@@ -50,14 +50,14 @@ public class UserStoryLogicTest
             UserStoryId = 1,
             Body = "New task",
             Assignee = "test",
-            StoryPoint = 13,
+            StoryPoint = 13
         };
 
-        var actual = _logic.AddTask(created);
+        var actual = _logic.AddTaskAsync(created);
         Assert.That(ReferenceEquals(actual, Task.CompletedTask));
     }
-    
-    
+
+
     [Test]
     public void EditTask_Successful()
     {
@@ -67,23 +67,24 @@ public class UserStoryLogicTest
             UserStoryId = 3,
             Body = "New task",
             Assignee = "test",
-            StoryPoint = 13,
+            Status = "done",
+            StoryPoint = 13
         };
-        var actual = _logic.EditTask(edited);
+        var actual = _logic.EditTaskAsync(edited);
         Assert.That(ReferenceEquals(actual, Task.CompletedTask));
     }
 
     [Test]
     public void GetTasks_Successful()
     {
-        var actual = _logic.GetTasks(1).Result;
-        Assert.That(actual, Has.Count.EqualTo(1 ));
+        var actual = _logic.GetTasksAsync(1).Result;
+        Assert.That(actual, Has.Count.EqualTo(1));
     }
 
     [Test]
     public void RemoveTask_Successful()
     {
-        var removeTask = _logic.RemoveTask(1);
-        Assert.That(ReferenceEquals(removeTask , Task.CompletedTask));
+        var removeTask = _logic.RemoveTaskAsync(1);
+        Assert.That(ReferenceEquals(removeTask, Task.CompletedTask));
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 using HttpClients.ClientInterfaces;
 using Shared.DTOs;
@@ -13,47 +12,28 @@ public class ProjectHttpClient : IProjectService
 
     public ProjectHttpClient(HttpClient client)
     {
-        this._client = client;
+        _client = client;
     }
 
-    public async Task<Project> Create(ProjectCreationDto dto)
+    public async Task CreateAsync(ProjectCreationDto dto)
     {
         var response = await _client.PostAsJsonAsync("/project", dto);
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-
-        var project = JsonSerializer.Deserialize<Project>(result, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
-        return project;
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
-    public async Task AddCollaborator(int projectId, string username)
+
+    public async Task AddCollaboratorAsync(int projectId, string username)
     {
-        var dto = new AddUserToProjectDto
-        {
-            ProjectID = projectId,
-            Username = username,
-        };
         var response = await _client.PutAsJsonAsync($"project/{projectId}/collaborator", username);
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
 
-    public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
+    public async Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id)
     {
         var response = await _client.GetAsync($"/project/{id}/collaborator");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            Console.WriteLine(response);
-        }
+        if (!response.IsSuccessStatusCode) Console.WriteLine(response);
         var collaborators = JsonSerializer.Deserialize<List<UserFinderDto>>(result, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
@@ -61,7 +41,7 @@ public class ProjectHttpClient : IProjectService
         return collaborators;
     }
 
-    public async Task RemoveCollaborator(string username, int projectId)
+    public async Task RemoveCollaboratorAsync(string username, int projectId)
     {
         var response = await _client.DeleteAsync($"/project/{projectId}/collaborator/{username}");
         if (!response.IsSuccessStatusCode)
@@ -70,24 +50,19 @@ public class ProjectHttpClient : IProjectService
             throw new Exception(content);
         }
     }
-    
-    public async Task CreateUserStory(UserStoryDto dto)
+
+    public async Task CreateUserStoryAsync(UserStoryCreationDto creationDto)
     {
-        HttpResponseMessage response = await _client.PostAsJsonAsync($"/project/{dto.Project_id}/userStory", dto);
-        string result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        var response = await _client.PostAsJsonAsync($"/project/{creationDto.ProjectId}/userStory", creationDto);
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
+
     public async Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id)
     {
         var response = await _client.GetAsync($"/project/{id}/userStory");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
 
         var userStories = JsonSerializer.Deserialize<IEnumerable<UserStory>>(result,
             new JsonSerializerOptions
@@ -96,58 +71,45 @@ public class ProjectHttpClient : IProjectService
             })!;
         return userStories;
     }
-    public async Task CreateSprint(SprintCreationDto dto,int id)
+
+    public async Task CreateSprintAsync(SprintCreationDto dto, int id)
     {
         var response = await _client.PostAsJsonAsync($"project/{id}/sprint", dto);
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
+
     public async Task<IEnumerable<Sprint>> GetSprintsAsync(int? projectId)
     {
         var response = await _client.GetAsync($"/Project/{projectId}/sprint");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-        /*var hope = $"[{result}]";*/
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
         var sprints = JsonSerializer.Deserialize<IEnumerable<Sprint>>(result,
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             })!;
         return sprints;
-        
     }
-    public async Task CreateMeetingNote(Meeting meeting, int id)
+
+    public async Task CreateMeetingNoteAsync(Meeting meeting, int id)
     {
-        Console.WriteLine($"{meeting.title} and {meeting.note} or {id}");
-        var response = await _client.PostAsJsonAsync($"project/{id}/CreateMeetingNote", meeting);
+        Console.WriteLine($"{meeting.Title} and {meeting.Note} or {id}");
+        var response = await _client.PostAsJsonAsync($"project/{id}/createNote", meeting);
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
 
     public async Task<IEnumerable<Meeting>> GetMeetingNotesAsync(int projectId)
     {
         var response = await _client.GetAsync($"/Project/{projectId}/getNotes");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
         var notes = JsonSerializer.Deserialize<IEnumerable<Meeting>>(result,
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             })!;
-        return notes;    
+        return notes;
     }
-
-    
 }

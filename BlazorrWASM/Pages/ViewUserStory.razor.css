@@ -1,4 +1,4 @@
-button{
+button {
     letter-spacing: 1px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
@@ -27,7 +27,7 @@ button{
 
 #addTask {
     display: inline-block;
-    flex-direction: row ;
+    flex-direction: row;
     align-items: start;
     margin-top: 20px;
     width: 100%;
@@ -73,22 +73,21 @@ label {
     margin-right: 10px;
 }
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins',sans-serif;
+    font-family: 'Poppins', sans-serif;
     text-align: center;
     color: #16a085;
-    
+
 }
 
-h3{
+h3 {
     margin-top: 20px;
 }
 
-.table
-{
+.table {
     color: #16a085;
 }
 

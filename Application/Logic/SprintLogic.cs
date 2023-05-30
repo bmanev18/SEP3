@@ -8,38 +8,33 @@ namespace Application.Logic;
 public class SprintLogic : ISprintLogic
 {
     private readonly ISprintDao _sprintDao;
-    
+
     public SprintLogic(ISprintDao sprintDao)
     {
         _sprintDao = sprintDao;
     }
-    
-    public async Task<Sprint> GetSprintById(int id)
+
+    public async Task<Sprint> GetSprintByIdAsync(int id)
     {
         return await _sprintDao.GetSprintByIdAsync(id);
     }
 
-    public async Task RemoveSprint(int id)
+    public async Task RemoveSprintAsync(int id)
     {
         await _sprintDao.RemoveSprintAsync(id);
     }
 
-    public async Task AddUserStoryToSprint(UserStoryToSprintDto dto)
+    public async Task AddUserStoryToSprintAsync(UserStoryToSprintDto dto)
     {
         await _sprintDao.AddUserStoryToSprintAsync(dto);
     }
 
-    public async Task<List<UserStory>> GetUserStoriesFromSprint(int id)
-        {
-            return await _sprintDao.GetUserStoriesFromSprintAsync(id);
-        }
-
-    /*public async Task<List<UserStory>> GetOtherUserStories(int id)
+    public async Task<List<UserStory>> GetUserStoriesFromSprintAsync(int id)
     {
-        return await _sprintDao.GetOtherUserStoriesAsync(id);
-    }*/
+        return await _sprintDao.GetUserStoriesFromSprintAsync(id);
+    }
 
-    public async Task RemoveUserStoryFromSprint(UserStoryToSprintDto dto)
+    public async Task RemoveUserStoryFromSprintAsync(UserStoryToSprintDto dto)
     {
         await _sprintDao.RemoveUserStoryFromSprintAsync(dto);
     }

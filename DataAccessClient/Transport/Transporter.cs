@@ -22,7 +22,7 @@ public static class Transporter
         var request = new UserProjectRequest
         {
             Username = collaborator.Username,
-            ProjectId = collaborator.ProjectID
+            ProjectId = collaborator.ProjectId
         };
         return request;
     }
@@ -32,39 +32,41 @@ public static class Transporter
         var request = new Id { Id_ = id };
         return request;
     }
+
     public static MeetingNote MeetingNoteConverter(Meeting meeting)
     {
-        Console.WriteLine($"webapi: {meeting.title}");
+        Console.WriteLine($"webapi: {meeting.Title}");
         var request = new MeetingNote()
         {
-            ProjectId = meeting.project_id,
-            Author = meeting.author,
-            Note = meeting.note,
-            Title = meeting.title
+            ProjectId = meeting.ProjectId,
+            Author = meeting.Author,
+            Note = meeting.Note,
+            Title = meeting.Title
         };
         Console.WriteLine($"grpc: {request.Title}");
         return request;
     }
+
     public static Meeting MeetingConverter(MeetingNote note)
     {
         var request = new Meeting()
         {
-            project_id =  note.ProjectId,
-            author = note.Author,
-            note = note.Note,
-            title = note.Title
+            ProjectId = note.ProjectId,
+            Author = note.Author,
+            Note = note.Note,
+            Title = note.Title
         };
         return request;
     }
 
-    public static UserStoryCreationRequest UserStoryCreationRequestConverter(UserStoryDto dto)
+    public static UserStoryCreationRequest UserStoryCreationRequestConverter(UserStoryCreationDto creationDto)
     {
         var request = new UserStoryCreationRequest()
         {
-            ProjectId = dto.Project_id,
-            TaskBody = dto.Body,
-            Priority = dto.Priority,
-            StoryPoint = dto.StoryPoints
+            ProjectId = creationDto.ProjectId,
+            TaskBody = creationDto.Body,
+            Priority = creationDto.Priority,
+            StoryPoint = creationDto.StoryPoints
         };
         return request;
     }
@@ -83,12 +85,12 @@ public static class Transporter
 
     public static UserStory UserStoryConverter(UserStoryMessage story)
     {
-        UserStory userStory = new UserStory
+        var userStory = new UserStory
         {
-            ID = story.Id,
+            Id = story.Id,
             Body = story.UserStory,
             Priority = story.Priority,
-            Project_id = story.ProjectId,
+            ProjectId = story.ProjectId,
             StoryPoints = story.StoryPoint,
             Status = story.Status
         };
@@ -97,7 +99,7 @@ public static class Transporter
 
     public static Sprint SprintConverter(SprintMessage sprint)
     {
-        Sprint request = new Sprint
+        var request = new Sprint
         {
             Id = sprint.Id,
             ProjectId = sprint.ProjectId,
@@ -110,7 +112,7 @@ public static class Transporter
 
     public static UserFinderDto UserFinderDtoConverter(UserSearchDto user)
     {
-        UserFinderDto request = new UserFinderDto
+        var request = new UserFinderDto
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
@@ -151,6 +153,7 @@ public static class Transporter
         };
         return request;
     }
+
     public static Username UsernameMessageConverter(string username)
     {
         var request = new Username
@@ -173,9 +176,9 @@ public static class Transporter
         return result;
     }
 
-    public static Shared.DTOs.ProjectDto ProjectDtoConverter(ProjectDto project)
+    public static Project ProjectDtoConverter(ProjectDto project)
     {
-        var request = new Shared.DTOs.ProjectDto { Id = project.Id, Title = project.Title};
+        var request = new Project { Id = project.Id, Title = project.Title };
         return request;
     }
 
@@ -188,6 +191,7 @@ public static class Transporter
         };
         return request;
     }
+
     public static StatusUpdate StatusUpdateConverter(int userStoryId, string status)
     {
         var request = new StatusUpdate
@@ -197,6 +201,7 @@ public static class Transporter
         };
         return request;
     }
+
     public static PriorityUpdate PriorityUpdateConverter(int userStoryId, string priority)
     {
         var request = new PriorityUpdate
@@ -206,6 +211,7 @@ public static class Transporter
         };
         return request;
     }
+
     public static TaskCreationRequest TaskCreationRequestConverter(SprintTaskCreationDto task)
     {
         var request = new TaskCreationRequest
@@ -217,7 +223,7 @@ public static class Transporter
         };
         return request;
     }
-    
+
     public static TaskMessage TaskMessageConverter(SprintTask task)
     {
         var request = new TaskMessage

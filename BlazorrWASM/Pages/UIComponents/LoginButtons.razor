@@ -4,7 +4,7 @@
 @inject IAuthService AuthService
 <AuthorizeView>
     <Authorized>
-    <label> @context.User.Identity!.Name </label>
+        <label> @context.User.Identity!.Name </label>
         <img class="icon" src="img/Logout.png" @onclick="Logout" alt="logout"/>
     </Authorized>
     <NotAuthorized>
@@ -12,7 +12,9 @@
         <img class="icon" src="img/Login.png" @onclick="Login" alt="login"/>
     </NotAuthorized>
 </AuthorizeView>
+
 @code {
+
     private void Login()
     {
         NavManager.NavigateTo("/");

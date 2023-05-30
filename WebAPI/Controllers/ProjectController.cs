@@ -8,7 +8,7 @@ using UserStory = Shared.Model.UserStory;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/{projectId:int}")]
 public class ProjectController : ControllerBase
 {
     private readonly IProjectLogic _projectLogic;
@@ -24,24 +24,7 @@ public class ProjectController : ControllerBase
         try
         {
             await _projectLogic.CreateAsync(dto);
-            return Created($"/{dto.Name}", dto);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(500, e.Message);
-        }
-    }
-
-    [HttpPost("{id:int}/CreateMeetingNote")]
-    public async Task<ActionResult> CreateMeetingNoteAsync([FromBody]Meeting meeting,[FromRoute] int id)
-    {
-        Console.WriteLine(meeting.title);
-        meeting.project_id = id;
-        try
-        {
-            await _projectLogic.CreateMeetingNote(meeting);
-            return Created($"/{meeting.title}", meeting);
+            return Accepted();
         }
         catch (Exception e)
         {
@@ -51,13 +34,12 @@ public class ProjectController : ControllerBase
     }
 
 
-
-    [HttpPut("{id:int}/collaborator")]
-    public async Task<ActionResult> AddCollaborator([FromRoute] int id, [FromBody] string username)
+    [HttpPut("collaborator")]
+    public async Task<ActionResult> AddCollaborator([FromRoute] int projectId, [FromBody] string username)
     {
-       var collaborator = new AddUserToProjectDto
+        var collaborator = new AddUserToProjectDto
         {
-            ProjectID= id,
+            ProjectId = projectId,
             Username = username
         };
         try
@@ -72,12 +54,12 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}/collaborator")]
-    public async Task<ActionResult<List<UserFinderDto>>> GetAllCollaborators([FromRoute] int id)
+    [HttpGet("collaborator")]
+    public async Task<ActionResult<List<UserFinderDto>>> GetAllCollaborators([FromRoute] int projectId)
     {
         try
         {
-            List<UserFinderDto> list = await _projectLogic.GetAllCollaborators(id);
+            var list = await _projectLogic.GetAllCollaboratorsAsync(projectId);
             return Ok(list);
         }
         catch (Exception e)
@@ -87,17 +69,17 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpDelete("{id:int}/collaborator/{username}")]
-    public async Task<ActionResult> DeleteCollaborator([FromRoute]string username, [FromRoute]int id)
+    [HttpDelete("collaborator/{username}")]
+    public async Task<ActionResult> DeleteCollaborator([FromRoute] string username, [FromRoute] int projectId)
     {
         var dto = new AddUserToProjectDto
         {
             Username = username,
-            ProjectID = id
+            ProjectId = projectId
         };
         try
         {
-            await _projectLogic.RemoveCollaborator(dto);
+            await _projectLogic.RemoveCollaboratorAsync(dto);
             return Ok();
         }
         catch (Exception e)
@@ -108,12 +90,12 @@ public class ProjectController : ControllerBase
     }
 
 
-    [HttpPost("{id:int}/userStory")]
-    public async Task<ActionResult> AddUserStory(UserStoryDto dto, int id)
+    [HttpPost("userStory")]
+    public async Task<ActionResult> AddUserStory(UserStoryCreationDto creationDto, int projectId)
     {
         try
         {
-            await _projectLogic.AddUserStoryAsync(dto);
+            await _projectLogic.AddUserStoryAsync(creationDto);
             return Ok();
         }
         catch (Exception e)
@@ -123,12 +105,12 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}/userStory")]
-    public async Task<ActionResult<List<UserStory>>> GetUserStoriesAsync([FromRoute] int id)
+    [HttpGet("userStory")]
+    public async Task<ActionResult<List<UserStory>>> GetUserStoriesAsync([FromRoute] int projectId)
     {
         try
         {
-            List<UserStory> list = await _projectLogic.GetUserStoriesAsync(id);
+            var list = await _projectLogic.GetUserStoriesAsync(projectId);
             Console.WriteLine(list);
             return Ok(list);
         }
@@ -138,12 +120,13 @@ public class ProjectController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpPost("{id:int}/sprint")] 
-    public async Task<ActionResult> CreateSprint(SprintCreationDto dto, [FromRoute] int id)
+
+    [HttpPost("sprint")]
+    public async Task<ActionResult> CreateSprint(SprintCreationDto dto, [FromRoute] int projectId)
     {
         try
         {
-            await _projectLogic.CreateSprint(dto);
+            await _projectLogic.CreateSprintAsync(dto);
             return Created($"/{dto.Name}", dto);
         }
         catch (Exception e)
@@ -152,12 +135,13 @@ public class ProjectController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpGet("{id:int}/sprint")]
-    public async Task<ActionResult<List<Sprint>>> GetSprintsByProjectId([FromRoute] int id)
+
+    [HttpGet("sprint")]
+    public async Task<ActionResult<List<Sprint>>> GetSprintsByProjectId([FromRoute] int projectId)
     {
         try
         {
-            var list = await _projectLogic.GetSprintsByProjectId(id);
+            var list = await _projectLogic.GetSprintsByProjectIdAsync(projectId);
             return Ok(list);
         }
         catch (Exception e)
@@ -166,14 +150,31 @@ public class ProjectController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
- 
-    [HttpGet("{id:int}/getNotes")]
-    public async Task<ActionResult<List<Meeting>>> GetMeetingNotes([FromRoute] int id)
+
+    [HttpGet("getNotes")]
+    public async Task<ActionResult<List<Meeting>>> GetMeetingNotes([FromRoute] int projectId)
     {
         try
         {
-            var list = await _projectLogic.GetAllMeetingNotes(id);
+            var list = await _projectLogic.Async(projectId);
             return Ok(list);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+
+    [HttpPost("createNote")]
+    public async Task<ActionResult> CreateMeetingNoteAsync([FromBody] Meeting meeting, [FromRoute] int projectId)
+    {
+        Console.WriteLine(meeting.Title);
+        meeting.ProjectId = projectId;
+        try
+        {
+            await _projectLogic.CreateMeetingNoteAsync(meeting);
+            return Created($"/{meeting.Title}", meeting);
         }
         catch (Exception e)
         {

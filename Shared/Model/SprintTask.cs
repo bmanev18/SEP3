@@ -2,10 +2,10 @@
 
 public class SprintTask
 {
-    public int Id { get; set; }
-    public int UserStoryId { get; set; }
-    public string Assignee { get; set; }
-    public string Body { get; set; }
-    public int StoryPoint { get; set; }
-    public string Status { get; set; }
+    public required int Id { get; init; }
+    public required int UserStoryId { get; init; }
+    public required string Assignee { get; set; }
+    public required string Body { get; set; }
+    public required int StoryPoint { get; set; }
+    public required string Status { get; set; }
 }
