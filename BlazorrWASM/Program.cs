@@ -18,17 +18,18 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<IAuthService, JwtAuthService>();
 builder.Services.AddScoped<IUserService, UserHttpClient>();
-builder.Services.AddScoped<IProjectService,ProjectHttpClient>();
-builder.Services.AddScoped<IUserStoryService,UserStoryHttpClient>();
-builder.Services.AddScoped<ISprintService,SprintHttpClient>();
+builder.Services.AddScoped<IProjectService, ProjectHttpClient>();
+builder.Services.AddScoped<IUserStoryService, UserStoryHttpClient>();
+builder.Services.AddScoped<ISprintService, SprintHttpClient>();
 
 builder.Services.AddMudServices();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 AuthorizationPolicies.AddPolicies(builder.Services);
 builder.Services.AddScoped(
-    sp => 
-        new HttpClient { 
-            BaseAddress = new Uri("https://localhost:7203") 
+    sp =>
+        new HttpClient
+        {
+            BaseAddress = new Uri("https://localhost:7203")
         }
 );
 builder.Services.AddAuthorizationCore();

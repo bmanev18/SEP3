@@ -4,37 +4,39 @@
 @inject IAuthService AuthService
 @inject NavigationManager NavManager
 
-         <div class="container">
-              <div class="wrapper">
-                <div class="title"><span>Login</span></div>
-                <form action="#">
-                  <div class="row">
-                      <i class="fas fa-user">
-                          <img src="img/username.png" class="login-icons" alt="Username">
-                      </i>
-                    <input type="text" placeholder="Username" @bind="_userName">
-                  </div>
-                    <div class="row">
-                        <i class="fas fa-lock">
-                            <img src="img/password.png" class="login-icons" alt="Password">
-                        </i>
-                        <input type="password" placeholder="Password" @bind="_password">
-                    </div>
-                    @if (!string.IsNullOrEmpty(_errorLabel)) 
-                                { 
-                                     <div class="field"> 
-                                        <label style="color: red"> 
-                                             @_errorLabel 
-                                        </label> 
-                                    </div> 
-                                } 
-                    <div class="row button">
-                    <input value=" Login" @onclick="@LoginAsync" class="loginbtn" readonly>
-                  </div>
-                  <div class="signup-link">Not a member? <a @onclick="@(() => NavManager.NavigateTo("/CreateUser"))">Sign-up Here</a> </div>
-                </form>
-              </div>
+<div class="container">
+    <div class="wrapper">
+        <div class="title">
+            <span>Login</span>
+        </div>
+        <form action="#">
+            <div class="row">
+                <i class="fas fa-user">
+                    <img src="img/username.png" class="login-icons" alt="Username">
+                </i>
+                <input type="text" placeholder="Username" @bind="_userName">
             </div>
+            <div class="row">
+                <i class="fas fa-lock">
+                    <img src="img/password.png" class="login-icons" alt="Password">
+                </i>
+                <input type="password" placeholder="Password" @bind="_password">
+            </div>
+            @if (!string.IsNullOrEmpty(_errorLabel))
+            {
+                <div class="field">
+                    <label style="color: red">
+                        @_errorLabel
+                    </label>
+                </div>
+            }
+            <div class="row button">
+                <input value=" Login" @onclick="@LoginAsync" class="loginbtn" readonly>
+            </div>
+            <div class="signup-link">Not a member? <a @onclick="@(() => NavManager.NavigateTo("/CreateUser"))">Sign-up Here</a> </div>
+        </form>
+    </div>
+</div>
 
 @code {
     private string _userName = "";
@@ -48,7 +50,6 @@
         {
             await AuthService.LoginAsync(_userName, _password);
             NavManager.NavigateTo($"/ViewProjects");
-
         }
         catch (Exception e)
         {
@@ -56,5 +57,5 @@
             _errorLabel = e.Message;
         }
     }
-    
+
 }

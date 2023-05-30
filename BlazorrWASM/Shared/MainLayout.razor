@@ -1,14 +1,13 @@
-﻿
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 @using Login
 
-<MudThemeProvider />
+<MudThemeProvider/>
 
 <MudLayout>
     <MudAppBar Elevation="1" Style="background-color: #16a085;">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudSpacer />
-        <LoginButtons />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        <MudSpacer/>
+        <LoginButtons/>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="2" Style="background-color: #16a085;">
         <MudDrawerHeader>
@@ -17,12 +16,11 @@
         </MudDrawerHeader>
         <NavMenu/>
     </MudDrawer>
-    
+
     <MudMainContent>
         @Body
     </MudMainContent>
 </MudLayout>
-
 
 
 @code {
@@ -32,4 +30,5 @@
     {
         _drawerOpen = !_drawerOpen;
     }
+
 }

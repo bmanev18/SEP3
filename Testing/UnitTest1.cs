@@ -10,21 +10,21 @@ namespace Testing;
 
 public class Tests
 {
-    
     private IProjectDao _projectDao;
+
     [SetUp]
     public void Setup()
     {
         _projectDao = new ProjectDao(); // Initialize your implementation of IProjectDao here
     }
 
-    
+
     //UserTesting
     [Test]
     public void UserTest1()
     {
         //"Andreea", "password","developer","Andreea", "Asimine"
-        UserCreationDto user = new UserCreationDto
+        var user = new UserCreationDto
         {
             FirstName = "Andreea",
             Lastname = "Asimine",
@@ -32,11 +32,11 @@ public class Tests
             Role = "developer",
             Username = "Andreea1"
         };
-        string actual = user.Username;
-        string expected = "Andreea1";
+        var actual = user.Username;
+        var expected = "Andreea1";
         Assert.AreEqual(expected, actual);
     }
-    
+
     // [Test]
     // public void UserTest2()
     // {
@@ -50,23 +50,22 @@ public class Tests
     //     };
     //     Assert.Throws<System.ArgumentException>(() => string.IsNullOrEmpty(user.Username));
     // }
-    
-    
+
+
     //ProjectTesting
     [Test]
     public void ProjectTest1()
     {
-        ProjectCreationDto project = new ProjectCreationDto
+        var project = new ProjectCreationDto
         {
-         Name = "Project1",
-         OwnerUsername = "Andreea"
-    
+            Name = "Project1",
+            OwnerUsername = "Andreea"
         };
-        String actual = project.OwnerUsername;
-        String expected = "Andreea";
+        var actual = project.OwnerUsername;
+        var expected = "Andreea";
         Assert.AreEqual(expected, actual);
     }
-    
+
     // [Test]
     // public async Task CreateAsync_ShouldCreateProject()
     // {
@@ -86,7 +85,4 @@ public class Tests
     //     Assert.AreEqual(dto.Name, createdProject.Name);
     //     Assert.AreEqual(dto.ownerUsername, createdProject.ownerUsername);
     // }
-    
-    
-    
 }
