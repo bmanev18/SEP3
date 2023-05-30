@@ -227,7 +227,7 @@
     {
         var usernames = users.Select(u => u.Username);
         var filtered = results.Where(u => !usernames.Contains(u.Username));
-        var roleFiltered = filtered.Where(dto => !dto.Role.Equals(dto.Role));
+        var roleFiltered = filtered.Where(dto => !dto.Role.Equals("product owner"));
         return roleFiltered.ToList();
     }
 

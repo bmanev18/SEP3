@@ -57,7 +57,7 @@ select {
 
 .input-box button.createbtn {
     padding: 5px 10px;
-    background-color: #4CAF50;
+    background-color: #16a085;
     border: none;
     color: white;
     border-radius: 5px;
@@ -65,7 +65,7 @@ select {
 }
 
 .createbtn:hover {
-    background-color: #3e8e41;
+    background-color: #16a085;
 }
 
 label {
@@ -73,14 +73,23 @@ label {
     margin-right: 10px;
 }
 
-h3 {
-    top: 50%;
-    left: 50%;
-    font-size: 24px;
-    font-weight: bold;
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins',sans-serif;
+    text-align: center;
     color: #16a085;
+    
 }
 
+h3{
+    margin-top: 20px;
+}
 
+.table
+{
+    color: #16a085;
+}
 
 

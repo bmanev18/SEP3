@@ -1,0 +1,107 @@
+﻿body {
+    font-family: 'Poppins',sans-serif;
+}
+
+h3 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #16a085;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+/* Container Styles */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Form Styles */
+.wrapper {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.row {
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #16a085;
+}
+
+input[type="text"]:focus:valid {
+    cursor: text;
+}
+
+input[type="text"]:focus:invalid {
+    cursor: not-allowed;
+}
+
+.row.button {
+    text-align: center;
+}
+
+.loginbtn {
+    background-color: #16a085;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+/* Error Message Styles */
+.field {
+    color: red;
+}
+
+/* Card Styles */
+.mud-card
+{
+    margin-bottom: 20px;
+}
+
+.mud-card-header {
+    background-color: #16a085;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mud-card-header .card-header-content {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.mud-card-header .card-header-actions {
+    margin-left: 20px;
+}
+
+/* Note Styles */
+.mud-card-content {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Cursor Styles */
+.mud-card-content:hover {
+    cursor: default;
+}
+      

@@ -10,15 +10,9 @@
 
 <AuthorizeView roles="scrum master, project manager">
 <Authorized>
-<div class="buttonAndHeader">
-    <td>
-        <button class="btn btn-primary" @onclick="@OpenViewTeam">
-            <span>@($"{GetLocalizedString("View the team of the project")}")</span>
-        </button>
-    </td>
-    
+
     <h3>User Stories</h3>
-</div>
+
 <div class="addUserStory-bar">
     <div class="fields-container">
         @* <img src="img/@(_doShowUserStoryFields ? "close" : "add").png" class="funnel" @onclick="@(() => _doShowUserStoryFields = !_doShowUserStoryFields)" alt="Funnel"/> *@
@@ -148,7 +142,8 @@ else
     </table>
 }
 
-
+<br/>
+<br/>
 @* Sprints Section *@
 <h3>Sprints</h3>
 <div class="addSprint-bar">
@@ -200,8 +195,9 @@ else
     <table class="table justify-content-center">
         <thead>
         <tr>
-            <th class="text-center"> </th>
+            
             <th class="text-center">Name</th>
+            <th class="text-center"> User stories </th>
             <th class="text-center">Start Date</th>
             <th class="text-center">End Date</th>
             <th class="text-center">Delete?</th>
@@ -211,10 +207,11 @@ else
         @foreach (Sprint sprint in _sprints)
         {
             <tr>
+                
+                <td class="text-center">@sprint.Name</td>
                 <td>
                     <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OpenSprint(sprint.Id))">User Stories</MudButton>
-                </td>
-                <td class="text-center">@sprint.Name</td>
+                    </td>
                 <td class="text-center">@sprint.StartDate</td>
                 <td class="text-center">@sprint.EndDate</td>
                 <td>

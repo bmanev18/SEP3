@@ -5,7 +5,7 @@
 }
 body {
     background: #105469;
-    font-family: 'Open Sans', sans-serif;;
+    font-family: 'Poppins',sans-serif;
 }
 table {
     height: 100px;
@@ -110,4 +110,16 @@ tbody tr:hover {
     top: 50%;
     left: 50%;
     transform: translate(-50%, 50%);
+}
+*{
+    font-family: 'Poppins',sans-serif;
+    
+    
+}
+
+h3{
+    text-align: center;
+    color: #16a085;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }

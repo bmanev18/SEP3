@@ -1,9 +1,10 @@
 ﻿@page "/CreateMeetingNote/{id:int}"
 @using System.Security.Claims
+@using global::Shared.DTOs
 @using global::Shared.Model
 @using HttpClients.ClientInterfaces
 @inject IProjectService ProjectService;
-<h3>CreateMeetingNote</h3>
+<h3>Create Meeting Note</h3>
 
 <div class="container">
     <div class="wrapper">
@@ -15,21 +16,24 @@
                 <input type="text" placeholder="Note" @bind="_note">
             </div>
             <div class="row button">
-                <input value="Create" @onclick="@Create" class="loginbtn text-center" readonly>
+                <input value="Create" @onclick="Create" class="loginbtn text-center" readonly>
             </div>
-            @if (!string.IsNullOrEmpty(_message))
-            {
-                <div class="field">
-                    <label style="color: red">
-                        @_message
-                    </label>
-                </div>
-            }
-
+            @if (!string.IsNullOrEmpty(message)) 
+            { 
+                <div class="field"> 
+                    <label style="color: red"> 
+                        @message 
+                    </label> 
+                </div> 
+            } 
+             
         </form>
     </div>
 </div>
-<div>
+
+<h3>Notes</h3>
+
+<div class="container">
     @if (_meetings != null)
     {
         @foreach (Meeting meeting in _meetings)
@@ -40,31 +44,47 @@
                         <MudText Typo="Typo.h6">@meeting.title</MudText>
                     </CardHeaderContent>
                     <CardHeaderActions>
-                        <MudText Typo="Typo.h6">@meeting.author</MudText>
+                        <MudText Typo="Typo.h6">Made by: @meeting.author</MudText>
                     </CardHeaderActions>
                 </MudCardHeader>
                 <MudCardContent>
                     <MudText Typo="Typo.body2">@meeting.note</MudText>
                 </MudCardContent>
             </MudCard>
+            <br/>
         }
     }
 </div>
 
-@code {
 
+  @*  <style> *@
+  @* .mud-card-header { *@
+  @*     background-color: #16a085; *@
+  @*     color: #fff; *@
+  @*     padding: 10px 20px; *@
+  @*     display: flex; *@
+  @*     justify-content: space-between; *@
+  @*     align-items: center; *@
+  @* } *@
+  @*  </style> *@
+
+
+
+
+
+
+@code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; } = null!;
-
     private string _title = "";
-    private string _message = "";
+    private string message = "";
     private string _note = "";
+    private Meeting note;
     private IEnumerable<Meeting>? _meetings;
-    private ClaimsPrincipal _user = new();
-
-    [Parameter]
-    public int Id { get; set; }
-
+    private ClaimsPrincipal? _user;
+    [Parameter] 
+    public int id { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthState;
@@ -74,19 +94,16 @@
 
     private async Task LoadMeetingNotes()
     {
-        _meetings = await ProjectService.GetMeetingNotesAsync(Id);
+        _meetings = await ProjectService.GetMeetingNotesAsync(id);
+        
     }
 
     private async Task Create()
     {
-        if (_user.Identity?.Name == null)
-        {
-            return;
-        }
-        _message = "";
+        message = "";
         if (string.IsNullOrEmpty(_title))
         {
-            _message = "Cannot create a title-less note!";
+            message = "Cannot create a title-less note!";
             return;
         }
         try
@@ -97,9 +114,9 @@
                 author = _user.Identity.Name,
                 title = _title,
                 note = _note,
-                project_id = Id
-            }, Id);
-            _message = "Note created successfully!";
+                project_id = id
+            }, id);
+            message = "Note created successfully!";
             await LoadMeetingNotes();
             _title = "";
             _note = "";
@@ -107,8 +124,7 @@
         catch (Exception e)
         {
             Console.WriteLine(e);
-            _message = e.Message;
+            message = e.Message;
         }
     }
-
 }

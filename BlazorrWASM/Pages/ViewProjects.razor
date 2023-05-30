@@ -8,7 +8,7 @@
 &nbsp; 
 &nbsp; 
 
-<h3 class="text-center">My Projects</h3>
+<h3>My Projects</h3>
 
 
 @if (!string.IsNullOrEmpty(_msg))@* display any msg in case it has ny value in case of error*@
@@ -31,19 +31,27 @@ else
     <table class="table justify-content-center">
         
         <tbody>
-        @foreach (Project project in _projects)
-        {
-            <tr>
-                <td class="text-center"><h5>@project.Title</h5></td>
-                    <td> <MudButton @onclick="() => Open(project.Id)" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">VIEW</MudButton></td>
-<td><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OpenMeetingNotes(project.Id))">Create note</MudButton> </td>
-            </tr>
-        }
-
+            @foreach (Project project in _projects)
+            {
+                <tr>
+                    <td class="text-center"><h5>@project.Title</h5></td>
+                    <td> <MudButton @onclick="() => Open(project.Id)" Size="Size.Small" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Style="background-color: #16a085;" Class="mt-1 text-white">View</MudButton></td>
+                    <td><MudButton Variant="Variant.Filled" Size="Size.Small" Style="background-color: #16a085;" EndIcon="@Icons.Material.Filled.Send" OnClick="@(() => OpenMeetingNotes(project.Id))" Class="mt-1 text-white">Create note</MudButton> </td>
+                 <td><MudButton Variant="Variant.Filled" Size="Size.Small" Style="background-color: #16a085;" EndIcon="@Icons.Material.Filled.Send" OnClick="@(() => OpenViewTeam(project.Id) )" Class="mt-1 text-white">See team</MudButton> </td>
+                    </tr>
+            }
         </tbody>
+
     </table>
 }
-
+<style>
+*{
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+           font-family: 'Poppins',sans-serif;
+       }
+</style>
 
 @code {
     [CascadingParameter]
@@ -78,5 +86,10 @@ else
     private void OpenMeetingNotes(int id)
     {
         NavMgr.NavigateTo($"/CreateMeetingNote/{id}");
+    }
+    
+    private void OpenViewTeam(int id)
+    {
+        NavMgr.NavigateTo($"/ViewTeam/{id}");
     }
 }

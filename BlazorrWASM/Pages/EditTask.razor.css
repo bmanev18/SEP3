@@ -1,9 +1,4 @@
-﻿.page-heading {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
+﻿
 .loading-container {
     text-align: center;
     margin-top: 20px;
@@ -14,18 +9,135 @@
     margin: 0 auto;
 }
 
-.form-group {
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Style the heading */
+h3 {
     margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+/* Style the input fields */
+input[type="text"],
+select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+/* Style the table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Style the table headers */
+.table th {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: left;
+}
+
+/* Style the table rows */
+.table td {
+    padding: 10px;
+}
+
+/* Style the buttons */
+.button {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.createbtn,
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+}
+
+/* Style the error message label */
+.label-error {
+    color: red;
+}
+
+/* Style the authorized and unauthorized sections */
+.authorized,
+.unauthorized {
+    margin-top: 20px;
+}
+
+/* Style the plus-minus component */
+.plus-minus {
+    margin-bottom: 10px;
+}
+
+.plus-minus input[type="checkbox"] {
+    display: none;
+}
+
+.plus-minus label {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.plus-minus input[type="checkbox"]:checked + label {
+    background-color: #4caf50;
+}
+
+.plus-minus input[type="checkbox"]:checked + label::after {
+    content: "-";
+    display: block;
+    color: #fff;
+    text-align: center;
+    line-height: 24px;
+}
+
+/* Style the input box */
+.input-box {
+    display: flex;
+    align-items: center;
+}
+
+.input-box select {
+    margin-right: 10px;
+}
+
+/* Style the success and error labels */
+.success-label {
+    color: #00cc00;
 }
 
 .error-label {
     color: red;
 }
-h3 {
-    top: 50%;
-    left: 50%;
-    font-size: 24px;
-    font-weight: bold;
+
+/* Style the initial button color */
+.btn-initial {
+    background-color: #16a085;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins',sans-serif;
+    text-align: center;
     color: #16a085;
 }
+
+
+
 
