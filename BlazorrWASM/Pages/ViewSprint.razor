@@ -1,92 +1,95 @@
 @page "/ViewProject/{ProjectId:int}/ViewSprint/{Id:int}"
 @using global::Shared.Model
-@using global::Shared.DTOs
-@using System.Security.Claims
 @using HttpClients.ClientInterfaces
 @inject ISprintService SprintService;
 @inject IProjectService ProjectService;
-@using HttpClients.Implementations
 @using UIComponents
 <h3>View Sprint</h3>
 
 <AuthorizeView roles="scrum master, project manager">
-<Authorized>
-@if (!string.IsNullOrEmpty(_msg))@* display any msg in case it has ny value in case of error*@
-{
-    <div>
-        <span>@_msg</span>
-    </div>
-}
-
-@if (!string.IsNullOrEmpty(_msg)) @* display any msg in case it has ny value in case of error*@
-{
-    <div>
-        <span>@_msg</span>
-    </div>
-}
-
-@if (_userStories == null)
-{
-    <span>Loading..UserStories</span>
-}
-else if (!_userStories.Any())
-{
-    <span>No user stories to be found</span>
-}
-else
-{
-    <table class="table justify-content-center" align="center">
-        <thead>
-        <tr>
-            <th class="text-center">Title</th>
-            <th class="text-center">Priority</th>
-            <th class="text-center">Story Points</th>
-            <th class="text-center">Status</th>
-            <th class="text-center">Delete?</th>
-
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var userStory in _userStories)
+    <Authorized>
+        @if (!string.IsNullOrEmpty(_msg)) @* display any msg in case it has ny value in case of error*@
         {
-            <tr >
-                <td class="text-center">@userStory.Body</td>
-                <td class="text-center">@userStory.Priority</td>
-                <td class="text-center">@userStory.StoryPoints</td>
-                <td class="text-center">@userStory.Status</td>
-                <td>
-                    <label @onclick="@(() => DeleteUserStoryFromSprint(userStory.ID))" style="cursor:pointer; color: red; font-weight: bold">
-                        &#x2717;
-                    </label>
-                    </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
-
-
-    <PlusMinus Checked="@doShowUserStory" OnChange="@(() => doShowUserStory = !doShowUserStory)" /> 
-    @if (doShowUserStory)
-    {
-        <div>
-            Select user story to add:
-            <div class="input-box">
-                <select @bind="storyId">
-                    @foreach (UserStory userStory in _otherUserStories)
-                    {
-                        <option value="@userStory.ID">@userStory.Body</option>
-                    }
-                </select>
-            
-<MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => AddUserStory())">Add to sprint</MudButton>
-            </div> 
+            <div>
+                <span>@_msg</span>
             </div>
+        }
 
-            }
-</Authorized>
+        @if (!string.IsNullOrEmpty(_msg)) @* display any msg in case it has ny value in case of error*@
+        {
+            <div>
+                <span>@_msg</span>
+            </div>
+        }
+
+        @if (_userStories == null)
+        {
+            <span>Loading..UserStories</span>
+        }
+        else if (!_userStories.Any())
+        {
+            <span>No user stories to be found</span>
+        }
+        else
+        {
+            <table class="table justify-content-center">
+                <thead>
+                <tr>
+                    <th class="text-center">Title</th>
+                    <th class="text-center">Priority</th>
+                    <th class="text-center">Story Points</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Delete?</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var userStory in _userStories)
+                {
+                    <tr >
+                        <td class="text-center">@userStory.Body</td>
+                        <td class="text-center">@userStory.Priority</td>
+                        <td class="text-center">@userStory.StoryPoints</td>
+                        <td class="text-center">@userStory.Status</td>
+                        <td>
+                            <label @onclick="@(() => DeleteUserStoryFromSprint(userStory.ID))" style="cursor:pointer; color: red; font-weight: bold">
+                                &#x2717;
+                            </label>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+
+
+        <PlusMinus Checked="@_doShowUserStory" OnChange="@(() => _doShowUserStory = !_doShowUserStory)"/>
+        @if (_doShowUserStory)
+        {
+            <div>
+                Select user story to add:
+                <div class="input-box">
+                    @if (_otherUserStories.Count == 0)
+                    {
+                        <label>No other user stories</label>
+                    }
+                    else
+                    {
+                        <select @bind="_storyId">
+                            @foreach (var userStory in _otherUserStories)
+                            {
+                                <option value="@userStory.ID">@userStory.Body</option>
+                            }
+                        </select>
+                    }
+
+                    <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(AddUserStory)">Add to sprint</MudButton>
+                </div>
+            </div>
+        }
+    </Authorized>
     <NotAuthorized>
-        @if (!string.IsNullOrEmpty(_msg))@* display any msg in case it has ny value in case of error*@
+        @if (!string.IsNullOrEmpty(_msg)) @* display any msg in case it has ny value in case of error*@
         {
             <div>
                 <span>@_msg</span>
@@ -98,7 +101,7 @@ else
                 <span>@_msg</span>
             </div>
         }
-        
+
         @if (_userStories == null)
         {
             <span>Loading..UserStories</span>
@@ -109,14 +112,14 @@ else
         }
         else
         {
-            <table class="table justify-content-center" align="center">
+            <table class="table justify-content-center">
                 <thead>
                 <tr>
                     <th class="text-center">Title</th>
                     <th class="text-center">Priority</th>
                     <th class="text-center">Story Points</th>
                     <th class="text-center">Status</th>
-        
+
                 </tr>
                 </thead>
                 <tbody>
@@ -133,7 +136,7 @@ else
             </table>
         }
     </NotAuthorized>
-    </AuthorizeView>
+</AuthorizeView>
 
 
 @code {
@@ -144,14 +147,14 @@ else
 
     private string _msg = "";
     private IEnumerable<UserStory>? _userStories;
-    private List<UserStory>? _otherUserStories;
+    private List<UserStory> _otherUserStories = new();
 
-    private ClaimsPrincipal? _user;
-    private SprintHttpClient sprintService;
+    /*private ClaimsPrincipal? _user;
+    private SprintHttpClient sprintService;*/
 
-    private bool doShowUserStory;
-    private int storyId;
-    private int body;
+    private bool _doShowUserStory;
+    private int _storyId;
+    //private int body;
 
     [Parameter]
     public int Id { get; set; }
@@ -165,11 +168,10 @@ else
         {
             await LoadUserStoriesAsync();
             await LoadOtherStoriesAsync();
-
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _msg = e.Message;
         }
     }
 
@@ -182,31 +184,32 @@ else
     {
         var allStories = await ProjectService.GetUserStoriesAsync(ProjectId);
         _otherUserStories = new List<UserStory>();
-        foreach (UserStory story in allStories)
+        if (_userStories!=null)
         {
-    //if (!_userStories.Contains(story))
-            if (_userStories.FirstOrDefault(userStory => userStory.ID == story.ID) == null)
-            {
-                _otherUserStories.Add(story);
-            }
+            foreach (var story in allStories)
+                    {
+                        if (_userStories.FirstOrDefault(userStory => userStory.ID == story.ID) == null)
+                        {
+                            _otherUserStories.Add(story);
+                        }
+                    }
         }
+        
     }
 
     private async Task AddUserStory()
     {
-        await SprintService.AddUserStoryToSprint(Id, storyId);
+        await SprintService.AddUserStoryToSprint(Id, _storyId);
         await LoadUserStoriesAsync();
         await LoadOtherStoriesAsync();
-
     }
 
     private async void DeleteUserStoryFromSprint(int idOfUserStory)
     {
-        await SprintService.RemoveStoryFromSprint( Id, idOfUserStory);
+        await SprintService.RemoveStoryFromSprint(Id, idOfUserStory);
         await LoadUserStoriesAsync();
         await LoadOtherStoriesAsync();
         StateHasChanged();
     }
 
 }
-    

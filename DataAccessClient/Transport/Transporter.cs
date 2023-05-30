@@ -1,5 +1,4 @@
-﻿using DataAccess.DAOs;
-using DataAccessClient;
+﻿using DataAccessClient;
 using Shared.DTOs;
 using Shared.Model;
 using ProjectDto = DataAccessClient.ProjectDto;

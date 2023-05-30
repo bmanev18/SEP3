@@ -7,27 +7,27 @@
 <h3 class="text-center">Create a Project</h3>
 <AuthorizeView Roles="project manager">
     <Authorized>
-      <div class="container">
-      <div class="wrapper">
-          <form action="#">
-              <div class="row">
-                  <input type="text" placeholder="Title" @bind="title">
-              </div>
-              <div class="row button">
-                               <input value="Create" @onclick="Create" class="loginbtn text-center" readonly>
-                           </div>
-              @if (!string.IsNullOrEmpty(message)) 
-              { 
-                  <div class="field"> 
-                      <label style="color: red"> 
-                          @message 
-                      </label> 
-                  </div> 
-              } 
-             
-          </form>
-      </div>
-      </div>
+        <div class="container">
+            <div class="wrapper">
+                <form action="#">
+                    <div class="row">
+                        <input type="text" placeholder="Title" @bind="_title">
+                    </div>
+                    <div class="row button">
+                        <input value="Create" @onclick="@Create" class="loginbtn text-center" readonly>
+                    </div>
+                    @if (!string.IsNullOrEmpty(_message))
+                    {
+                        <div class="field">
+                            <label style="color: red">
+                                @_message
+                            </label>
+                        </div>
+                    }
+
+                </form>
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
         <label>
@@ -37,12 +37,13 @@
 </AuthorizeView>
 
 @code {
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; } = null!;
 
-    private string title = "";
-    private string message = "";
-    private ClaimsPrincipal? _user;
+    private string _title = "";
+    private string _message = "";
+    private ClaimsPrincipal _user = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,10 +53,14 @@
 
     private async Task Create()
     {
-        message = "";
-        if (string.IsNullOrEmpty(title))
+        _message = "";
+        if (string.IsNullOrEmpty(_title))
         {
-            message = "Cannot create a title-less post!";
+            _message = "Cannot create a title-less post!";
+            return;
+        }
+        if (_user.Identity?.Name == null)
+        {
             return;
         }
         try
@@ -63,14 +68,17 @@
             await ProjectService.Create(new ProjectCreationDto
             {
                 OwnerUsername = _user.Identity.Name,
-                Name = title
+                Name = _title
             });
-            message = "Project created successfully!";
+            _message = "Project created successfully!";
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            message = e.Message;
+            _message = e.Message;
         }
     }
+
+}
+
 }

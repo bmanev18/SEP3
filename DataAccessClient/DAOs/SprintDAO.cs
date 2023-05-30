@@ -1,11 +1,9 @@
 ﻿using Application.DAOInterfaces;
 using DataAccessClient;
-using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 using Shared.DTOs;
 using Shared.Model;
 using UserStory = Shared.Model.UserStory;
-using System.Globalization;
 using DataAccess.Transport;
 
 namespace DataAccess.DAOs;

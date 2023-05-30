@@ -1,24 +1,22 @@
 ﻿@page "/CreateUser"
 @layout LoginLayout
-@using HttpClients.ClientInterfaces
 @using BlazorrWASM.Services
-@inject NavigationManager navManager
-@inject IUserService userService
-@inject IAuthService authService
+@inject NavigationManager NavManager
+@inject IAuthService AuthService
 <div class="wrapper">
     <h2>Registration</h2>
     <form action="#">
         <div class="input-box">
-            <input type="text" placeholder="Enter Your Username" @bind="username" @bind:event="oninput">
+            <input type="text" placeholder="Enter Your Username" @bind="_username" @bind:event="oninput">
         </div>
         <div class="input-box">
-            <input type="text" placeholder="Enter Your Firstname" @bind="firstname" @bind:event="oninput">
+            <input type="text" placeholder="Enter Your Firstname" @bind="_firstname" @bind:event="oninput">
         </div>
         <div class="input-box">
-            <input type="text" placeholder="Enter Your Last Name" @bind="lastname" @bind:event="oninput">
+            <input type="text" placeholder="Enter Your Last Name" @bind="_lastname" @bind:event="oninput">
         </div>
         <div class="input-box">
-            <input type="text" @bind="role" @bind:event="oninput" list='listid' placeholder="Role"/>
+            <input type="text" @bind="_role" @bind:event="oninput" list='listid' placeholder="Role"/>
             <datalist id='listid'>
                 <option label='scrum master' value='scrum master'></option>
                 <option label='developer' value='developer'></option>
@@ -26,59 +24,60 @@
             </datalist>
         </div>
         <div class="input-box">
-            <input type="password" placeholder="Create Password" @bind="password" @bind:event="oninput">
+            <input type="password" placeholder="Create Password" @bind="_password" @bind:event="oninput">
         </div>
         <div class="input-box">
-            <input type="password" placeholder="Confirm Password" @bind="confirmPassword" @bind:event="oninput">
+            <input type="password" placeholder="Confirm Password" @bind="_confirmPassword" @bind:event="oninput">
         </div>
-        <label style="color: @color">@finalResultMsg</label>
+        <label style="color: @_color">@_finalResultMsg</label>
         <div class="input-box button">
-                <input value="Register Now" @onclick="Create" readonly>
-              </div>
+            <input value="Register Now" @onclick="@Create" readonly>
+        </div>
         <div class="text">
-            <h3>Already have an account? <a @onclick="@(() => navManager.NavigateTo("/"))">Login now</a></h3>
+            <h3>Already have an account? <a @onclick="@(() => NavManager.NavigateTo("/"))">Login now</a></h3>
         </div>
     </form>
 </div>
+
+
 @code {
-    private string username = "";
-    private string firstname = "";
-    private string lastname = "";
-    private string password = "";
-    private string confirmPassword = "";
-    private string role = "";
-    private string finalResultMsg = "";
-    private string color = "";
+    private string _username = "";
+    private string _firstname = "";
+    private string _lastname = "";
+    private string _password = "";
+    private string _confirmPassword = "";
+    private string _role = "";
+    private string _finalResultMsg = "";
+    private string _color = "";
 
     private async Task Create()
     {
+        _finalResultMsg = "";
 
-        finalResultMsg = "";
-
-        if (password.Equals(confirmPassword))
+        if (_password.Equals(_confirmPassword))
         {
             try
             {
-                await authService.RegisterAsync(username, firstname, lastname, password, role);
-                username = "";
-                password = "";
-                confirmPassword = "";
-                role = "";
-                firstname = "";
-                lastname = "";
-                color = "green";
-                finalResultMsg = "User successfully created";
+                await AuthService.RegisterAsync(_username, _firstname, _lastname, _password, _role);
+                _username = "";
+                _password = "";
+                _confirmPassword = "";
+                _role = "";
+                _firstname = "";
+                _lastname = "";
+                _color = "green";
+                _finalResultMsg = "User successfully created";
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                finalResultMsg = e.Message;
-                color = "red";
+                _finalResultMsg = e.Message;
+                _color = "red";
             }
         }
         else
         {
-            finalResultMsg = "Passwords do not match!";
+            _finalResultMsg = "Passwords do not match!";
         }
     }
     

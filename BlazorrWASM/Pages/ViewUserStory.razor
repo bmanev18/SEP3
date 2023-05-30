@@ -1,269 +1,300 @@
 ﻿@page "/ViewProject/{ProjectId:int}/ViewUserStory/{StoryId:int}"
-@using UIComponents
 @inject IProjectService ProjectService
-@inject ISprintService SprintService
 @inject IUserStoryService UserStoryService;
 @using global::Shared.Model
 @using global::Shared.DTOs
-@using global::UIComponents
 @using HttpClients.ClientInterfaces
-@using System.Security.AccessControl
 @inject NavigationManager NavMgr
-
+@using UIComponents
 
 <AuthorizeView roles="scrum master, project manager">
     <Authorized>
-        @if (userStory != null)
+        @if (_userStory != null)
         {
-            <h3>User Story: @userStory.Body</h3> <!-- Display the name of the user story dynamically -->
-        }
+            <h3>User Story: @_userStory.Body</h3>
+            <!-- Display the name of the user story dynamically -->
 
-        <div id="addTask">
-            <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
-            @if (_showFields)
-            {
-                <input type="text" placeholder="Task Name" @bind="_name" @bind:event="oninput">
 
-                <select @bind="_assignee">
-                    @if (_collaborators != null)
-                    {
-                        foreach (var collaborator in _collaborators)
+            <div id="addTask">
+                <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
+                @if (_showFields)
+                {
+                    <input type="text" placeholder="Task Name" @bind="_name" @bind:event="oninput">
+
+                    <select @bind="_assignee">
+                        @if (_collaborators != null)
                         {
-                            <option value=@collaborator.Username> @($"{collaborator.FirstName} {collaborator.LastName}")</option>
+                            foreach (var collaborator in _collaborators)
+                            {
+                                <option value=@collaborator.Username> @($"{collaborator.FirstName} {collaborator.LastName}")</option>
+                            }
                         }
-                    }
-                </select>
+                    </select>
 
-                <select @bind="_points">
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="8">8</option>
-                    <option value="13">13</option>
-                    <option value="20">20</option>
-                    <option value="40">40</option>
-                    <option value="100">100</option>
-                </select>
-                
-                <div class="input-box button">
-                    @if (!string.IsNullOrEmpty(_msg))
-                    {
-                        <label style="color :red"> @_msg </label>
-                    }
-                    <button @onclick="Create" class="createbtn"> Create </button>
-                </div>
+                    <select @bind="_points">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="8">8</option>
+                        <option value="13">13</option>
+                        <option value="20">20</option>
+                        <option value="40">40</option>
+                        <option value="100">100</option>
+                    </select>
+
+                    <div class="input-box button">
+                        @if (!string.IsNullOrEmpty(_msg))
+                        {
+                            <label style="color :red"> @_msg </label>
+                        }
+                        <button @onclick="@Create" class="createbtn"> Create </button>
+                    </div>
+                }
+            </div>
+
+            @if (_tasks == null)
+            {
+                <span>Loading..tasks</span>
             }
-        </div>
+            else if (!_tasks.Any())
+            {
+                <span>No tasks to be found</span>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Task</th>
+                        <th>Assigned</th>
+                        <th>Story Points</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var task in _tasks)
+                    {
+                        <tr>
+                            <td>
+                                @task.Status
+                            </td>
+                            <td>
+                                <label for="@task.Id">@task.Body</label>
+                            </td>
+                            <td>
+                                @task.Assignee
+                            </td>
+                            <td>
+                                @task.StoryPoint
+                            </td>
+                            <td>
 
-        @if (_tasks == null)
-        {
-            <span>Loading..tasks</span>
-        }
-        else if (!_tasks.Any())
-        {
-            <span>No tasks to be found</span>
+                                <button class="btn" @onclick="() => Open(task.Id)">Edit </button>
+                            </td>
+                            <td>
+                                @* <DeleteButton/> *@
+                                <button class="btn" @onclick="() => RemoveTask(task.Id)">Delete </button>
+                            </td>
+
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
         }
         else
         {
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Status</th>
-                    <th>Task</th>
-                    <th>Assigned</th>
-                    <th>Story Points</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var task in _tasks)
-                {
-                    <tr>
-                        <td>
-                            @task.Status
-                        </td>
-                        <td>
-                            <label for="@task.Id">@task.Body</label>
-                        </td>
-                        <td>
-                            @task.Assignee
-                        </td>
-                        <td>
-                            @task.StoryPoint
-                        </td>
-                        <td>
-                           
-                            <button class="btn" @onclick="() => Open(task.Id)">Edit </button>
-                        </td>
-                        <td>
-                            @* <DeleteButton/> *@
-                            <button class="btn" @onclick="() => RemoveTask(task.Id)">Delete </button>
-                        </td>
-
-                    </tr>
-                }
-                </tbody>
-            </table>
+            <label>:( UserStory not found</label>
         }
-        </Authorized>
+    </Authorized>
     <NotAuthorized>
-         @if (userStory != null)
-                {
-                    <h3>User Story: @userStory.Body</h3> <!-- Display the name of the user story dynamically -->
-                }
-        
-                @if (_tasks == null)
-                {
-                    <span>Loading..tasks</span>
-                }
-                else if (!_tasks.Any())
-                {
-                    <span>No tasks to be found</span>
-                }
-                else
-                {
-                    <table class="table">
-                        <thead>
+        @if (_userStory != null)
+        {
+            <h3>User Story: @_userStory.Body</h3>
+            <!-- Display the name of the user story dynamically -->
+
+
+            @if (_tasks == null)
+            {
+                <span>Loading..tasks</span>
+            }
+            else if (!_tasks.Any())
+            {
+                <span>No tasks to be found</span>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Task</th>
+                        <th>Assigned</th>
+                        <th>Story Points</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var task in _tasks)
+                    {
                         <tr>
-                            <th>Status</th>
-                            <th>Task</th>
-                            <th>Assigned</th>
-                            <th>Story Points</th>
+                            <td>
+                                <div class="input-box">
+                                    <select @bind="task.Status" @oninput="@(e => UpdateTaskStatusAsync(task.Id, e.Value!.ToString()!))">
+                                        <option value="to-do">to-do</option>
+                                        <option value="in progress">in progress</option>
+                                        <option value="done">done</option>
+                                    </select>
+                                </div>
+                            </td>
+
+
+                            <td>
+                                <label for="@task.Id">@task.Body</label>
+                            </td>
+                            <td>
+                                @task.Assignee
+                            </td>
+                            <td>
+                                @task.StoryPoint
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var task in _tasks)
-                        {
-                            <tr>
-                               <td>
-                                   <div class="input-box">
-                                       <select @bind="task.Status" @oninput="@(e => UpdateTaskStatusAsync(task.Id, e.Value.ToString()))">
-                                           <option value="to-do">to-do</option>
-                                           <option value="in progress">in progress</option>
-                                           <option value="done">done</option>
-                                       </select>
-                                   </div>
-                               </td>
-
-
-                                <td>
-                                    <label for="@task.Id">@task.Body</label>
-                                </td>
-                                <td>
-                                    @task.Assignee
-                                </td>
-                                <td>
-                                    @task.StoryPoint
-                                </td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-                }
+                    }
+                    </tbody>
+                </table>
+            }
+        }
+        else
+        {
+            <label>:( UserStory not found</label>
+        }
     </NotAuthorized>
-    </AuthorizeView>
+</AuthorizeView>
 
 @code {
-    private SprintTask task;
-    private string _status = "to-do";
-    private int _id = 0;
+    //private SprintTask? _task;
+    //private string _status = "to-do";
+    //private int _id = 0;
     private string _name = "";
     private string _assignee = "";
-    private int _points = 0;
+    private int _points;
 
-    private bool _showFields = false;
+    private bool _showFields;
     private string _msg = "";
 
     private IEnumerable<UserFinderDto>? _collaborators;
     private IEnumerable<SprintTask>? _tasks;
-    private UserStory userStory;
+    private UserStory? _userStory;
 
     [Parameter]
     public int ProjectId { get; set; }
 
     [Parameter]
     public int StoryId { get; set; }
-    
+
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            
             await LoadCollaborators();
             await LoadTasks();
             await LoadUserStory();
-
-
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _msg = e.Message;
         }
     }
 
     private async Task LoadCollaborators()
     {
-        var allCollaborators = await ProjectService.GetAllCollaborators(ProjectId);
-        _collaborators = allCollaborators.Where(dto => dto.Role.Equals("developer")).ToList();
+        try
+        {
+            var allCollaborators = await ProjectService.GetAllCollaborators(ProjectId);
+            _collaborators = allCollaborators.Where(dto => dto.Role.Equals("developer")).ToList();
+        }
+        catch (Exception e)
+        {
+            _msg = e.Message;
+        }
     }
 
     private async Task Create()
     {
-
         var dto = new SprintTaskCreationDto
         {
-            UserStoryId =   StoryId,
+            UserStoryId = StoryId,
             Assignee = _assignee,
             Body = _name,
             StoryPoint = _points
         };
-        Console.WriteLine(1);
-
-        await UserStoryService.CreateTask(dto);
-        await LoadTasks();
+        try
+        {
+            await UserStoryService.CreateTask(dto);
+            await LoadTasks();
+        }
+        catch (Exception e)
+        {
+            _msg = e.Message;
+        }
     }
 
     private async Task LoadTasks()
     {
-        _tasks = await UserStoryService.GetTasks(StoryId);
-    }
-
-    private async Task RemoveTask(int id)
-    {
-        var taskToRemove = _tasks.FirstOrDefault(t => t.Id == id);
-        if (taskToRemove != null)
+        try
         {
-            await UserStoryService.RemoveTask(id, StoryId); // Remove the task from the backend using the service method
-            _tasks = _tasks.Where(t => t.Id != id); // Remove the task from the local collection
+            _tasks = await UserStoryService.GetTasks(StoryId);
+        }
+        catch (Exception e)
+        {
+            _msg = e.Message;
         }
     }
 
-    private async void Open(int id)
+    private async Task RemoveTask(int taskId)
+    {
+        if (_tasks!.FirstOrDefault(t => t.Id == taskId) != null)
+        {
+            try
+            {
+await UserStoryService.RemoveTask(taskId, StoryId);
+            }
+            catch (Exception e)
+            {
+                _msg = e.Message;
+            }
+            
+    //_tasks = _tasks.Where(t => t.Id != taskId); // Remove the task from the local collection
+        }
+        await LoadTasks();
+    }
+
+    private void Open(int id)
     {
         NavMgr.NavigateTo($"/ViewProject/{ProjectId}/ViewUserStory/{StoryId}/EditTask/{id}");
     }
-   
+
     private async Task LoadUserStory()
     {
-        IEnumerable<UserStory>? userStories = await ProjectService.GetUserStoriesAsync(ProjectId);
-        userStory = userStories.FirstOrDefault(us => us.ID == StoryId);
-        
+        var userStories = await ProjectService.GetUserStoriesAsync(ProjectId);
+        _userStory = userStories.FirstOrDefault(us => us.ID == StoryId);
     }
-    
+
     private async Task UpdateTaskStatusAsync(int taskId, string status)
     {
-        var taskToUpdate = _tasks.FirstOrDefault(t => t.Id == taskId);
+        var taskToUpdate = _tasks!.FirstOrDefault(t => t.Id == taskId);
         if (taskToUpdate != null)
         {
             taskToUpdate.Status = status;
             await UserStoryService.UpdateTask(taskToUpdate);
         }
+        await LoadTasks();
     }
 
-   
+
 
 
 }

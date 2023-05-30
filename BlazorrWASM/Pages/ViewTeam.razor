@@ -1,194 +1,234 @@
 ﻿@page "/ViewTeam/{id:int}"
 @using HttpClients.ClientInterfaces
 @using global::Shared.DTOs
-@inject NavigationManager NavManager
 @inject IProjectService ProjectService
 @inject IUserService UserService
 <h3>ViewTeam</h3>
 
 
-
 <AuthorizeView Roles="project manager">
-  <Authorized>
-    <div class="wrapper">
-      <div class="collaboratorsTable">
-        <table>
-          <thead>
-          <tr>
-            <th>Username</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Role</th>
-            <th> </th>
-          </tr>
-          </thead>
-          <tbody>
-          @foreach (var user in _users)
-          {
-            <tr>
-              <td class="text-center">@user.Username</td>
-              <td class="text-center">@user.FirstName</td>
-              <td class="text-center">@user.LastName</td>
-              <td class="text-center">@user.Role</td>
-              @if (!user.Role.Equals("project manager"))
-              {
-                <td class="text"> <button class="removebtn" @onclick="() => RemoveCollaborator(user.Username)"> <img src="img/personRemove.png" class="search"> </button> </td>
-              }
-            </tr>
-          }
-          </tbody>
-        </table>
-      </div>
-      <div class="search-box" @onfocusin="@(() => { _showTable = true; })">
-        <label class="lforuser"> Look For User</label>
-        <button class="btn-search"><img src="img/search_FILL0_wght400_GRAD0_opsz48.png" class="search" @onclick="@(() => Search(_usernameContains))">
-        </button>
-        <input type="text" class="input-search" placeholder="Type to Search..." @bind="_usernameContains">
-      </div>
-      <label> @_message </label>
-      
-      @if (_showTable)
-      {
-        <div class="collaboratorsTable">
-          <table>
-            <thead>
-            <tr>
-              <th>Username</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Role</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var user in _searchResults)
+    <Authorized>
+        <div class="wrapper">
+            <div class="collaboratorsTable">
+                @if (_users == null)
+                {
+                    <label>Loading Users</label>
+                }
+                else if (_users.Count == 0)
+                {
+                    <label>No collaborators were found</label>
+                }
+                else
+                {
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Role</th>
+                            <th> </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var user in _users)
+                        {
+                            <tr>
+                                <td class="text-center">@user.Username</td>
+                                <td class="text-center">@user.FirstName</td>
+                                <td class="text-center">@user.LastName</td>
+                                <td class="text-center">@user.Role</td>
+                                @if (!user.Role.Equals("project manager"))
+                                {
+                                    <td class="text">
+                                        <button class="removebtn" @onclick="() => RemoveCollaborator(user.Username)">
+                                            <img src="img/personRemove.png" class="search" alt="search">
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+
+            </div>
+            <div class="search-box" @onfocusin="@(() => { _showTable = true; })">
+                <label class="lforuser"> Look For User</label>
+                <button class="btn-search">
+                    <img src="img/search.png" class="search" @onclick="@(() => Search(_usernameContains))" alt="search">
+                </button>
+                <input type="text" class="input-search" placeholder="Type to Search..." @bind="_usernameContains">
+            </div>
+            <label> @_message </label>
+
+            @if (_showTable)
             {
-              <tr>
-                <td class="text-center">@user.Username</td>
-                <td class="text-center">@user.FirstName</td>
-                <td class="text-center">@user.LastName</td>
-                <td class="text-center">@user.Role</td>
-                <td class="text"> <button class="removebtn" @onclick="@(() => AddCollaborator(user.Username))"> <img src="img/personAdd.png" class="search"> </button> </td>
-              </tr>
+                if (_searchResults == null)
+                {
+                    <label>Loading...</label>
+                }
+                else if (_searchResults.Count == 0)
+                {
+                    <label>No Users found</label>
+                }
+                else
+                {
+                    <div class="collaboratorsTable">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var user in _searchResults)
+                            {
+                                <tr>
+                                    <td class="text-center">@user.Username</td>
+                                    <td class="text-center">@user.FirstName</td>
+                                    <td class="text-center">@user.LastName</td>
+                                    <td class="text-center">@user.Role</td>
+                                    <td class="text">
+                                        <button class="removebtn" @onclick="@(() => AddCollaborator(user.Username))">
+                                            <img src="img/personAdd.png" class="search" alt="search">
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
             }
-            </tbody>
-          </table>
         </div>
-      }
-    </div>
-  </Authorized>
-  <NotAuthorized>
-     <div class="wrapper">
-     <div class="collaboratorsTable">
-       <table>
-         <thead>
-         <tr>
-           <th>Username</th>
-           <th>First Name</th>
-           <th>Last Name</th>
-           <th>Role</th>
-           <th> </th>
-         </tr>
-         </thead>
-         <tbody>
-         @foreach (var user in _users)
-         {
-           <tr>
-             <td class="text-center">@user.Username</td>
-             <td class="text-center">@user.FirstName</td>
-             <td class="text-center">@user.LastName</td>
-             <td class="text-center">@user.Role</td>
-           </tr>
-         }
-         </tbody>
-       </table>
-     </div>
-     </div>
-  </NotAuthorized>
+    </Authorized>
+    <NotAuthorized>
+        <div class="wrapper">
+            <div class="collaboratorsTable">
+                @if (_users == null)
+                {
+                    <label>Loading...</label>
+                }
+                else if (_users.Count == 0)
+                {
+                    <label>No Users found</label>
+                }
+                else
+                {
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Role</th>
+                            <th> </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var user in _users)
+                        {
+                            <tr>
+                                <td class="text-center">@user.Username</td>
+                                <td class="text-center">@user.FirstName</td>
+                                <td class="text-center">@user.LastName</td>
+                                <td class="text-center">@user.Role</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </NotAuthorized>
 </AuthorizeView>
 
 @code {
 
-  [Parameter]
-  public int Id { get; set; }
+    [Parameter]
+    public int Id { get; set; }
 
-  private string _message = "";
-  private string _usernameContains = "";
+    private string _message = "";
+    private string _usernameContains = "";
 
-  private List<UserFinderDto>? _users = new();
-  private List<UserFinderDto>? _searchResults = new();
+    private List<UserFinderDto>? _users;
+    private List<UserFinderDto>? _searchResults;
 
-  private bool _showTable = false;
+    private bool _showTable;
 
 
-  protected override async Task OnInitializedAsync()
-  {
-    _message = "";
-    try
+    protected override async Task OnInitializedAsync()
     {
-      _users = await ProjectService.GetAllCollaborators(Id);
+        _message = "";
+        try
+        {
+            _users = await ProjectService.GetAllCollaborators(Id);
+        }
+        catch (Exception e)
+        {
+            _message = e.Message;
+        }
     }
-    catch (Exception e)
+
+
+    private async Task RemoveCollaborator(string username)
     {
-      _message = e.Message;
-    }
-  }
-  
+        _message = "";
+        try
+        {
+            await ProjectService.RemoveCollaborator(username, Id);
 
-  private async Task RemoveCollaborator(string username)
-  {
-    _message = "";
-    try
+            var list = new List<UserFinderDto>(_users!);
+            list.RemoveAll(user => user.Username.Equals(username));
+            _users = list;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _message = e.Message;
+        }
+    }
+
+    private async Task Search(string contains)
     {
-      await ProjectService.RemoveCollaborator(username, Id);
-
-      var list = new List<UserFinderDto>(_users!);
-      list.RemoveAll(user => user.Username.Equals(username));
-      _users = list;
+        _message = "";
+        if (string.IsNullOrEmpty(contains))
+        {
+            _message = "Search field is empty!";
+            return;
+        }
+        var list = await UserService.LookForUsersAsync(contains);
+        _searchResults = UserComparer(_users!, list);
     }
-    catch (Exception e)
+
+    private async Task AddCollaborator(string username)
     {
-      Console.WriteLine(e);
-      _message = e.Message;
+        try
+        {
+            await ProjectService.AddCollaborator(Id, username);
+            await OnInitializedAsync();
+            _searchResults!.RemoveAll(u => u.Username.Equals(username));
+            /*var added = _searchResults!.FirstOrDefault(u => u.Username.Equals(username));
+            _searchResults.Remove(added);*/
+            _showTable = false;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _message = e.Message;
+        }
     }
-  }
 
-  private async Task Search(string contains)
-  {
-    _message = "";
-    if (string.IsNullOrEmpty(contains))
+    private List<UserFinderDto> UserComparer(List<UserFinderDto> users, List<UserFinderDto> results)
     {
-      _message = "Search field is empty!";
-      return;
+        var usernames = users.Select(u => u.Username);
+        var filtered = results.Where(u => !usernames.Contains(u.Username));
+        var roleFiltered = filtered.Where(dto => !dto.Role.Equals(dto.Role));
+        return roleFiltered.ToList();
     }
-    var list = await UserService.LookForUsersAsync(contains);
-    _searchResults = UserComparer(_users, list);
 
-  }
-
-  private async Task AddCollaborator(string username)
-  {
-    try
-    {
-      
-      await ProjectService.AddCollaborator(Id, username);
-      await OnInitializedAsync();
-      var added = _searchResults.FirstOrDefault(u => u.Username.Equals(username));
-      _searchResults.Remove(added);
-      _showTable = false;
-
-    }
-    catch (Exception e)
-    {
-      Console.WriteLine(e);
-      _message = e.Message;
-    }
-  }
-
-  private List<UserFinderDto> UserComparer(List<UserFinderDto> users, List<UserFinderDto> results)
-  {
-    var usernames = users.Select(u => u.Username);
-    var filtered = results.Where(u => !usernames.Contains(u.Username));
-    var roleFiltered = filtered.Where(dto => !dto.Role.Equals(dto.Role));
-    return roleFiltered.ToList();
-  }
 }

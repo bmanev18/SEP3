@@ -1,12 +1,9 @@
 @page "/ViewProjects"
 @using HttpClients.ClientInterfaces
 @inject IUserService UserService
-@inject IProjectService ProjectService
-@inject IUserStoryService UserStoryService
 @inject NavigationManager NavMgr
 @using global::Shared.Model
 @using System.Security.Claims
-@using global::Shared.DTOs
 &nbsp; 
 &nbsp; 
 &nbsp; 
@@ -53,8 +50,8 @@ else
     public Task<AuthenticationState> AuthState { get; set; } = null!;
     private string _msg = "";
     private IEnumerable<Project>? _projects;
-    private static ProjectDto? _project;
-    private string _body = "";
+    //private static ProjectDto? _project;
+    //private string _body = "";
     private ClaimsPrincipal? _user;
 
     protected override async Task OnInitializedAsync()

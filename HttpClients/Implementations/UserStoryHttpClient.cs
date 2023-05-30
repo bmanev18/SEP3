@@ -67,7 +67,7 @@ public class UserStoryHttpClient : IUserStoryService
         }
     }
 
-    public async Task UpdateTask(SprintTask task)
+    public async Task UpdateTask(SprintTask? task)
     {
         var response = await _client.PatchAsJsonAsync($"/userStory/{task.UserStoryId}/task", task);
         var result = await response.Content.ReadAsStringAsync();
