@@ -35,7 +35,7 @@ public class ProjectController : ControllerBase
 
 
     [HttpPut("collaborator/{username}")]
-    public async Task<ActionResult> AddCollaborator([FromRoute] int projectId, [FromRoute] string username,string role)
+    public async Task<ActionResult> AddCollaborator([FromRoute] int projectId, [FromRoute] string username,[FromBody]string role)
     {
         var collaborator = new AddUserToProjectDto
         {
