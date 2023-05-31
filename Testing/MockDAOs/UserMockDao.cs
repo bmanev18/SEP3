@@ -16,15 +16,15 @@ public class UserMockDao : IUserDao
         _users = new List<User>
         {
             new()
-                { Username = "user1", Password = "password1", Firstname = "John", Lastname = "Doe", Role = "scrum master" },
+                { Username = "johny", Password = "password1", FirstName = "John", LastName = "Doe", Role = "scrum master" },
             new()
-                { Username = "user2", Password = "password2", Firstname = "Jane", Lastname = "Smith", Role = "developer" },
+                { Username = "janeSm", Password = "password2", FirstName = "Jane", LastName = "Smith", Role = "developer" },
             new()
-                { Username = "user3", Password = "password3", Firstname = "Michael", Lastname = "Johnson", Role = "project owner" },
+                { Username = "mich", Password = "password3", FirstName = "Michael", LastName = "Johnson", Role = "product owner" },
             new()
-                { Username = "user4", Password = "password4", Firstname = "Emily", Lastname = "Brown", Role = "scrum master" },
+                { Username = "emilybrown", Password = "password4", FirstName = "Emily", LastName = "Brown", Role = "scrum master" },
             new()
-                { Username = "user5", Password = "password5", Firstname = "David", Lastname = "Wilson", Role = "developer" }
+                { Username = "user", Password = "password5", FirstName = "David", LastName = "Wilson", Role = "developer" }
         };
 
         _projects = new List<Project>
@@ -36,9 +36,9 @@ public class UserMockDao : IUserDao
 
         _collaboratorsInProject = new Dictionary<int, List<string>>
         {
-            { 1, new List<string> { "test", "user" } },
-            { 2, new List<string> { "random", "jabbi", "hello" } },
-            { 3, new List<string> { "test" } }
+            { 1, new List<string> { "johny", "user" } },
+            { 2, new List<string> { "jane", "mich", "emilybrown" } },
+            { 3, new List<string> { "user" } }
         };
     }
 
@@ -51,8 +51,8 @@ public class UserMockDao : IUserDao
         {
             Username = dto.Username,
             Password = dto.Password,
-            Firstname = dto.FirstName,
-            Lastname = dto.Lastname,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
             Role = dto.Role
         });
         return Task.CompletedTask;
@@ -87,12 +87,11 @@ public class UserMockDao : IUserDao
             .Select(user => new UserFinderDto
             {
                 Username = user.Username,
-                FirstName = user.Firstname,
-                LastName = user.Lastname,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 Role = user.Role
             })
             .ToList();
-        ;
         if (findAll == null) throw new NullReferenceException("No users were found");
 
         return Task.FromResult(findAll);

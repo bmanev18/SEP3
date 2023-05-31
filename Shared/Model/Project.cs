@@ -1,4 +1,4 @@
-﻿namespace Shared.DTOs;
+﻿namespace Shared.Model;
 
 public class Project
 {

@@ -33,7 +33,10 @@ public class ProjectHttpClient : IProjectService
     {
         var response = await _client.GetAsync($"/project/{id}/collaborator/");
         var result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode) Console.WriteLine(response);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new InvalidOperationException("Unable to get collaborators");
+        }
         var collaborators = JsonSerializer.Deserialize<List<UserFinderDto>>(result, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
@@ -94,7 +97,6 @@ public class ProjectHttpClient : IProjectService
 
     public async Task CreateMeetingNoteAsync(Meeting meeting, int id)
     {
-        Console.WriteLine($"{meeting.Title} and {meeting.Note} or {id}");
         var response = await _client.PostAsJsonAsync($"project/{id}/createNote", meeting);
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode) throw new Exception(result);

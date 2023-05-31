@@ -6,7 +6,7 @@
 <h3>ViewTeam</h3>
 
 
-<AuthorizeView Roles="project manager">
+<AuthorizeView Roles="product owner">
     <Authorized>
         <div class="wrapper">
             <div class="collaboratorsTable">
@@ -38,7 +38,7 @@
                                 <td class="text-center">@user.FirstName</td>
                                 <td class="text-center">@user.LastName</td>
                                 <td class="text-center">@user.Role</td>
-                                @if (!user.Role.Equals("project manager"))
+                                @if (!user.Role.Equals("product owner"))
                                 {
                                     <td class="text">
                                         <button class="removebtn" @onclick="() => RemoveCollaborator(user.Username)">

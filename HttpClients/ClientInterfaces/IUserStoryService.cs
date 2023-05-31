@@ -11,8 +11,8 @@ public interface IUserStoryService
     Task UpdateUserStoryStatusAsync(int id, string status);
 
     Task UpdateUserStoryPriorityAsync(int id, string priority);
-    Task<IEnumerable<SprintTask>> GetTasksAsync(int id);
+    Task<IEnumerable<TaskClass>> GetTasksAsync(int id);
 
-    Task CreateTaskAsync(SprintTaskCreationDto dto);
-    Task UpdateTaskAsync(SprintTask? task);
+    Task CreateTaskAsync(TaskCreationDto dto);
+    Task UpdateTaskAsync(TaskClass? task);
 }

@@ -19,38 +19,38 @@ public class UserStoryLogic : IUserStoryLogic
         await _storyDao.UpdateUserStoryPointsAsync(id, points);
     }
 
-    public async Task UpdateUserStoryStatusAsync(int userStoryId, string status)
+    public async Task UpdateUserStoryStatusAsync(int storyId, string status)
     {
-        await _storyDao.UpdateUserStoryStatusAsync(userStoryId, status);
+        await _storyDao.UpdateUserStoryStatusAsync(storyId, status);
     }
 
-    public async Task UpdateUserStoryPriorityAsync(int userStoryId, string priority)
+    public async Task UpdateUserStoryPriorityAsync(int storyId, string priority)
     {
-        await _storyDao.UpdateUserStoryPriorityAsync(userStoryId, priority);
+        await _storyDao.UpdateUserStoryPriorityAsync(storyId, priority);
     }
 
-    public async Task DeleteUserStoryAsync(int id)
+    public async Task DeleteUserStoryAsync(int storyId)
     {
-        await _storyDao.DeleteUserStoryAsync(id);
+        await _storyDao.DeleteUserStoryAsync(storyId);
     }
 
-    public async Task AddTaskAsync(SprintTaskCreationDto dto)
+    public async Task AddTaskAsync(TaskCreationDto dto)
     {
         await _storyDao.AddTaskAsync(dto);
     }
 
-    public async Task EditTaskAsync(SprintTask task)
+    public async Task EditTaskAsync(TaskClass taskClass)
     {
-        await _storyDao.EditTaskAsync(task);
+        await _storyDao.EditTaskAsync(taskClass);
     }
 
-    public async Task<List<SprintTask>> GetTasksAsync(int id)
+    public async Task<List<TaskClass>> GetTasksAsync(int storyId)
     {
-        return await _storyDao.GetTasksAsync(id);
+        return await _storyDao.GetTasksAsync(storyId);
     }
 
-    public async Task RemoveTaskAsync(int id)
+    public async Task RemoveTaskAsync(int storyId)
     {
-        await _storyDao.DeleteTaskAsync(id);
+        await _storyDao.DeleteTaskAsync(storyId);
     }
 }

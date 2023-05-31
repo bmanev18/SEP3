@@ -78,7 +78,7 @@ public class UserStoryController : ControllerBase
     }
 
     [HttpPost("task")]
-    public async Task<ActionResult> AddTask([FromBody] SprintTaskCreationDto dto)
+    public async Task<ActionResult> AddTask([FromBody] TaskCreationDto dto)
     {
         try
         {
@@ -93,11 +93,11 @@ public class UserStoryController : ControllerBase
     }
 
     [HttpPatch("task")]
-    public async Task<IActionResult> EditTask([FromBody] SprintTask task)
+    public async Task<IActionResult> EditTask([FromBody] TaskClass taskClass)
     {
         try
         {
-            await _userStoryLogic.EditTaskAsync(task);
+            await _userStoryLogic.EditTaskAsync(taskClass);
             return Accepted();
         }
         catch (Exception e)
@@ -109,12 +109,11 @@ public class UserStoryController : ControllerBase
 
 
     [HttpGet("task")]
-    public async Task<ActionResult<List<SprintTask>>> GetTasks([FromRoute] int storyId)
+    public async Task<ActionResult<List<TaskClass>>> GetTasks([FromRoute] int storyId)
     {
         try
         {
             var list = await _userStoryLogic.GetTasksAsync(storyId);
-            Console.WriteLine(list.Count);
             return Ok(list);
         }
         catch (Exception e)

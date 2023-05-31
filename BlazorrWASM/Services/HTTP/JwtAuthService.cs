@@ -56,8 +56,8 @@ public class JwtAuthService : IAuthService
         {
             Username = username,
             Password = password,
-            Firstname = firstname,
-            Lastname = lastname,
+            FirstName = firstname,
+            LastName = lastname,
             Role = role
         };
 

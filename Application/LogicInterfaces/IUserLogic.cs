@@ -1,4 +1,5 @@
 ﻿using Shared.DTOs;
+using Shared.Model;
 
 namespace Application.LogicInterfaces;
 

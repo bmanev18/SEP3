@@ -15,7 +15,6 @@ public class UserStoryDao : IUserStoryDao
     public UserStoryDao()
     {
         var channel = GrpcChannel.ForAddress("http://localhost:9111");
-        Console.WriteLine(channel.State);
         _client = new UserStoryAccess.UserStoryAccessClient(channel);
     }
 
@@ -47,21 +46,21 @@ public class UserStoryDao : IUserStoryDao
         if (!call.Response_) throw new InvalidOperationException("Unable to delete user story");
     }
 
-    public async Task AddTaskAsync(SprintTaskCreationDto task)
+    public async Task AddTaskAsync(TaskCreationDto task)
     {
         var request = Transporter.TaskCreationRequestConverter(task);
         var call = await _client.AddTaskAsync(request);
         if (!call.Response_) throw new InvalidOperationException("Unable to add task to sprint");
     }
 
-    public async Task EditTaskAsync(SprintTask task)
+    public async Task EditTaskAsync(TaskClass taskClass)
     {
-        var request = Transporter.TaskMessageConverter(task);
+        var request = Transporter.TaskMessageConverter(taskClass);
         var call = await _client.EditTaskAsync(request);
         if (!call.Response_) throw new InvalidOperationException("Unable to edit task");
     }
 
-    public async Task<List<SprintTask>> GetTasksAsync(int id)
+    public async Task<List<TaskClass>> GetTasksAsync(int id)
     {
         var request = Transporter.IdMessageConverter(id);
         var call = await _client.GetTasksAsync(request);

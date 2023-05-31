@@ -15,7 +15,6 @@ public class ProjectDao : IProjectDao
     public ProjectDao()
     {
         var channel = GrpcChannel.ForAddress("http://localhost:9111");
-        Console.WriteLine(channel.State);
         _client = new ProjectAccess.ProjectAccessClient(channel);
     }
 

@@ -16,7 +16,6 @@ public class SprintDao : ISprintDao
     public SprintDao()
     {
         var channel = GrpcChannel.ForAddress("http://localhost:9111");
-        Console.WriteLine(channel.State);
         _client = new SprintAccess.SprintAccessClient(channel);
     }
 

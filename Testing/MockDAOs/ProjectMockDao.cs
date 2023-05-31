@@ -12,9 +12,13 @@ public class ProjectMockDao : IProjectDao
 
     private readonly Dictionary<int, List<string>> _collaboratorsInProject;
 
+    private readonly List<User> _users;
+
     private readonly List<UserStory> _userStories;
 
     private readonly List<Sprint> _sprints;
+
+    private readonly List<Meeting> _meetings;
 
 
     public ProjectMockDao()
@@ -29,9 +33,23 @@ public class ProjectMockDao : IProjectDao
 
         _collaboratorsInProject = new Dictionary<int, List<string>>
         {
-            { 1, new List<string> { "test", "user" } },
-            { 2, new List<string> { "random", "jabbi", "hello" } },
-            { 3, new List<string> { "test" } }
+            { 1, new List<string> { "johny", "user" } },
+            { 2, new List<string> { "jane", "mich", "emilybrown" } },
+            { 3, new List<string> { "user" } }
+        };
+
+        _users = new List<User>
+        {
+            new()
+                { Username = "johny", Password = "password1", FirstName = "John", LastName = "Doe", Role = "scrum master" },
+            new()
+                { Username = "janeSm", Password = "password2", FirstName = "Jane", LastName = "Smith", Role = "developer" },
+            new()
+                { Username = "mich", Password = "password3", FirstName = "Michael", LastName = "Johnson", Role = "product owner" },
+            new()
+                { Username = "jabbi", Password = "password4", FirstName = "Emily", LastName = "Brown", Role = "scrum master" },
+            new()
+                { Username = "user", Password = "password5", FirstName = "David", LastName = "Wilson", Role = "developer" }
         };
 
         _userStories = new List<UserStory>
@@ -50,6 +68,15 @@ public class ProjectMockDao : IProjectDao
             new() { Id = 3, ProjectId = 3, Name = "Sprint 1", StartDate = "17/6/2023", EndDate = "19/6/2023" },
             new() { Id = 4, ProjectId = 2, Name = "Sprint 2", StartDate = "23/7/2023", EndDate = "25/7/2023" },
             new() { Id = 5, ProjectId = 1, Name = "Sprint 2", StartDate = "18/4/2023", EndDate = "22/4/2023" }
+        };
+
+        _meetings = new List<Meeting>
+        {
+            new() { ProjectId = 1, Title = "Title1", Note = "New Note1", Author = "user1" },
+            new() { ProjectId = 2, Title = "Title1", Note = "New Note1", Author = "user2" },
+            new() { ProjectId = 1, Title = "Title2", Note = "New Note1", Author = "user1" },
+            new() { ProjectId = 3, Title = "Title1", Note = "motto motto", Author = "user5" },
+            new() { ProjectId = 4, Title = "Title1", Note = "New Note1", Author = "user4" }
         };
     }
 
@@ -79,10 +106,11 @@ public class ProjectMockDao : IProjectDao
 
     public Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id)
     {
-        /*var usernames = _collaboratorsInProject[id];
-        var response = usernames.Select(username => new UserFinderDto { Username = username }).ToList();
-        return Task.FromResult(response);*/
-        throw new NotImplementedException();
+        var usernames = _collaboratorsInProject[id];
+        var users = _users.FindAll(user => usernames.Contains(user.Username));
+        var response = users.Select(u => new UserFinderDto { Username = u.Username, FirstName = u.FirstName, LastName = u.LastName, Role = u.Role })
+            .ToList();
+        return Task.FromResult(response);
     }
 
     public Task RemoveCollaboratorAsync(AddUserToProjectDto dto)
@@ -121,7 +149,7 @@ public class ProjectMockDao : IProjectDao
             ProjectId = dto.ProjectId,
             Name = dto.Name,
             StartDate = dto.StartDate,
-            EndDate = dto.EndDate
+            EndDate = dto.EndDate!
         });
         return Task.CompletedTask;
     }
@@ -133,11 +161,12 @@ public class ProjectMockDao : IProjectDao
 
     public Task CreateMeetingNoteAsync(Meeting meeting)
     {
-        throw new NotImplementedException();
+        _meetings.Add(meeting);
+        return Task.CompletedTask;
     }
 
     public Task<List<Meeting>> GetAllMeetingNotesAsync(int id)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(_meetings.FindAll(meeting => meeting.ProjectId==id));
     }
 }

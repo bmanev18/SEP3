@@ -4,6 +4,7 @@
 @inject NavigationManager NavMgr
 @using System.Security.Claims
 @using global::Shared.DTOs
+@using global::Shared.Model
 &nbsp;
 &nbsp;
 &nbsp;
@@ -76,7 +77,6 @@ else
         var authState = await AuthState;
         _user = authState.User;
         _msg = "";
-        Console.WriteLine(_msg);
         try
         {
             _projects = await UserService.GetProjectsByUsernameAsync(_user.Identity?.Name);

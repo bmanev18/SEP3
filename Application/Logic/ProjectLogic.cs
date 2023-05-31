@@ -25,19 +25,25 @@ public class ProjectLogic : IProjectLogic
         var list = GetAllCollaboratorsAsync(collaborator.ProjectId);
         if (collaborator.Role.Equals("scrum master"))
         {
+            Console.WriteLine("is master");
             var sm = list.Result.FirstOrDefault(u => u.Role.Equals("scrum master"));
-            if (sm != null) throw new Exception("There is already a scrum master who is part of your project!");
+            Console.WriteLine(sm==null);
+            if (sm != null)
+            {
+                Console.WriteLine("exists");
+                throw new InvalidOperationException("There is already a scrum master who is part of your project!");
+            }
         }
 
         var dto = list.Result.FirstOrDefault(u => u.Username.Equals(collaborator.Username));
-        if (dto != null) throw new Exception("User is already a collaborator!");
+        if (dto != null) throw new InvalidOperationException("User is already a collaborator!");
 
         await _projectDao.AddCollaboratorAsync(collaborator);
     }
 
-    public async Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id)
+    public async Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int projectId)
     {
-        return await _projectDao.GetAllCollaboratorsAsync(id);
+        return await _projectDao.GetAllCollaboratorsAsync(projectId);
     }
 
     public async Task RemoveCollaboratorAsync(AddUserToProjectDto collaborator)
@@ -61,9 +67,9 @@ public class ProjectLogic : IProjectLogic
         await _projectDao.CreateSprintAsync(dto);
     }
 
-    public async Task<List<Sprint>> GetSprintsByProjectIdAsync(int id)
+    public async Task<List<Sprint>> GetSprintsByProjectIdAsync(int projectId)
     {
-        return await _projectDao.GetSprintsByProjectIdAsync(id);
+        return await _projectDao.GetSprintsByProjectIdAsync(projectId);
     }
 
     public async Task CreateMeetingNoteAsync(Meeting meeting)
@@ -71,8 +77,8 @@ public class ProjectLogic : IProjectLogic
         await _projectDao.CreateMeetingNoteAsync(meeting);
     }
 
-    public async Task<List<Meeting>> GetMeetingNoteAsync(int id)
+    public async Task<List<Meeting>> GetMeetingNoteAsync(int projectId)
     {
-        return await _projectDao.GetAllMeetingNotesAsync(id);
+        return await _projectDao.GetAllMeetingNotesAsync(projectId);
     }
 }

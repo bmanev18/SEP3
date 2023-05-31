@@ -8,7 +8,7 @@ public static class AuthorizationPolicies
         services.AddAuthorizationCore(options =>
         {
             options.AddPolicy("MustBeProductOwner",
-                a => a.RequireAuthenticatedUser().RequireClaim("Role", "project manager"));
+                a => a.RequireAuthenticatedUser().RequireClaim("Role", "product owner"));
             options.AddPolicy("MustBeScrumMaster",
                 a => a.RequireAuthenticatedUser().RequireClaim("Role", "scrum master"));
             options.AddPolicy("MustBeDeveloper",

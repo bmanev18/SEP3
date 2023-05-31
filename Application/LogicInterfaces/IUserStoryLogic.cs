@@ -6,13 +6,13 @@ namespace Application.LogicInterfaces;
 public interface IUserStoryLogic
 {
     Task UpdateUserStoryPointsAsync(int id, int points);
-    Task UpdateUserStoryStatusAsync(int userStoryId, string status);
-    Task UpdateUserStoryPriorityAsync(int userStoryId, string priority);
-    Task DeleteUserStoryAsync(int id);
+    Task UpdateUserStoryStatusAsync(int storyId, string status);
+    Task UpdateUserStoryPriorityAsync(int storyId, string priority);
+    Task DeleteUserStoryAsync(int storyId);
 
-    Task AddTaskAsync(SprintTaskCreationDto dto);
-    Task EditTaskAsync(SprintTask task);
+    Task AddTaskAsync(TaskCreationDto dto);
+    Task EditTaskAsync(TaskClass taskClass);
 
-    Task<List<SprintTask>> GetTasksAsync(int id);
-    Task RemoveTaskAsync(int id);
+    Task<List<TaskClass>> GetTasksAsync(int storyId);
+    Task RemoveTaskAsync(int storyId);
 }

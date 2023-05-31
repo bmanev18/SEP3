@@ -35,7 +35,6 @@ public static class Transporter
 
     public static MeetingNote MeetingNoteConverter(Meeting meeting)
     {
-        Console.WriteLine($"webapi: {meeting.Title}");
         var request = new MeetingNote()
         {
             ProjectId = meeting.ProjectId,
@@ -43,7 +42,6 @@ public static class Transporter
             Note = meeting.Note,
             Title = meeting.Title
         };
-        Console.WriteLine($"grpc: {request.Title}");
         return request;
     }
 
@@ -140,7 +138,7 @@ public static class Transporter
             Username = dto.Username,
             Role = dto.Role,
             FirstName = dto.FirstName,
-            LastName = dto.Lastname
+            LastName = dto.LastName
         };
         return request;
     }
@@ -168,8 +166,8 @@ public static class Transporter
         var result = new User
         {
             Username = message.Username,
-            Firstname = message.Username,
-            Lastname = message.LastName,
+            FirstName = message.Username,
+            LastName = message.LastName,
             Password = message.Password,
             Role = message.Role
         };
@@ -212,41 +210,41 @@ public static class Transporter
         return request;
     }
 
-    public static TaskCreationRequest TaskCreationRequestConverter(SprintTaskCreationDto task)
+    public static TaskCreationRequest TaskCreationRequestConverter(TaskCreationDto task)
     {
         var request = new TaskCreationRequest
         {
             Assignee = task.Assignee,
             Body = task.Body,
-            StoryPoints = task.StoryPoint,
+            StoryPoints = task.StoryPoints,
             UserStoryId = task.UserStoryId
         };
         return request;
     }
 
-    public static TaskMessage TaskMessageConverter(SprintTask task)
+    public static TaskMessage TaskMessageConverter(TaskClass taskClass)
     {
         var request = new TaskMessage
         {
-            Id = task.Id,
-            StoryId = task.UserStoryId,
-            Assignee = task.Assignee,
-            Body = task.Body,
-            StoryPoints = task.StoryPoint,
-            Status = task.Status
+            Id = taskClass.Id,
+            StoryId = taskClass.UserStoryId,
+            Assignee = taskClass.Assignee,
+            Body = taskClass.Body,
+            StoryPoints = taskClass.StoryPoints,
+            Status = taskClass.Status
         };
         return request;
     }
 
-    public static SprintTask SprintTaskConverter(TaskMessage task)
+    public static TaskClass SprintTaskConverter(TaskMessage task)
     {
-        var request = new SprintTask
+        var request = new TaskClass
         {
             Id = task.Id,
             UserStoryId = task.StoryId,
             Assignee = task.Assignee,
             Body = task.Body,
-            StoryPoint = task.StoryPoints,
+            StoryPoints = task.StoryPoints,
             Status = task.Status
         };
         return request;

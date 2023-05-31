@@ -57,14 +57,14 @@ public class UserStoryHttpClient : IUserStoryService
         }
     }
 
-    public async Task CreateTaskAsync(SprintTaskCreationDto dto)
+    public async Task CreateTaskAsync(TaskCreationDto dto)
     {
         var response = await _client.PostAsJsonAsync($"userStory/{dto.UserStoryId}/task", dto);
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
 
-    public async Task UpdateTaskAsync(SprintTask? task)
+    public async Task UpdateTaskAsync(TaskClass? task)
     {
         if (task != null)
         {
@@ -74,13 +74,13 @@ public class UserStoryHttpClient : IUserStoryService
         }
     }
 
-    public async Task<IEnumerable<SprintTask>> GetTasksAsync(int id)
+    public async Task<IEnumerable<TaskClass>> GetTasksAsync(int id)
     {
         var response = await _client.GetAsync($"userStory/{id}/task");
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode) throw new Exception(result);
 
-        var sprintTasks = JsonSerializer.Deserialize<IEnumerable<SprintTask>>(result,
+        var sprintTasks = JsonSerializer.Deserialize<IEnumerable<TaskClass>>(result,
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true

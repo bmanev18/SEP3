@@ -71,11 +71,6 @@ public class SprintMockDao : ISprintDao
         return Task.FromResult(userStories);
     }
 
-    public Task<List<UserStory>> GetOtherUserStoriesAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task RemoveUserStoryFromSprintAsync(UserStoryToSprintDto dto)
     {
         _userStoriesInSprints[dto.SprintId].Remove(dto.UserStoryId);

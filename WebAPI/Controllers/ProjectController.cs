@@ -112,7 +112,6 @@ public class ProjectController : ControllerBase
         try
         {
             var list = await _projectLogic.GetUserStoriesAsync(projectId);
-            Console.WriteLine(list);
             return Ok(list);
         }
         catch (Exception e)
@@ -170,7 +169,6 @@ public class ProjectController : ControllerBase
     [HttpPost("createNote")]
     public async Task<ActionResult> CreateMeetingNoteAsync([FromBody] Meeting meeting, [FromRoute] int projectId)
     {
-        Console.WriteLine(meeting.Title);
         meeting.ProjectId = projectId;
         try
         {

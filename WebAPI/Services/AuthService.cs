@@ -39,8 +39,8 @@ public class AuthService : IAuthService
         ValidateRegistration(user);
         var dto = new UserCreationDto
         {
-            FirstName = user.Firstname,
-            Lastname = user.Lastname,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
             Password = user.Password,
             Role = user.Role,
             Username = user.Username
@@ -52,8 +52,8 @@ public class AuthService : IAuthService
 
     private void ValidateRegistration(User user)
     {
-        if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.Firstname) ||
-            string.IsNullOrEmpty(user.Lastname)) throw new ValidationException("All Fields Are Mandatory!");
+        if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.FirstName) ||
+            string.IsNullOrEmpty(user.LastName)) throw new ValidationException("All Fields Are Mandatory!");
 
         if (user.Password.Length < 8) throw new ValidationException("Password must be at least 8 characters!");
     }

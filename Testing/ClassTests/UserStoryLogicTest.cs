@@ -45,12 +45,12 @@ public class UserStoryLogicTest
     [Test]
     public void AddTask_Successful()
     {
-        var created = new SprintTaskCreationDto
+        var created = new TaskCreationDto
         {
             UserStoryId = 1,
             Body = "New task",
             Assignee = "test",
-            StoryPoint = 13
+            StoryPoints = 13
         };
 
         var actual = _logic.AddTaskAsync(created);
@@ -61,14 +61,14 @@ public class UserStoryLogicTest
     [Test]
     public void EditTask_Successful()
     {
-        var edited = new SprintTask()
+        var edited = new TaskClass()
         {
             Id = 1,
             UserStoryId = 3,
             Body = "New task",
             Assignee = "test",
             Status = "done",
-            StoryPoint = 13
+            StoryPoints = 13
         };
         var actual = _logic.EditTaskAsync(edited);
         Assert.That(ReferenceEquals(actual, Task.CompletedTask));

@@ -2,6 +2,7 @@
 using Application.LogicInterfaces;
 using NUnit.Framework;
 using Shared.DTOs;
+using Shared.Model;
 using Testing.MockDAOs;
 
 namespace Testing.ClassTests;
@@ -17,19 +18,48 @@ public class ProjectLogicTest
         var actual = _logic.CreateAsync(new ProjectCreationDto { Name = "New Project", OwnerUsername = "brambar" });
         Assert.That(ReferenceEquals(actual, Task.CompletedTask));
     }
+    
+    /*-------------------------------------------*/
 
     [Test]
     public void AddCollaborator_Successful()
     {
-        var actual = _logic.AddCollaboratorAsync(new AddUserToProjectDto { ProjectId = 3, Username = "new" });
+        var addUserToProjectDto = new AddUserToProjectDto { ProjectId = 1, Username = "user", Role = "developer" };
+        var actual = _logic.AddCollaboratorAsync(addUserToProjectDto);
         Assert.That(ReferenceEquals(actual, Task.CompletedTask));
     }
+    
+    [Test]
+    public void AddCollaboratorSecondScrumMaster_Exception()
+    {
+        var addCollaborator = new AddUserToProjectDto { ProjectId = 1, Username = "jabbi", Role = "scrum master" };
 
+        InvalidOperationException actual =Assert.ThrowsAsync<InvalidOperationException>(async () =>
+        {
+            await _logic.AddCollaboratorAsync(addCollaborator);
+        })!;
+        Assert.That(actual.Message, Is.EqualTo("There is already a scrum master who is part of your project!"));
+    }
+    
+    [Test]
+    public async Task AddCollaboratorExisting_Exception()
+    {
+        var addCollaborator = new AddUserToProjectDto { ProjectId = 1, Username = "johny", Role = "developer" };
+
+        InvalidOperationException actual =Assert.ThrowsAsync<InvalidOperationException>(async () =>
+        {
+            await _logic.AddCollaboratorAsync(addCollaborator);
+        })!;
+        Assert.That(actual.Message, Is.EqualTo("User is already a collaborator!"));
+    }
+
+    /*-------------------------------------------*/
+    
     [Test]
     public void GetAllCollaborators_Successful()
     {
-        var actual = _logic.GetAllCollaboratorsAsync(1).Result;
-        Assert.That(actual, Has.Count.EqualTo(2));
+        var actual = _logic.GetAllCollaboratorsAsync(3).Result;
+        Assert.That(actual, Has.Count.EqualTo(1));
     }
 
     [Test]
@@ -70,30 +100,18 @@ public class ProjectLogicTest
         Assert.That(actual, Has.Count.EqualTo(2));
     }
 
-
-    /*[Test]
-    public void UpdateUserStoryPoints_Successful()
+    [Test]
+    public void CreateMeetingNote_Successful()
     {
-        var actual = _logic.UpdateUserStoryPointsAsync(6, 12);
-        Assert.That(actual.Id,  Is.Not.EqualTo(null));
+        var created = new Meeting { ProjectId = 1, Title = "Blh bla", Note = "bla bla", Author = "user2" };
+        var actual = _logic.CreateMeetingNoteAsync(created);
+        Assert.That(ReferenceEquals(actual, Task.CompletedTask));
     }
     
     [Test]
-    public void deleteUserStory_Successful()
+    public void GetMeetingNotes_Successful()
     {
-        var actual = _logic.DeleteUserStory(2);
-        Assert.That(actual.Id,  Is.Not.EqualTo(null));
-    }*/
-
-    /*Task CreateAsync(ProjectCreationDto dto);
-    + Task<List<ProjectDto>> GetAllProjects(string username);
-
-    +Task AddCollaboratorAsync(AddUserToProjectDto collaborator);
-    + Task<List<UserFinderDto>> GetAllCollaborators(int id);
-    +Task<int> RemoveCollaborator(AddUserToProjectDto collaborator);
-    
-    +Task<int> AddUserStoryAsync(UserStoryDto dto);
-    +Task<List<UserStory>> GetUserStoriesAsync(int id);
-    +Task UpdateUserStoryPointsAsync(int userStoryId, int points);
-    Task DeleteUserStory(int id);*/
+        var actual = _logic.GetMeetingNoteAsync(1).Result;
+        Assert.That(actual, Has.Count.EqualTo(2));
+    }
 }

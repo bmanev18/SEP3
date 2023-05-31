@@ -108,7 +108,6 @@
         }
         try
         {
-            Console.WriteLine($"{_title} / {_note}");
             await ProjectService.CreateMeetingNoteAsync(new Meeting
             {
                 Author = _user!.Identity!.Name!,

@@ -8,7 +8,7 @@ namespace Testing.MockDAOs;
 public class UserStoryMockDao : IUserStoryDao
 {
     private readonly List<UserStory> _userStories;
-    private readonly List<SprintTask> _tasks;
+    private readonly List<TaskClass> _tasks;
 
     public UserStoryMockDao()
     {
@@ -20,13 +20,13 @@ public class UserStoryMockDao : IUserStoryDao
             new() { Id = 4, ProjectId = 2, Body = "Story 4", Priority = "high", Status = "done", StoryPoints = 13 },
             new() { Id = 5, ProjectId = 3, Body = "Story 5", Priority = "low", Status = "in progress", StoryPoints = 5 }
         };
-        _tasks = new List<SprintTask>
+        _tasks = new List<TaskClass>
         {
-            new() { Id = 1, UserStoryId = 1, Assignee = "User1", Body = "Task 1", StoryPoint = 3, Status = "to-Do" },
-            new() { Id = 2, UserStoryId = 2, Assignee = "User2", Body = "Task 2", StoryPoint = 5, Status = "in progress" },
-            new() { Id = 3, UserStoryId = 3, Assignee = "User3", Body = "Task 3", StoryPoint = 2, Status = "done" },
-            new() { Id = 4, UserStoryId = 4, Assignee = "User4", Body = "Task 4", StoryPoint = 8, Status = "to-Do" },
-            new() { Id = 5, UserStoryId = 5, Assignee = "User5", Body = "Task 5", StoryPoint = 5, Status = "in progress" }
+            new() { Id = 1, UserStoryId = 1, Assignee = "User1", Body = "Task 1", StoryPoints = 3, Status = "to-Do" },
+            new() { Id = 2, UserStoryId = 2, Assignee = "User2", Body = "Task 2", StoryPoints = 5, Status = "in progress" },
+            new() { Id = 3, UserStoryId = 3, Assignee = "User3", Body = "Task 3", StoryPoints = 2, Status = "done" },
+            new() { Id = 4, UserStoryId = 4, Assignee = "User4", Body = "Task 4", StoryPoints = 8, Status = "to-Do" },
+            new() { Id = 5, UserStoryId = 5, Assignee = "User5", Body = "Task 5", StoryPoints = 5, Status = "in progress" }
         };
     }
 
@@ -55,28 +55,28 @@ public class UserStoryMockDao : IUserStoryDao
         return Task.CompletedTask;
     }
 
-    public Task AddTaskAsync(SprintTaskCreationDto dto)
+    public Task AddTaskAsync(TaskCreationDto dto)
     {
-        _tasks.Add(new SprintTask
+        _tasks.Add(new TaskClass
         {
             Id = _tasks.Count + 1,
             UserStoryId = dto.UserStoryId,
             Assignee = dto.Assignee,
             Body = dto.Body,
-            StoryPoint = dto.StoryPoint,
+            StoryPoints = dto.StoryPoints,
             Status = "to-do"
         });
         return Task.CompletedTask;
     }
 
-    public Task EditTaskAsync(SprintTask task)
+    public Task EditTaskAsync(TaskClass taskClass)
     {
-        var index = _tasks.FindIndex(t => t.Id == task.Id);
-        _tasks[index] = task;
+        var index = _tasks.FindIndex(t => t.Id == taskClass.Id);
+        _tasks[index] = taskClass;
         return Task.CompletedTask;
     }
 
-    public Task<List<SprintTask>> GetTasksAsync(int id)
+    public Task<List<TaskClass>> GetTasksAsync(int id)
     {
         return Task.FromResult(_tasks.FindAll(task => task.UserStoryId == id));
     }

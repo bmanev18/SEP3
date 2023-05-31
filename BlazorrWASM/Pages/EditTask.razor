@@ -7,7 +7,7 @@
 
 <h3>Edit Task</h3>
 <br/>
-@if (_task == null)
+@if (_taskClass == null)
 {
     <div class="loading-container">
         <span>Loading task...</span>
@@ -18,12 +18,12 @@ else
     <div class="edit-task-container">
         <div class="form-group">
             <label for="taskName">Task Name:</label>
-            <input class="form-control" type="text" id="taskName" value="@_task.Body" @oninput="@UpdateName"/>
+            <input class="form-control" type="text" id="taskName" value="@_taskClass.Body" @oninput="@UpdateName"/>
         </div>
 
         <div class="form-group">
             <label for="assignee">Assignee:</label>
-            <select class="form-control" id="assignee" value="@_task.Assignee" @onchange="@UpdateAssignee">
+            <select class="form-control" id="assignee" value="@_taskClass.Assignee" @onchange="@UpdateAssignee">
                 @if (_collaborators != null)
                 {
                     foreach (var collaborator in _collaborators)
@@ -36,7 +36,7 @@ else
 
         <div class="form-group">
             <label for="status">Status:</label>
-            <select class="form-control" id="status" value="@_task.Status" @onchange="@UpdateStatus">
+            <select class="form-control" id="status" value="@_taskClass.Status" @onchange="@UpdateStatus">
                 <option value="to-do">To Do</option>
                 <option value="in progress">In Progress</option>
                 <option value="done">Done</option>
@@ -45,7 +45,7 @@ else
 
         <div class="form-group">
             <label for="points">Story Points:</label>
-            <select class="form-control" id="points" value="@_task.StoryPoint" @onchange="@UpdatePoints">
+            <select class="form-control" id="points" value="@_taskClass.StoryPoints" @onchange="@UpdatePoints">
                 <option value="0">0</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -73,7 +73,7 @@ else
 }
 
 @code {
-    private SprintTask _task = null!;
+    private TaskClass _taskClass = null!;
     private string _msg = "";
     private IEnumerable<UserFinderDto>? _collaborators;
     private bool _isSuccess;
@@ -111,7 +111,7 @@ else
         var exists = tasks.FirstOrDefault(t => t.Id == TaskId);
         if (exists != null)
         {
-            _task = exists;
+            _taskClass = exists;
         }
         else
         {
@@ -121,30 +121,30 @@ else
 
     private void UpdateName(ChangeEventArgs e)
     {
-        _task.Body = e.Value!.ToString()!;
+        _taskClass.Body = e.Value!.ToString()!;
     }
 
     private void UpdateAssignee(ChangeEventArgs e)
     {
-        _task.Assignee = e.Value!.ToString()!;
+        _taskClass.Assignee = e.Value!.ToString()!;
     }
 
     private void UpdateStatus(ChangeEventArgs e)
     {
-        _task.Status = e.Value!.ToString()!;
+        _taskClass.Status = e.Value!.ToString()!;
     }
 
     private void UpdatePoints(ChangeEventArgs e)
     {
         int.TryParse(e.Value!.ToString()!, out var points);
-        _task.StoryPoint = points;
+        _taskClass.StoryPoints = points;
     }
 
     private async Task SaveChanges()
     {
         try
         {
-            await UserStoryService.UpdateTaskAsync(_task);
+            await UserStoryService.UpdateTaskAsync(_taskClass);
             _msg = "Changes saved successfully.";
             _isSuccess = true;
         }

@@ -7,7 +7,7 @@
 @inject NavigationManager NavMgr
 @using UIComponents
 
-<AuthorizeView roles="scrum master, project manager">
+<AuthorizeView roles="scrum master, product owner">
     <Authorized>
         @if (_userStory != null)
         {
@@ -88,7 +88,7 @@
                                 @task.Assignee
                             </td>
                             <td>
-                                @task.StoryPoint
+                                @task.StoryPoints
                             </td>
                             <td>
 
@@ -158,7 +158,7 @@
                                 @task.Assignee
                             </td>
                             <td>
-                                @task.StoryPoint
+                                @task.StoryPoints
                             </td>
                         </tr>
                     }
@@ -198,7 +198,7 @@
     private string _msg = "";
 
     private IEnumerable<UserFinderDto>? _collaborators;
-    private IEnumerable<SprintTask>? _tasks;
+    private IEnumerable<TaskClass>? _tasks;
     private UserStory? _userStory;
 
     [Parameter]
@@ -237,12 +237,12 @@
 
     private async Task Create()
     {
-        var dto = new SprintTaskCreationDto
+        var dto = new TaskCreationDto
         {
             UserStoryId = StoryId,
             Assignee = _assignee,
             Body = _name,
-            StoryPoint = _points
+            StoryPoints = _points
         };
         try
         {
