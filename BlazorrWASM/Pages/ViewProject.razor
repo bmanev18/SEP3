@@ -455,16 +455,6 @@ else
         await LoadUserStoriesAsync();
     }
 
-    private void OpenViewTeam()
-    {
-        NavMgr.NavigateTo($"/ViewTeam/{Id}");
-    }
-
-    private string GetLocalizedString(string key)
-    {
-        return key;
-    }
-
     private async Task DeleteSprintAsync(int id)
     {
         var list = new List<Sprint>(_sprints!);
