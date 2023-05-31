@@ -34,13 +34,14 @@ public class ProjectController : ControllerBase
     }
 
 
-    [HttpPut("collaborator")]
-    public async Task<ActionResult> AddCollaborator([FromRoute] int projectId, [FromBody] string username)
+    [HttpPut("collaborator/{username}")]
+    public async Task<ActionResult> AddCollaborator([FromRoute] int projectId, [FromRoute] string username,string role)
     {
         var collaborator = new AddUserToProjectDto
         {
             ProjectId = projectId,
-            Username = username
+            Username = username,
+            Role = role
         };
         try
         {
@@ -156,7 +157,7 @@ public class ProjectController : ControllerBase
     {
         try
         {
-            var list = await _projectLogic.Async(projectId);
+            var list = await _projectLogic.GetMeetingNoteAsync(projectId);
             return Ok(list);
         }
         catch (Exception e)

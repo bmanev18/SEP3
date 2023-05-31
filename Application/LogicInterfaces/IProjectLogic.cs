@@ -16,5 +16,5 @@ public interface IProjectLogic
     Task CreateSprintAsync(SprintCreationDto dto);
     Task<List<Sprint>> GetSprintsByProjectIdAsync(int id);
     Task CreateMeetingNoteAsync(Meeting meeting);
-    Task<List<Meeting>> Async(int id);
+    Task<List<Meeting>> GetMeetingNoteAsync(int id);
 }

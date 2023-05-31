@@ -474,7 +474,7 @@ else
         return key;
     }
 
-    private async void DeleteSprintAsync(int id)
+    private async Task DeleteSprintAsync(int id)
     {
         var list = new List<Sprint>(_sprints!);
         list.RemoveAll(sprint => sprint.Id == id);

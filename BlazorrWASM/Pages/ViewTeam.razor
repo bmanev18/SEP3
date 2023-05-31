@@ -93,7 +93,7 @@
                                     <td class="text-center">@user.LastName</td>
                                     <td class="text-center">@user.Role</td>
                                     <td class="text">
-                                        <button class="removebtn" @onclick="@(() => AddCollaborator(user.Username))">
+                                        <button class="removebtn" @onclick="@(() => AddCollaborator(user.Username, user.Role))">
                                             <img src="img/personAdd.png" class="search" alt="search">
                                         </button>
                                     </td>
@@ -205,11 +205,11 @@
         _searchResults = UserComparer(_users!, list);
     }
 
-    private async Task AddCollaborator(string username)
+    private async Task AddCollaborator(string username, string role)
     {
         try
         {
-            await ProjectService.AddCollaboratorAsync(Id, username);
+            await ProjectService.AddCollaboratorAsync(Id, username, role);
             await OnInitializedAsync();
             _searchResults!.RemoveAll(u => u.Username.Equals(username));
             _showTable = false;
@@ -228,5 +228,4 @@
         var roleFiltered = filtered.Where(dto => !dto.Role.Equals("product owner"));
         return roleFiltered.ToList();
     }
-
 }

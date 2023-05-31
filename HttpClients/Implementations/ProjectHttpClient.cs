@@ -22,16 +22,16 @@ public class ProjectHttpClient : IProjectService
         if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
 
-    public async Task AddCollaboratorAsync(int projectId, string username)
+    public async Task AddCollaboratorAsync(int projectId, string username,string role)
     {
-        var response = await _client.PutAsJsonAsync($"project/{projectId}/collaborator", username);
+        var response = await _client.PutAsJsonAsync($"project/{projectId}/collaborator/{username}", role);
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
 
     public async Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id)
     {
-        var response = await _client.GetAsync($"/project/{id}/collaborator");
+        var response = await _client.GetAsync($"/project/{id}/collaborator/");
         var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode) Console.WriteLine(response);
         var collaborators = JsonSerializer.Deserialize<List<UserFinderDto>>(result, new JsonSerializerOptions

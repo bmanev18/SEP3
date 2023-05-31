@@ -201,7 +201,7 @@
         await LoadOtherStoriesAsync();
     }
 
-    private async void DeleteUserStoryFromSprint(int idOfUserStory)
+    private async Task DeleteUserStoryFromSprint(int idOfUserStory)
     {
         await SprintService.RemoveStoryFromSprintAsync(Id, idOfUserStory);
         await LoadUserStoriesAsync();

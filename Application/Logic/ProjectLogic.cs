@@ -23,6 +23,12 @@ public class ProjectLogic : IProjectLogic
     public async Task AddCollaboratorAsync(AddUserToProjectDto collaborator)
     {
         var list = GetAllCollaboratorsAsync(collaborator.ProjectId);
+        if (collaborator.Role.Equals("scrum master"))
+        {
+            var sm = list.Result.FirstOrDefault(u => u.Role.Equals("scrum master"));
+            if (sm != null) throw new Exception("There is already a scrum master who is part of your project!");
+        }
+
         var dto = list.Result.FirstOrDefault(u => u.Username.Equals(collaborator.Username));
         if (dto != null) throw new Exception("User is already a collaborator!");
 
@@ -65,7 +71,7 @@ public class ProjectLogic : IProjectLogic
         await _projectDao.CreateMeetingNoteAsync(meeting);
     }
 
-    public async Task<List<Meeting>> Async(int id)
+    public async Task<List<Meeting>> GetMeetingNoteAsync(int id)
     {
         return await _projectDao.GetAllMeetingNotesAsync(id);
     }

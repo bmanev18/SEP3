@@ -8,7 +8,7 @@ public interface IProjectService
     Task CreateAsync(ProjectCreationDto dto);
 
 
-    Task AddCollaboratorAsync(int projectId, string username);
+    Task AddCollaboratorAsync(int projectId, string username, string role);
 
     Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id);
 
