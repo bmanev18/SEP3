@@ -1,0 +1,130 @@
+﻿@page "/CreateMeetingNote/{id:int}"
+@using System.Security.Claims
+@using global::Shared.Model
+@using HttpClients.ClientInterfaces
+@inject IProjectService ProjectService;
+<h3>Create Meeting Note</h3>
+
+<div class="container">
+    <div class="wrapper">
+        <form action="#">
+            <div class="row">
+                <input type="text" placeholder="Title" @bind="_title">
+            </div>
+            <div class="row">
+                <input type="text" placeholder="Note" @bind="_note">
+            </div>
+            <div class="row button">
+                <input value="Create" @onclick="Create" class="loginbtn text-center" readonly>
+            </div>
+            @if (!string.IsNullOrEmpty(_message))
+            {
+                <div class="field">
+                    <label style="color: red">
+                        @_message
+                    </label>
+                </div>
+            }
+
+        </form>
+    </div>
+</div>
+
+<h3>Notes</h3>
+
+<div class="container">
+    @if (_meetings != null)
+    {
+        @foreach (var meeting in _meetings)
+        {
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@meeting.Title</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudText Typo="Typo.h6">Made by: @meeting.Author</MudText>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2">@meeting.Note</MudText>
+                </MudCardContent>
+            </MudCard>
+            <br/>
+        }
+    }
+</div>
+
+
+@*  <style> *@
+@* .mud-card-header { *@
+@*     background-color: #16a085; *@
+@*     color: #fff; *@
+@*     padding: 10px 20px; *@
+@*     display: flex; *@
+@*     justify-content: space-between; *@
+@*     align-items: center; *@
+@* } *@
+@*  </style> *@
+
+
+
+
+
+
+@code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private string _title = "";
+    private string _message = "";
+    private string _note = "";
+    private IEnumerable<Meeting>? _meetings;
+    private ClaimsPrincipal? _user;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+        _user = authState.User;
+        await LoadMeetingNotes();
+    }
+
+    private async Task LoadMeetingNotes()
+    {
+        _meetings = await ProjectService.GetMeetingNotesAsync(Id);
+    }
+
+    private async Task Create()
+    {
+        _message = "";
+        if (string.IsNullOrEmpty(_title))
+        {
+            _message = "Cannot create a title-less note!";
+            return;
+        }
+        try
+        {
+            await ProjectService.CreateMeetingNoteAsync(new Meeting
+            {
+                Author = _user!.Identity!.Name!,
+                Title = _title,
+                Note = _note,
+                ProjectId = Id
+            }, Id);
+            _message = "Note created successfully!";
+            await LoadMeetingNotes();
+            _title = "";
+            _note = "";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _message = e.Message;
+        }
+    }
+
+}

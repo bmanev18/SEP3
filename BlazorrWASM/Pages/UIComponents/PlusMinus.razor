@@ -1,0 +1,20 @@
+﻿@namespace UIComponents
+
+<label class="container">
+    <input type="checkbox"
+           checked="@Checked"
+           @onchange="@(arg => OnChange.InvokeAsync((bool)arg.Value!))"/>
+
+    <div class="line"></div>
+    <div class="line line-indicator"></div>
+</label>
+
+@code {
+
+    [Parameter]
+    public bool Checked { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnChange { get; set; }
+
+}

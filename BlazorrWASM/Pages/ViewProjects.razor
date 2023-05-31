@@ -1,80 +1,105 @@
 @page "/ViewProjects"
 @using HttpClients.ClientInterfaces
-@inject IProjectService ProjectService
-@inject IUserStoryService UserStoryService
-@inject NavigationManager navMgr
-@using global::Shared.Model
+@inject IUserService UserService
+@inject NavigationManager NavMgr
 @using System.Security.Claims
 @using global::Shared.DTOs
-<h3>View My Projects</h3>
+@using global::Shared.Model
+&nbsp;
+&nbsp;
+&nbsp;
+
+<h3>My Projects</h3>
 
 
-@if (!string.IsNullOrEmpty(msg))@* display any msg in case it has ny value in case of error*@
+@if (!string.IsNullOrEmpty(_msg)) @* display any msg in case it has ny value in case of error*@
 {
     <div>
-        <span>@msg</span>
+        <span>@_msg</span>
     </div>
 }
-
-@if (projects == null)
+&nbsp;
+@if (_projects == null)
 {
     <span>Loading..</span>
 }
-else if (!projects.Any())
+else if (!_projects.Any())
 {
     <span>No projects to be found</span>
 }
-else 
+else
 {
     <table class="table justify-content-center">
-        
-        <thead>
-        <tr>
-            <th class="text-center">Title</th>
-        </tr>
-        </thead>
+
         <tbody>
-        @foreach (Project project in projects)
+        @foreach (var project in _projects)
         {
             <tr>
-                <td class="text-center" @onclick="() => Open(project.id)">@project.Title</td>
+                <td class="text-center">
+                    <h5>@project.Title</h5>
+                </td>
+                <td>
+                    <MudButton @onclick="() => Open(project.Id)" Size="Size.Small" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Style="background-color: #16a085;" Class="mt-1 text-white">View</MudButton>
+                </td>
+                <td>
+                    <MudButton Variant="Variant.Filled" Size="Size.Small" Style="background-color: #16a085;" EndIcon="@Icons.Material.Filled.Send" OnClick="@(() => OpenMeetingNotes(project.Id))" Class="mt-1 text-white">Create note</MudButton>
+                </td>
+                <td>
+                    <MudButton Variant="Variant.Filled" Size="Size.Small" Style="background-color: #16a085;" EndIcon="@Icons.Material.Filled.Send" OnClick="@(() => OpenViewTeam(project.Id))" Class="mt-1 text-white">See team</MudButton>
+                </td>
             </tr>
         }
 
         </tbody>
+
     </table>
 }
-
+<style>
+*{
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+           font-family: 'Poppins',sans-serif;
+       }
+</style>
 
 @code {
+
     [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; } = null;
-    private string msg = "";
-    private IEnumerable<Project>? projects;
-    private static ProjectDto project;
-    private string body = "";
-    private ClaimsPrincipal user;
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private string _msg = "";
+    private IEnumerable<Project>? _projects;
+    private ClaimsPrincipal? _user;
 
     protected override async Task OnInitializedAsync()
     {
-        AuthenticationState AuthState = await this.AuthState;
-        user = AuthState.User;
-        msg = "";
-        Console.WriteLine(msg);
+        var authState = await AuthState;
+        _user = authState.User;
+        _msg = "";
         try
         {
-            projects = await ProjectService.GetProjectsByUsername(user.Identity.Name);
+            _projects = await UserService.GetProjectsByUsernameAsync(_user.Identity?.Name);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine(e);
         }
     }
 
-    
     private void Open(int id)
     {
-        navMgr.NavigateTo($"/ViewUserStories/{id}");
+        NavMgr.NavigateTo($"/ViewProject/{id}");
     }
-}
 
+    private void OpenMeetingNotes(int id)
+    {
+        NavMgr.NavigateTo($"/CreateMeetingNote/{id}");
+    }
+
+    private void OpenViewTeam(int id)
+    {
+        NavMgr.NavigateTo($"/ViewTeam/{id}");
+    }
+
+}

@@ -6,7 +6,8 @@ namespace Application.DAOInterfaces;
 public interface IUserDao
 {
     Task CreateAsync(UserCreationDto dto);
-    Task<User> GetUserByUsername(LoginDto loginDto);
-    Task<List<UserFinderDto>> LookForUsers(string username);
+    Task<User> GetUserByUsernameAsync(LoginDto loginDto);
 
+    Task<List<Project>> GetProjectsAsync(string username);
+    Task<List<UserFinderDto>> LookForUsersAsync(string username);
 }

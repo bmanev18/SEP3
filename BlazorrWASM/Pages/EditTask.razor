@@ -1,0 +1,158 @@
+﻿@page "/ViewProject/{ProjectId:int}/ViewUserStory/{StoryId:int}/EditTask/{TaskId:int}"
+@inject IProjectService ProjectService
+@using global::Shared.Model
+@using global::Shared.DTOs
+@using HttpClients.ClientInterfaces
+@inject IUserStoryService UserStoryService
+
+<h3>Edit Task</h3>
+<br/>
+@if (_taskClass == null)
+{
+    <div class="loading-container">
+        <span>Loading task...</span>
+    </div>
+}
+else
+{
+    <div class="edit-task-container">
+        <div class="form-group">
+            <label for="taskName">Task Name:</label>
+            <input class="form-control" type="text" id="taskName" value="@_taskClass.Body" @oninput="@UpdateName"/>
+        </div>
+
+        <div class="form-group">
+            <label for="assignee">Assignee:</label>
+            <select class="form-control" id="assignee" value="@_taskClass.Assignee" @onchange="@UpdateAssignee">
+                @if (_collaborators != null)
+                {
+                    foreach (var collaborator in _collaborators)
+                    {
+                        <option value="@collaborator.Username"> @($"{collaborator.FirstName} {collaborator.LastName}")</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select class="form-control" id="status" value="@_taskClass.Status" @onchange="@UpdateStatus">
+                <option value="to-do">To Do</option>
+                <option value="in progress">In Progress</option>
+                <option value="done">Done</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="points">Story Points:</label>
+            <select class="form-control" id="points" value="@_taskClass.StoryPoints" @onchange="@UpdatePoints">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="8">8</option>
+                <option value="13">13</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            @if (!string.IsNullOrEmpty(_msg))
+            {
+                <label class="@(_isSuccess ? "success-label" : "error-label")"> @_msg </label>
+                <br/>
+                <br/>
+            }
+            <button @onclick="@SaveChanges" class="btn btn-initial @(_isSuccess ? "btn-success" : "btn-danger")">Save Changes</button>
+        </div>
+
+    </div>
+}
+
+@code {
+    private TaskClass _taskClass = null!;
+    private string _msg = "";
+    private IEnumerable<UserFinderDto>? _collaborators;
+    private bool _isSuccess;
+
+    [Parameter]
+    public int ProjectId { get; set; }
+
+    [Parameter]
+    public int StoryId { get; set; }
+
+    [Parameter]
+    public int TaskId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await LoadCollaborators();
+            await LoadTask();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    private async Task LoadCollaborators()
+    {
+        _collaborators = (await ProjectService.GetAllCollaboratorsAsync(ProjectId)).Where(dto => dto.Role.Equals("developer"));
+    }
+
+    private async Task LoadTask()
+    {
+        var tasks = await UserStoryService.GetTasksAsync(StoryId);
+        var exists = tasks.FirstOrDefault(t => t.Id == TaskId);
+        if (exists != null)
+        {
+            _taskClass = exists;
+        }
+        else
+        {
+            _msg = "The Task doesn't exist";
+        }
+    }
+
+    private void UpdateName(ChangeEventArgs e)
+    {
+        _taskClass.Body = e.Value!.ToString()!;
+    }
+
+    private void UpdateAssignee(ChangeEventArgs e)
+    {
+        _taskClass.Assignee = e.Value!.ToString()!;
+    }
+
+    private void UpdateStatus(ChangeEventArgs e)
+    {
+        _taskClass.Status = e.Value!.ToString()!;
+    }
+
+    private void UpdatePoints(ChangeEventArgs e)
+    {
+        int.TryParse(e.Value!.ToString()!, out var points);
+        _taskClass.StoryPoints = points;
+    }
+
+    private async Task SaveChanges()
+    {
+        try
+        {
+            await UserStoryService.UpdateTaskAsync(_taskClass);
+            _msg = "Changes saved successfully.";
+            _isSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            _msg = "Failed to save changes: " + ex.Message;
+            _isSuccess = false;
+        }
+    }
+
+}

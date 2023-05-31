@@ -1,103 +1,102 @@
 ﻿using Application.DAOInterfaces;
+using DataAccess.Transport;
 using DataAccessClient;
 using Grpc.Net.Client;
 using Shared.DTOs;
 using Shared.Model;
-using ProjectCreationDto = DataAccessClient.ProjectCreationDto;
 using UserStory = Shared.Model.UserStory;
 
 namespace DataAccess.DAOs;
 
-public class ProjectDAO : IProjectDao
+public class ProjectDao : IProjectDao
 {
-    private ProjectAccess.ProjectAccessClient client;
+    private readonly ProjectAccess.ProjectAccessClient _client;
 
-    public ProjectDAO()
+    public ProjectDao()
     {
         var channel = GrpcChannel.ForAddress("http://localhost:9111");
-        Console.WriteLine(channel.State);
-        client = new ProjectAccess.ProjectAccessClient(channel);
+        _client = new ProjectAccess.ProjectAccessClient(channel);
     }
 
 
-    public async Task CreateAsync(Shared.DTOs.ProjectCreationDto dto)
+    public async Task CreateAsync(ProjectCreationDto dto)
     {
-        ProjectCreationDto request = new ProjectCreationDto
-        {
-            OwnerUsername = dto.ownerUsername,
-            Title = dto.Name
-        };
-        var call = client.CreateProject(request);
+        var request = Transporter.ProjectCreationRequestConverter(dto);
+        var call = await _client.CreateProjectAsync(request);
+        if (!call.Response_) throw new InvalidOperationException("Unable to create project");
     }
 
-    public Task<int> AddCollaborator(AddUserToProjectDto collaborator)
+    public async Task AddCollaboratorAsync(AddUserToProjectDto collaborator)
     {
-        AddToProjectDto dto = new AddToProjectDto
-        {
-            Username = collaborator.Username,
-            ProjectId = collaborator.ProjectID
-        };
-        var response = client.AddCollaborator(dto);
-        return Task.FromResult(response.Code);
+        var dto = Transporter.UserProjectRequestConverter(collaborator);
+        var call = await _client.AddCollaboratorAsync(dto);
+        if (!call.Response_) throw new InvalidOperationException("Unable to add collaborator");
     }
-    
-    public Task<int> RemoveCollaborator(AddUserToProjectDto collaborator)
+
+    public async Task CreateMeetingNoteAsync(Meeting meeting)
     {
-        AddToProjectDto dto = new AddToProjectDto
-        {
-            Username = collaborator.Username,
-            ProjectId = collaborator.ProjectID
-        };
-        var response = client.RemoveCollaborator(dto);
-        return Task.FromResult(response.Code);
-
-    }
-    
-    public Task<List<UserFinderDto>> GetAllCollaborators(int id)
-    {   
-        var collaboratorsResponse = client.GetAllCollaborators(new Id { Id_ = id });
-        List<UserFinderDto> list = new List<UserFinderDto>();
-        foreach (var user in collaboratorsResponse.Users)
-        {
-            list.Add(new UserFinderDto{FirstName = user.FirstName, LastName =user.LastName, Username = user.Username, Role = user.Role});
-        }
-
-        return Task.FromResult(list);
+        var request = Transporter.MeetingNoteConverter(meeting);
+        var call = await _client.CreateMeetingNoteAsync(request);
+        if (!call.Response_) throw new InvalidOperationException("Unable to create note");
     }
 
-    public Task<int> AddUserStory(UserStoryDto dto)
+    public async Task<List<Meeting>> GetAllMeetingNotesAsync(int id)
     {
-        UserStoryMessage userStory = new UserStoryMessage
-        {
-            ProjectId = dto.Project_id,
-            Priority = dto.Priority,
-            TaskBody = dto.Body
-        };
-        ResponseWithID responseWithId = client.AddUserStory(userStory);
-        return Task.FromResult(responseWithId.Id);
+        var request = Transporter.IdMessageConverter(id);
+        var meetingNotes = await _client.GetMeetingNotesAsync(request);
+        var callMeetingNotes = meetingNotes.MeetingNotes;
+        var list = callMeetingNotes.Select(Transporter.MeetingConverter).ToList();
+        return list;
     }
 
-    public Task<List<ProjectDto>> GetAllProjects(string username)
+    public async Task RemoveCollaboratorAsync(AddUserToProjectDto collaborator)
     {
-        var projectsResponse = client.GetAllProjects(new Username { Username_ = username });
-        List<ProjectDto> list = new List<ProjectDto>();
-        foreach (var project in projectsResponse.Projects)
-        {
-            list.Add(new ProjectDto(){Id = project.Id, Title = project.Title});
-        }
-
-        return Task.FromResult(list);
+        var dto = Transporter.UserProjectRequestConverter(collaborator);
+        var call = await _client.RemoveCollaboratorAsync(dto);
+        if (!call.Response_) throw new InvalidOperationException("Unable to remove collaborator");
     }
 
-    public Task<List<UserStory>> GetProductBacklog(int id)
+    public async Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id)
     {
-        var productBacklog = client.GetProductBacklog(new Id(){Id_ = id});
-        List<UserStory> list = new List<UserStory>();
-        foreach (var story in productBacklog.UserStories)
-        {
-            list.Add(new UserStory{ID = story.Id, Body = story.UserStory_, Priority = story.Priority, Project_id = story.ProjectId});
-        }
+        var request = Transporter.IdMessageConverter(id);
+        var collaboratorsResponse = await _client.GetAllCollaboratorsAsync(request);
+        var callCollaborators = collaboratorsResponse.Users;
+        var list = callCollaborators.Select(Transporter.UserFinderDtoConverter).ToList();
 
-        return Task.FromResult(list);
+        return list;
+    }
+
+    public async Task AddUserStoryAsync(UserStoryCreationDto creationDto)
+    {
+        var request = Transporter.UserStoryCreationRequestConverter(creationDto);
+        var call = await _client.AddUserStoryAsync(request);
+        if (!call.Response_) throw new InvalidOperationException("Unable to create user story");
+    }
+
+
+    public async Task<List<UserStory>> GetUserStoriesAsync(int id)
+    {
+        var request = Transporter.IdMessageConverter(id);
+        var userStories = await _client.GetUserStoriesAsync(request);
+        var callUserStories = userStories.UserStories;
+        var list = callUserStories.Select(Transporter.UserStoryConverter).ToList();
+
+        return await Task.FromResult(list);
+    }
+
+    public async Task CreateSprintAsync(SprintCreationDto dto)
+    {
+        var request = Transporter.SprintCreationRequestConverter(dto);
+        var call = await _client.CreateSprintAsync(request);
+        if (!call.Response_) throw new InvalidOperationException("Unable to create sprint");
+    }
+
+    public async Task<List<Sprint>> GetSprintsByProjectIdAsync(int id)
+    {
+        var request = Transporter.IdMessageConverter(id);
+        var call = await _client.GetSprintByProjectIdAsync(request);
+        var callSprints = call.Sprints;
+
+        return callSprints.Select(Transporter.SprintConverter).ToList();
     }
 }

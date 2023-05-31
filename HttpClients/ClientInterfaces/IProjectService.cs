@@ -5,15 +5,21 @@ namespace HttpClients.ClientInterfaces;
 
 public interface IProjectService
 {
-    Task<Project> Create(ProjectCreationDto dto);
-    
-    Task<IEnumerable<Project>> GetProjectsByUsername(string? nameContains = null);
+    Task CreateAsync(ProjectCreationDto dto);
 
-    Task AddCollaborator(int projectId, string username);
 
-    Task<List<UserFinderDto>> GetAllCollaborators(int id);
+    Task AddCollaboratorAsync(int projectId, string username, string role);
 
-    Task RemoveCollaborator(string username, int projectid);
-    
+    Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id);
 
+    Task RemoveCollaboratorAsync(string username, int projectId);
+
+    Task CreateUserStoryAsync(UserStoryCreationDto creationDto);
+    Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id = null);
+
+    Task CreateSprintAsync(SprintCreationDto dto, int id);
+
+    Task<IEnumerable<Sprint>> GetSprintsAsync(int? projectId = null);
+    Task CreateMeetingNoteAsync(Meeting meeting, int id);
+    Task<IEnumerable<Meeting>> GetMeetingNotesAsync(int projectId);
 }

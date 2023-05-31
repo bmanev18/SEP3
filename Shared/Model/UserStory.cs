@@ -2,8 +2,10 @@
 
 public class UserStory
 {
-    public int ID { get; init; }
-    public string Body { get; set; }
-    public string Priority { get; set; }
-    public int Project_id { get; set; }
+    public required int Id { get; init; }
+    public required int ProjectId { get; init; }
+    public required string Body { get; init; }
+    public required string Priority { get; set; }
+    public required string Status { get; set; }
+    public required int StoryPoints { get; set; }
 }

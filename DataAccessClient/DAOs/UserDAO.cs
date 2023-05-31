@@ -1,76 +1,56 @@
 ﻿using Application.DAOInterfaces;
+using DataAccess.Transport;
 using DataAccessClient;
 using Grpc.Net.Client;
-using Microsoft.VisualBasic.CompilerServices;
 using Shared.DTOs;
 using Shared.Model;
-using UserCreationDto = DataAccessClient.UserCreationDto;
 using LoginDto = Shared.DTOs.LoginDto;
 
 namespace DataAccess.DAOs;
 
-public class UserDAO : IUserDao
+public class UserDao : IUserDao
 {
-    private UserAccess.UserAccessClient client;
+    private readonly UserAccess.UserAccessClient _client;
 
-    public UserDAO()
+    public UserDao()
     {
         var channel = GrpcChannel.ForAddress("http://localhost:9111");
-        Console.WriteLine(channel.State);
-        client = new UserAccess.UserAccessClient(channel);
+        _client = new UserAccess.UserAccessClient(channel);
     }
 
 
-    public async Task CreateAsync(Shared.DTOs.UserCreationDto dto)
+    public async Task CreateAsync(UserCreationDto dto)
     {
-        UserCreationDto request = new UserCreationDto
-        {
-            Password = dto.Password,
-            Username = dto.Username,
-            Role = dto.Role,
-            FirstName = dto.FirstName,
-            LastName = dto.Lastname
-        };
-        var call = client.CreateUser(request);
-    }
-    
-    public Task<User> GetUserByUsername(LoginDto loginDto)
-    {
-        Username username = new Username
-        {
-            Username_ = loginDto.Username
-        };
-        var call = client.UserByUsername(username);
-        User result = new User
-        {
-            Username = call.Username,
-            Firstname = call.Username,
-            Lastname = call.LastName,
-            Password = call.Password,
-            Role = call.Role
-        };
-        return Task.FromResult(result);
+        var request = Transporter.UserMessageConverter(dto);
+        var call = await _client.CreateUserAsync(request);
+        if (!call.Response_) throw new InvalidOperationException("User wasn't created");
     }
 
-    public Task<List<UserFinderDto>> LookForUsers(string username)
+    public async Task<User> GetUserByUsernameAsync(LoginDto loginDto)
     {
-        Username request = new Username
-        {
-            Username_ = username
-        };
-        var call = client.LookForUsers(request);
-        List<UserFinderDto> list = new();
-        foreach (var user in call.Users)
-        {
-            list.Add(new UserFinderDto
-            {
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Role = user.Role
-            });
-        }
+        var request = Transporter.UsernameMessageConverter(loginDto);
+        var call = await _client.UserByUsernameAsync(request);
+        if (string.IsNullOrEmpty(call.Username)) throw new InvalidOperationException("No User found!");
 
-        return Task.FromResult(list);
+        var result = Transporter.UserConverter(call);
+        return result;
+    }
+
+    public async Task<List<Project>> GetProjectsAsync(string username)
+    {
+        var request = Transporter.UsernameMessageConverter(username);
+        var projectsResponse = await _client.GetAllProjectsAsync(request);
+        var list = projectsResponse.Projects.Select(Transporter.ProjectDtoConverter).ToList();
+
+        return list;
+    }
+
+    public async Task<List<UserFinderDto>> LookForUsersAsync(string username)
+    {
+        var request = Transporter.UsernameMessageConverter(username);
+        var call = await _client.LookForUsersAsync(request);
+        var list = call.Users.Select(Transporter.UserFinderDtoConverter).ToList();
+
+        return list;
     }
 }

@@ -1,0 +1,311 @@
+﻿@page "/ViewProject/{ProjectId:int}/ViewUserStory/{StoryId:int}"
+@inject IProjectService ProjectService
+@inject IUserStoryService UserStoryService;
+@using global::Shared.Model
+@using global::Shared.DTOs
+@using HttpClients.ClientInterfaces
+@inject NavigationManager NavMgr
+@using UIComponents
+
+<AuthorizeView roles="scrum master, product owner">
+    <Authorized>
+        @if (_userStory != null)
+        {
+            <h3>User Story: @_userStory.Body</h3>
+            <!-- Display the name of the user story dynamically -->
+
+
+            <div id="addTask">
+                <PlusMinus Checked="@_showFields" OnChange="@(() => _showFields = !_showFields)"/>
+                @if (_showFields)
+                {
+                    <input type="text" placeholder="Task Name" @bind="_name" @bind:event="oninput">
+
+                    <select @bind="_assignee">
+                        @if (_collaborators != null)
+                        {
+                            foreach (var collaborator in _collaborators)
+                            {
+                                <option value=@collaborator.Username> @($"{collaborator.FirstName} {collaborator.LastName}")</option>
+                            }
+                        }
+                    </select>
+
+                    <select @bind="_points">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="8">8</option>
+                        <option value="13">13</option>
+                        <option value="20">20</option>
+                        <option value="40">40</option>
+                        <option value="100">100</option>
+                    </select>
+
+                    <div class="input-box button">
+                        @if (!string.IsNullOrEmpty(_msg))
+                        {
+                            <label style="color :red"> @_msg </label>
+                        }
+                        <button @onclick="@Create" class="createbtn"> Create </button>
+                    </div>
+                }
+            </div>
+
+            @if (_tasks == null)
+            {
+                <span>Loading..tasks</span>
+            }
+            else if (!_tasks.Any())
+            {
+                <span>No tasks to be found</span>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Task</th>
+                        <th>Assigned</th>
+                        <th>Story Points</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var task in _tasks)
+                    {
+                        <tr>
+                            <td>
+                                @task.Status
+                            </td>
+                            <td>
+                                <label for="@task.Id">@task.Body</label>
+                            </td>
+                            <td>
+                                @task.Assignee
+                            </td>
+                            <td>
+                                @task.StoryPoints
+                            </td>
+                            <td>
+
+                                <button class="btn" @onclick="() => Open(task.Id)">Edit </button>
+                            </td>
+                            <td>
+                                @* <DeleteButton/> *@
+                                <button class="btn" @onclick="() => RemoveTask(task.Id)">Delete </button>
+                            </td>
+
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+        }
+        else
+        {
+            <label>:( UserStory not found</label>
+        }
+    </Authorized>
+    <NotAuthorized>
+        @if (_userStory != null)
+        {
+            <h3>User Story: @_userStory.Body</h3>
+            <!-- Display the name of the user story dynamically -->
+
+
+            @if (_tasks == null)
+            {
+                <span>Loading..tasks</span>
+            }
+            else if (!_tasks.Any())
+            {
+                <span>No tasks to be found</span>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Task</th>
+                        <th>Assigned</th>
+                        <th>Story Points</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var task in _tasks)
+                    {
+                        <tr>
+                            <td>
+                                <div class="input-box">
+                                    <select @bind="task.Status" @oninput="@(e => UpdateTaskStatusAsync(task.Id, e.Value!.ToString()!))">
+                                        <option value="to-do">to-do</option>
+                                        <option value="in progress">in progress</option>
+                                        <option value="done">done</option>
+                                    </select>
+                                </div>
+                            </td>
+
+
+                            <td>
+                                <label for="@task.Id">@task.Body</label>
+                            </td>
+                            <td>
+                                @task.Assignee
+                            </td>
+                            <td>
+                                @task.StoryPoints
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+        }
+        else
+        {
+            <label>:( UserStory not found</label>
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins',sans-serif;
+        text-align: center;
+        color: #16a085;
+        
+    }
+    
+    h3{
+        margin-top: 20px;
+    }
+</style>
+
+@code {
+    private string _name = "";
+    private string _assignee = "";
+    private int _points;
+
+    private bool _showFields;
+    private string _msg = "";
+
+    private IEnumerable<UserFinderDto>? _collaborators;
+    private IEnumerable<TaskClass>? _tasks;
+    private UserStory? _userStory;
+
+    [Parameter]
+    public int ProjectId { get; set; }
+
+    [Parameter]
+    public int StoryId { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await LoadCollaborators();
+            await LoadTasks();
+            await LoadUserStory();
+        }
+        catch (Exception e)
+        {
+            _msg = e.Message;
+        }
+    }
+
+    private async Task LoadCollaborators()
+    {
+        try
+        {
+            var allCollaborators = await ProjectService.GetAllCollaboratorsAsync(ProjectId);
+            _collaborators = allCollaborators.Where(dto => dto.Role.Equals("developer")).ToList();
+        }
+        catch (Exception e)
+        {
+            _msg = e.Message;
+        }
+    }
+
+    private async Task Create()
+    {
+        var dto = new TaskCreationDto
+        {
+            UserStoryId = StoryId,
+            Assignee = _assignee,
+            Body = _name,
+            StoryPoints = _points
+        };
+        try
+        {
+            await UserStoryService.CreateTaskAsync(dto);
+            await LoadTasks();
+        }
+        catch (Exception e)
+        {
+            _msg = e.Message;
+        }
+    }
+
+    private async Task LoadTasks()
+    {
+        try
+        {
+            _tasks = await UserStoryService.GetTasksAsync(StoryId);
+        }
+        catch (Exception e)
+        {
+            _msg = e.Message;
+        }
+    }
+
+    private async Task RemoveTask(int taskId)
+    {
+        if (_tasks!.FirstOrDefault(t => t.Id == taskId) != null)
+        {
+            try
+            {
+                await UserStoryService.RemoveTaskAsync(taskId, StoryId);
+            }
+            catch (Exception e)
+            {
+                _msg = e.Message;
+            }
+        }
+        await LoadTasks();
+    }
+
+    private void Open(int id)
+    {
+        NavMgr.NavigateTo($"/ViewProject/{ProjectId}/ViewUserStory/{StoryId}/EditTask/{id}");
+    }
+
+    private async Task LoadUserStory()
+    {
+        var userStories = await ProjectService.GetUserStoriesAsync(ProjectId);
+        _userStory = userStories.FirstOrDefault(us => us.Id == StoryId);
+    }
+
+    private async Task UpdateTaskStatusAsync(int taskId, string status)
+    {
+        var taskToUpdate = _tasks!.FirstOrDefault(t => t.Id == taskId);
+        if (taskToUpdate != null)
+        {
+            taskToUpdate.Status = status;
+            await UserStoryService.UpdateTaskAsync(taskToUpdate);
+        }
+        await LoadTasks();
+    }
+
+
+
+
+}

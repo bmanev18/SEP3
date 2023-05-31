@@ -1,5 +1,4 @@
 ﻿using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 using HttpClients.ClientInterfaces;
 using Shared.DTOs;
@@ -9,91 +8,110 @@ namespace HttpClients.Implementations;
 
 public class ProjectHttpClient : IProjectService
 {
-    private readonly HttpClient client;
+    private readonly HttpClient _client;
 
     public ProjectHttpClient(HttpClient client)
     {
-        this.client = client;
+        _client = client;
     }
 
-    public async Task<Project> Create(ProjectCreationDto dto)
+    public async Task CreateAsync(ProjectCreationDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/project", dto);
-        string result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-
-        Project project = JsonSerializer.Deserialize<Project>(result, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
-        return project;
-    }
-    
-    public async Task<IEnumerable<Project>> GetProjectsByUsername(string? username)
-    {
-        string uri = "/Project";
-        if (!string.IsNullOrEmpty(username))
-        {
-            uri += $"/{username}";
-        }
-        Console.WriteLine(uri);
-
-        HttpResponseMessage response = await client.GetAsync(uri);
-        string result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-        IEnumerable<Project> projects = JsonSerializer.Deserialize<IEnumerable<Project>>(result, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
-        return projects;
+        var response = await _client.PostAsJsonAsync("/project", dto);
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
 
-    public async Task AddCollaborator(int projectId, string username)
+    public async Task AddCollaboratorAsync(int projectId, string username,string role)
     {
-        AddUserToProjectDto dto = new AddUserToProjectDto
-        {
-            ProjectID = projectId,
-            Username = username
-        };
-        HttpResponseMessage response = await client.PutAsJsonAsync("/project", dto);
-        string result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(result);
-        }
-        
+        var response = await _client.PutAsJsonAsync($"project/{projectId}/collaborator/{username}", role);
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
     }
 
-    public async Task<List<UserFinderDto>> GetAllCollaborators(int id)
+    public async Task<List<UserFinderDto>> GetAllCollaboratorsAsync(int id)
     {
-        HttpResponseMessage response = await client.GetAsync("project/getCollaborators/" + id);
-        string result = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync($"/project/{id}/collaborator/");
+        var result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine(response);
+            throw new InvalidOperationException("Unable to get collaborators");
         }
-        List<UserFinderDto> collaborators = JsonSerializer.Deserialize<List<UserFinderDto>>(result, new JsonSerializerOptions
+        var collaborators = JsonSerializer.Deserialize<List<UserFinderDto>>(result, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         })!;
         return collaborators;
     }
 
-    public async Task RemoveCollaborator(string username, int projectid)
+    public async Task RemoveCollaboratorAsync(string username, int projectId)
     {
-        HttpResponseMessage response = await client.DeleteAsync($"/project/?username={username}&id={projectid}");
+        var response = await _client.DeleteAsync($"/project/{projectId}/collaborator/{username}");
         if (!response.IsSuccessStatusCode)
         {
-            string content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
             throw new Exception(content);
         }
     }
 
-    
+    public async Task CreateUserStoryAsync(UserStoryCreationDto creationDto)
+    {
+        var response = await _client.PostAsJsonAsync($"/project/{creationDto.ProjectId}/userStory", creationDto);
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
+    }
+
+    public async Task<IEnumerable<UserStory>> GetUserStoriesAsync(int? id)
+    {
+        var response = await _client.GetAsync($"/project/{id}/userStory");
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
+
+        var userStories = JsonSerializer.Deserialize<IEnumerable<UserStory>>(result,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            })!;
+        return userStories;
+    }
+
+    public async Task CreateSprintAsync(SprintCreationDto dto, int id)
+    {
+        var response = await _client.PostAsJsonAsync($"project/{id}/sprint", dto);
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
+    }
+
+    public async Task<IEnumerable<Sprint>> GetSprintsAsync(int? projectId)
+    {
+        var response = await _client.GetAsync($"/Project/{projectId}/sprint");
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
+        var sprints = JsonSerializer.Deserialize<IEnumerable<Sprint>>(result,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            })!;
+        return sprints;
+    }
+
+    public async Task CreateMeetingNoteAsync(Meeting meeting, int id)
+    {
+        var response = await _client.PostAsJsonAsync($"project/{id}/createNote", meeting);
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
+    }
+
+    public async Task<IEnumerable<Meeting>> GetMeetingNotesAsync(int projectId)
+    {
+        var response = await _client.GetAsync($"/Project/{projectId}/getNotes");
+        var result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) throw new Exception(result);
+        var notes = JsonSerializer.Deserialize<IEnumerable<Meeting>>(result,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            })!;
+        return notes;
+    }
 }

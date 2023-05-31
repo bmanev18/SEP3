@@ -1,0 +1,93 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+}
+
+.buttonAndHeader, h3 {
+    text-align: center;
+    color: #16a085;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.buttonAndHeader .btn-primary {
+    background-color: #16a085;
+    color: white;
+}
+
+.addUserStory-bar .input-box input[type="text"],
+.addSprint-bar .input-box input[type="text"],
+.addSprint-bar .input-box input[type="date"] {
+    border-color: #16a085;
+}
+
+.fields-container .input-box button.acceptbtn {
+    background-color: #16a085;
+    color: white;
+}
+
+.input-box label[style^="color :red"] {
+    color: red;
+}
+
+.table thead th,
+.table tbody tr td {
+    color: #16a085;
+}
+
+.table tbody tr td .input-box select {
+    border-color: #16a085;
+    text-align: center;
+}
+
+.table tbody tr td .input-box select option {
+    color: #16a085;
+    text-align: center;
+}
+
+.table tbody tr td .input-box label[style^="cursor:pointer; color: red; font-weight: bold"] {
+    color: red;
+    text-align: center;
+}
+
+.input-box {
+    display: -webkit-inline-flex;
+    margin-left: 30px;
+    /*margin-top: 10px;*/
+    background-color: #dadada;
+}
+
+.input-box input {
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    width: 80%;
+}
+
+select {
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    /*width: 80%;*/
+}
+
+.input-box button.createbtn {
+    padding: 5px 10px;
+    background-color: #16a085;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.createbtn:hover {
+    background-color: #16a085;
+}
+
+label {
+    font-size: 16px;
+    margin-right: 10px;
+}

@@ -4,10 +4,6 @@ namespace Shared.DTOs;
 
 public class ProjectCreationDto
 {
-    public string Name { get; set; }
-    public string ownerUsername { get; set; }
-    
-    
-    
-    
+    public required string Name { get; init; }
+    public required string OwnerUsername { get; init; }
 }

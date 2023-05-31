@@ -1,49 +1,6 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorWASM</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-       
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="CreateUser">
-                <span class="oi oi-plus" aria-hidden="true"></span> Create user
-            </NavLink>
-        </div>
-        
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="SignInPage">
-                <span class="oi oi-plus" aria-hidden="true"></span> Sign in
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ViewProjects">
-                <span class="oi oi-plus" aria-hidden="true"></span> My projects
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="CreateProject">
-                <span class="oi oi-plus" aria-hidden="true"></span> Create project
-            </NavLink>
-        </div>
-        
-
-    </nav>
-</div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-
-}
+﻿<MudPaper Width="250px" Elevation="0" Class="py-3 ">
+    <MudNavMenu Bordered="true">
+        <MudNavLink Href="ViewProjects">My Projects</MudNavLink>
+        <MudNavLink Href="CreateProject">Create new project</MudNavLink>
+    </MudNavMenu>
+</MudPaper>

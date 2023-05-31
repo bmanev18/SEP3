@@ -18,9 +18,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserLogic, UserLogic>();
-builder.Services.AddScoped<IUserDao, UserDAO>();
+builder.Services.AddScoped<IUserDao, UserDao>();
 builder.Services.AddScoped<IProjectLogic, ProjectLogic>();
-builder.Services.AddScoped<IProjectDao, ProjectDAO>();
+builder.Services.AddScoped<IProjectDao, ProjectDao>();
+builder.Services.AddScoped<ISprintLogic, SprintLogic>();
+builder.Services.AddScoped<ISprintDao, SprintDao>();
+
+builder.Services.AddScoped<IUserStoryLogic, UserStoryLogic>();
+builder.Services.AddScoped<IUserStoryDao, UserStoryDao>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -32,7 +37,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidAudience = builder.Configuration["Jwt:Audience"],
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException()))
     };
 });
 
@@ -56,8 +61,8 @@ app.UseCors(x => x
 app.UseHttpsRedirection();
 
 
+app.MapControllers();
 app.UseAuthorization();
 
-app.MapControllers();
 
 app.Run();

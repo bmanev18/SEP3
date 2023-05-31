@@ -1,17 +1,20 @@
-﻿*{
+﻿* {
     font-family: 'Poppins', sans-serif;
 }
-body{
+
+body {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #4070f4;
 }
-a{
+
+a {
     cursor: pointer;
 }
-.wrapper{
+
+.wrapper {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -21,15 +24,17 @@ a{
     background: #fff;
     padding: 34px;
     border-radius: 6px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
-.wrapper h2{
+
+.wrapper h2 {
     position: relative;
     font-size: 22px;
     font-weight: 600;
     color: #333;
 }
-.wrapper h2::before{
+
+.wrapper h2::before {
     content: '';
     position: absolute;
     left: 0;
@@ -39,14 +44,17 @@ a{
     border-radius: 12px;
     background: #16a085;
 }
-.wrapper form{
+
+.wrapper form {
     margin-top: 30px;
 }
-.wrapper form .input-box{
+
+.wrapper form .input-box {
     height: 52px;
     margin: 18px 0;
 }
-form .input-box input{
+
+form .input-box input {
     height: 100%;
     width: 100%;
     outline: none;
@@ -59,39 +67,47 @@ form .input-box input{
     border-radius: 6px;
     transition: all 0.3s ease;
 }
+
 .input-box input:focus,
-.input-box input:valid{
+.input-box input:valid {
     border-color: #16a085;
 }
-form .policy{
+
+form .policy {
     display: flex;
     align-items: center;
 }
-form h3{
+
+form h3 {
     color: #707070;
     font-size: 14px;
     font-weight: 500;
     margin-left: 10px;
 }
-.input-box.button input{
+
+.input-box.button input {
     color: #fff;
     letter-spacing: 1px;
     border: none;
     background: #16a085;
     cursor: pointer;
 }
-.input-box.button input:hover{
+
+.input-box.button input:hover {
     background: #12876f;
 }
-form .text h3{
+
+form .text h3 {
     color: #333;
     width: 100%;
     text-align: center;
 }
-form .text h3 a{
+
+form .text h3 a {
     color: #16a085;
     text-decoration: none;
 }
-form .text h3 a:hover{
+
+form .text h3 a:hover {
     text-decoration: underline;
 }
