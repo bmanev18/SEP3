@@ -226,16 +226,7 @@ else
 }
 </Authorized>
 <NotAuthorized>
-
-    <div class="buttonAndHeader">
-        <h3>User Stories</h3>
-
-        <td>
-            <button class="btn btn-primary" @onclick="@OpenViewTeam">
-                <span>@($"{GetLocalizedString("View the team of the project")}")</span>
-            </button>
-        </td>
-    </div>
+    <h3>User Stories</h3>
     @if (_userStories == null)
     {
         <span>Loading..UserStories</span>
