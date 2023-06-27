@@ -8,7 +8,7 @@ using UserStory = Shared.Model.UserStory;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]/{projectId:int}")]
+[Route("[controller]")]
 public class ProjectController : ControllerBase
 {
     private readonly IProjectLogic _projectLogic;
@@ -34,7 +34,7 @@ public class ProjectController : ControllerBase
     }
 
 
-    [HttpPut("collaborator/{username}")]
+    [HttpPut("{projectId:int}/collaborator/{username}")]
     public async Task<ActionResult> AddCollaborator([FromRoute] int projectId, [FromRoute] string username,[FromBody]string role)
     {
         var collaborator = new AddUserToProjectDto
@@ -55,7 +55,7 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("collaborator")]
+    [HttpGet("{projectId:int}/collaborator")]
     public async Task<ActionResult<List<UserFinderDto>>> GetAllCollaborators([FromRoute] int projectId)
     {
         try
@@ -70,7 +70,7 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpDelete("collaborator/{username}")]
+    [HttpDelete("{projectId:int}/collaborator/{username}")]
     public async Task<ActionResult> DeleteCollaborator([FromRoute] string username, [FromRoute] int projectId)
     {
         var dto = new AddUserToProjectDto
@@ -91,7 +91,7 @@ public class ProjectController : ControllerBase
     }
 
 
-    [HttpPost("userStory")]
+    [HttpPost("{projectId:int}/userStory")]
     public async Task<ActionResult> AddUserStory(UserStoryCreationDto creationDto, int projectId)
     {
         try
@@ -106,7 +106,7 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("userStory")]
+    [HttpGet("{projectId:int}/userStory")]
     public async Task<ActionResult<List<UserStory>>> GetUserStoriesAsync([FromRoute] int projectId)
     {
         try
@@ -121,7 +121,7 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpPost("sprint")]
+    [HttpPost("{projectId:int}/sprint")]
     public async Task<ActionResult> CreateSprint(SprintCreationDto dto, [FromRoute] int projectId)
     {
         try
@@ -136,7 +136,7 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("sprint")]
+    [HttpGet("{projectId:int}/sprint")]
     public async Task<ActionResult<List<Sprint>>> GetSprintsByProjectId([FromRoute] int projectId)
     {
         try
@@ -151,7 +151,7 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpGet("getNotes")]
+    [HttpGet("{projectId:int}/getNotes")]
     public async Task<ActionResult<List<Meeting>>> GetMeetingNotes([FromRoute] int projectId)
     {
         try
@@ -166,7 +166,7 @@ public class ProjectController : ControllerBase
         }
     }
 
-    [HttpPost("createNote")]
+    [HttpPost("{projectId:int}/createNote")]
     public async Task<ActionResult> CreateMeetingNoteAsync([FromBody] Meeting meeting, [FromRoute] int projectId)
     {
         meeting.ProjectId = projectId;
