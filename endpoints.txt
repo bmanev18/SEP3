@@ -1,0 +1,35 @@
+	Project
+(Create project)			post  /project
+(Add collaborator) 			post  /project/{id}/collaborator
+(Get collaborators) 		get   /project/{id}/collaborator
+(Remove collaborator) 		delete/project/{id}/collaborator/{username}
+(Add User story) 			post  /project/{id}/userStory
+(Get User stories) 			get   /project/{id}/userStory
+(Create sprint) 			post  /project/{id}/sprint
+(Get sprints by projectId) 	get   /project/{id}/sprint
+
+
+	Sprint
+(Get sprint by id) 				 get   /sprint/{id}
+(Delete sprint) 				 delete/sprint/{id}
+(Add user story to sprint) 		 post  /sprint/{id}/userStory
+(Get user stories from sprint) 	 get   /sprint/{id}/userStory
+(Remove user story from sprint)  delete/sprint/{id}/userStory/{id}
+
+
+	User
+(Create user)
+(Get user by username)
+(Get projects for user)  	get /user/{username}/project
+(Look for users) 		 	get /user/search?username=input
+
+
+	UserStory
+(Update user story points)   	patch  /userStory/{id}/storyPoints
+(Update user story status)   	patch  /userStory/{id}/status
+(Update user story priority)   	patch  /userStory/{id}/priority
+(Delete User story) 		 	delete /userStory/{id}
+(Add task) 					 	post   /userStory/{id}/task
+(Edit task) 					patch  /userStory/{id}/task
+(Get tasks by user story id) 	get    /userStory/{id}/task
+(Delete task) 					delete /userStory/{id}/task/{id}
